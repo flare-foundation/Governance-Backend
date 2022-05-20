@@ -1,0 +1,17 @@
+[Unit]
+Description=Governance Backend
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/node /home/ubuntu/governance-backend/dist/src/server.js
+Restart=always
+# User=backend
+# Use 'nogroup' group for Ubuntu/Debian
+# use 'nobody' group for Fedora
+# Group=nogroup
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+WorkingDirectory=/home/backend/governance-backend
+
+[Install]
+WantedBy=multi-user.target
