@@ -1,0 +1,17 @@
+[
+   {
+     "name": "GovernanceVotePower",
+     "contractName": "GovernanceVotePower.sol",
+     "address": "0x5dFddd30Ebf4fF41a107ED6214F9d32BaDB96D43"
+   },
+   {
+      "name": "GovernorReject",
+      "contractName": "GovernorReject.sol",
+      "address": "0xB439BDeDe63Bcc3Cbb589F0822a18a415952bFF0"
+    },
+    {
+      "name": "GovernorReject",
+      "contractName": "GovernorReject.sol",
+      "address": "0xB439BDeDe63Bcc3Cbb589F0822a18a415952bFF0"
+    }
+]

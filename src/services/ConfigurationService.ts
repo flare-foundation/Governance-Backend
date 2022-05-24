@@ -15,7 +15,12 @@ export interface WebServerOptions {
 
 @Singleton
 @Factory(() => new ConfigurationService())
-export class ConfigurationService {
+export class ConfigurationService {   
+
+   // should be set on the start-up of the service once (global constant)
+   public static network = "";
+   
+   networkRPC = process.env.RPC;
 
    databaseConnectOptions = {
       type: process.env.DB_TYPE,
@@ -29,4 +34,5 @@ export class ConfigurationService {
    webServerOptions = {
       port: parseInt(process.env.WEB_SERVER_PORT),
    }
+
 }

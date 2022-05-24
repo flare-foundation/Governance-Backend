@@ -65,3 +65,15 @@ yarn build
 - To turn on migrations in file `src/services/databaseService.ts` set following: `synchronize: false` and `migrationsRun: true`.
 - To create a migration user following command `typeorm migration:generate -n <nameOfMigrationFile>` and new migration template will be created in folder `src/migration/` .
   -  Fill in `up` function with desired migration. Fill in `down` function with reversed migration or just simply put `return`.
+
+
+## Syncing artifacts
+
+Clone the `flare-smart-contracts` repo into the same parent folder as this repo. Set the relevant branch on the `flare-smart-contracts` 
+repo and compile the contracts. Then run:
+
+```
+yarn artifacts
+```
+
+This will sync the `artifacts` folder for the contract with names defined in the `contractToSync` list in [`src/utils/sync-artifacts.ts`](src/utils/sync-artifacts.ts) and run Typechain type file generation (generates the folder `typechain-web3-v1`). 

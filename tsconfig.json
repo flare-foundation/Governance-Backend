@@ -68,6 +68,7 @@
     "resolveJsonModule": true /*Allow imports of JSON files with data*/
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "./typechain-web3-v1"
   ]
 }

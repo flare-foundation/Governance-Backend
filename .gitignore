@@ -18,7 +18,11 @@ yarn-error.log
 logs
 *.log
 
+## Env
+.env
+
 ## Misc
 .DS_Store
+nul
 
 
