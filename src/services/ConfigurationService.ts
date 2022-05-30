@@ -15,11 +15,11 @@ export interface WebServerOptions {
 
 @Singleton
 @Factory(() => new ConfigurationService())
-export class ConfigurationService {   
+export class ConfigurationService {
 
    // should be set on the start-up of the service once (global constant)
    public static network = "";
-   
+
    networkRPC = process.env.RPC;
 
    databaseConnectOptions = {
@@ -31,8 +31,48 @@ export class ConfigurationService {
       password: process.env.DB_PASSWORD
    }
 
+   eventCollectedContracts = [
+      "GovernanceVotePower",
+      "GovernorReject",
+      "GovernorAccept",
+      "wNat"
+   ];
+   
    webServerOptions = {
       port: parseInt(process.env.WEB_SERVER_PORT),
+   }
+
+   // For testing purposes only in development
+   proposerPrivateKeys = [];
+   voterPrivateKeys = [];
+
+   constructor() {
+      this.initProposerPrivateKeys();
+      this.initVoterPrivateKeys();
+   }
+
+   initProposerPrivateKeys() {
+      if (process.env.NODE_ENV == "development") {
+         let i = 0;
+         let pk = process.env[`PROPOSER_PK_${i}`];
+         while (pk) {
+            this.proposerPrivateKeys.push(pk);
+            i++;
+            pk = process.env[`PROPOSER_PK_${i}`];
+         }
+      }
+   }
+
+   initVoterPrivateKeys() {
+      if (process.env.NODE_ENV == "development") {
+         let i = 0;
+         let pk = process.env[`VOTER_PK_${i}`];
+         while (pk) {
+            this.proposerPrivateKeys.push(pk);
+            i++;
+            pk = process.env[`VOTER_PK_${i}`];
+         }
+      }
    }
 
 }

@@ -18,7 +18,8 @@
       "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js",
       "sync": "ts-node ./src/utils/sync-artifacts.ts",
       "typechain-web3-v1": "yarn typechain --target=web3-v1 --out-dir typechain-web3-v1 \"artifacts/!(build-info)/**/+([a-zA-Z0-9_]).json\" 1> nul",
-      "artifacts": "npm-run-all sync typechain-web3-v1"
+      "artifacts": "npm-run-all sync typechain-web3-v1",
+      "reject-cli": "yarn ts-node src/test-scripts/governor-reject.ts -n coston"
    },
    "dependencies": {
       "body-parser": "^1.19.0",

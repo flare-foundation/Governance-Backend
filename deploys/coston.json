@@ -10,8 +10,8 @@
       "address": "0xB439BDeDe63Bcc3Cbb589F0822a18a415952bFF0"
     },
     {
-      "name": "GovernorReject",
-      "contractName": "GovernorReject.sol",
-      "address": "0xB439BDeDe63Bcc3Cbb589F0822a18a415952bFF0"
+      "name": "wNat",
+      "contractName": "wNat.sol",
+      "address": "0x5c1b3D6dBd2D1C30B14CA20919A34Fe36eFECbCC"
     }
 ]

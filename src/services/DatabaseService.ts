@@ -16,7 +16,9 @@ export class DatabaseService {
    @Inject
    loggerService: LoggerService
 
-   logger: AttLogger;
+   get logger(): AttLogger {
+      return this.loggerService.logger;
+   }
 
    // private logger!: AttLogger;
 
@@ -29,7 +31,6 @@ export class DatabaseService {
 
    public constructor() {
       this.options = this.configurationService.databaseConnectOptions;
-      this.logger = this.loggerService.logger;
       this.connect()      
    }
 
