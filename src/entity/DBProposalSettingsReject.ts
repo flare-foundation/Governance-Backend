@@ -1,5 +1,5 @@
 import { Column, Entity, Index } from "typeorm";
-import { toHex } from "../utils/utils";
+import { toBN, toHex } from "../utils/utils";
 import { BaseEntity } from "./BaseEntity";
 
 @Entity({ name: "proposal_settings_reject" })
@@ -11,10 +11,11 @@ export class DBProposalSettingsReject extends BaseEntity {
 
    static fromEvent(event: any): DBProposalSettingsReject {
       const entity = new DBProposalSettingsReject();
-      entity.proposalId = toHex(event.proposalId, 32);
-      entity.votePowerBlock = event.votePowerBlock.toNumber();
-      entity.quorumThreshold = toHex(event.quorumThreshold, 32);
-      entity.rejectionThreshold = toHex(event.rejectionThreshold, 32);
+      let params = event.returnValues;
+      entity.proposalId = toHex(toBN(params.proposalId), 32);
+      entity.votePowerBlock = parseInt(params.votePowerBlock);
+      entity.quorumThreshold = toHex(toBN(params.quorumThreshold), 32);
+      entity.rejectionThreshold = toHex(toBN(params.rejectionThreshold), 32);
       return entity;
    }
 

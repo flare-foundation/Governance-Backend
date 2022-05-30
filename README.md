@@ -29,9 +29,11 @@ Use MySQL Workbench. Connect to database as administrator. Right-click on empty 
 - Schema name: `govbackdb`
 - Character set: utf8mb4
 
-Create user `govbackuser`
-Choose `Users and Privileges`, add new user (username + password, by pressing `Add Account` button)
-On user set in `Schema privileges` tab: `Add entry` button, select schema `govbackdb`, set `Select all` (privileges), Apply.    
+Press `Apply` button.
+
+Create user `govbackuser`. Choose `Users and Privileges`, add new user (username + password, by pressing `Add Account` button, fill in the username and twice password, press `Apply` button.
+
+Set priviledges on user. Click on user, choose `Schema privileges` tab, press `Add entry` button, select under `Selected schema` the schema `govbackdb`, press `Ok`. Then press `Select all` button (privileges), and then press `Apply` button.    
 
 ## Creation of the database on a server
 

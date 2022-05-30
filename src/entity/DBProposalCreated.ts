@@ -2,7 +2,7 @@ import { Column, Entity, Index } from "typeorm";
 import { toHex } from "../utils/utils";
 import { BaseEntity } from "./BaseEntity";
 
-@Entity({ name: "state" })
+@Entity({ name: "proposal_created" })
 export class DBProposalCreated extends BaseEntity {
    @Column({ nullable: false }) @Index() proposalId: string;
    @Column({ nullable: false }) @Index() proposer: string;
@@ -16,15 +16,17 @@ export class DBProposalCreated extends BaseEntity {
 
    static fromEvent(event: any): DBProposalCreated {
       const entity = new DBProposalCreated();
-      entity.proposalId = toHex(event.proposalId, 32);
-      entity.proposer = event.proposer;
-      entity.targets = JSON.stringify(event.targets);
-      entity.values = JSON.stringify(event.values.map(x => toHex(x, 32)));
-      entity.signatures = JSON.stringify(event.signatures);
-      entity.calldatas = JSON.stringify(event.calldatas);
-      entity.startTime = event.startTime.toNumber();
-      entity.endTime = event.endTime.toNumber();
-      entity.description = event.description;
+      let params = event.returnValues;
+      console.log(params);
+      entity.proposalId = toHex(params.proposalId, 32);
+      entity.proposer = params.proposer;
+      entity.targets = JSON.stringify(params.targets);
+      entity.values = JSON.stringify(params.values.map(x => toHex(x, 32)));
+      entity.signatures = JSON.stringify(params.signatures);
+      entity.calldatas = JSON.stringify(params.calldatas);
+      entity.startTime = parseInt(params.startTime);
+      entity.endTime = parseInt(params.endTime);
+      entity.description = params.description;
       return entity;
    }
 }

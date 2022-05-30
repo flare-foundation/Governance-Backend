@@ -28,9 +28,6 @@ export class EventProcessorService {
       return this.loggerService.logger;
    }
 
-   startingBlockNumber: number = -1;
-   currentBlockNumber: number;
-
    initialized = false;
 
    async getLastProcessedBlock(blockHeight: number): Promise<number> {
@@ -67,45 +64,54 @@ export class EventProcessorService {
    }
    async processEvents(batchSize = 100) {
       // wait until new block is set
+      await this.dbService.waitForDBConnection();
+      await this.contractService.waitForInitialization();
       this.logger.info(`waiting for network connection...`);
       const blockHeight = await this.contractService.web3.eth.getBlockNumber();
-      let nextBlockToProcess = await this.getLastProcessedBlock(blockHeight) + 1;
-
-      this.logger.info(`^Rnetwork event processing started ^Y${this.startingBlockNumber} (height ${blockHeight})`);
-
+      let nextBlockToProcess; 
+      
+      let firstRun = true;
       while (true) {
          try {
             let currentBlockNumber = await this.contractService.web3.eth.getBlockNumber();
+            nextBlockToProcess = await this.getLastProcessedBlock(currentBlockNumber) + 1;
+            if(firstRun) {
+               this.logger.info(`^Rnetwork event processing started ^Y${nextBlockToProcess} (height ${blockHeight})`);
+               firstRun = false;
+            }
+            this.logger.info(`Current block: ${currentBlockNumber}, next ${nextBlockToProcess}`)
             // wait for new block
-            if (nextBlockToProcess >= this.currentBlockNumber + 1) {
+            if (nextBlockToProcess >= currentBlockNumber + 1) {
                await sleepms(1000);
                continue;
             }
 
-            let contractEventBatches = await this.contractService.getEventsFromBlock(
+            let endBlock = Math.min(nextBlockToProcess + batchSize - 1, currentBlockNumber);
+            let contractEventBatches = await this.contractService.getEventsFromBlocks(
                this.configurationService.eventCollectedContracts,
                nextBlockToProcess,
-               batchSize
+               endBlock
             );
-
+            
             let newLastProcessedBlock = -1;
             for (let ceb of contractEventBatches) {
-               if (ceb.endBlock != null) {
+               if (ceb.endBlock != null) {                  
                   newLastProcessedBlock = ceb.endBlock;
                   break;
                }
             }
 
+            console.log(nextBlockToProcess, newLastProcessedBlock)            
             let dbEntities: BaseEntity[] = [];
             for(let ceb of contractEventBatches) {
                let newEntites = await this.contractService.processEvents(ceb);
                dbEntities.push(...newEntites);
             }
 
-            await this.saveEvents(dbEntities, newLastProcessedBlock);
+            await this.saveEvents(dbEntities, newLastProcessedBlock);    
          }
          catch (error) {
-            logException(error, `EventProcessorService::procesEvents`);
+            logException(error, `EventProcessorService::processEvents`);
          }
       }
    }

@@ -3,9 +3,15 @@
 //
 // equivalent
 // yarn reject-cli -a settings
+// 
+// Examples:
+// yarn reject-cli -a propose -i 0 -d "Test proposal CLI2"
+// yarn reject-cli -a castVote -i 0 -p 0xf3df5f5cdb0ba92b28e787aa38c22415817ea8a8646b196cf418d86440fb3d52 -v 0
+// TODO:
+// - Wrap funds from account
+// - Delegate/undelegate
 
 import dotenv from "dotenv";
-import { GovernorReject } from "../../typechain-web3-v1/GovernorReject";
 import { iocContainer } from "../ioc";
 import { ConfigurationService } from "../services/ConfigurationService";
 import { ContractService } from "../services/ContractService";
@@ -22,7 +28,7 @@ let args = yargs
    .option("action", { alias: "a", type: "string", description: "action" })
    .option("senderIndex", { alias: "i", type: "number", description: "sequential id of the proposer or voter" })
    .option("proposalDescription", { alias: "d", type: "string", description: "proposal description" })
-   .option("proposalId", { alias: "p", type: "number", description: "proposal id" })
+   .option("proposalId", { alias: "p", type: "string", description: "proposal id" })
    .option("voteType", { alias: "v", type: "number", description: "vote type 0 - against, 1 - for, 2 - abstain" })
    .option("delegationAddress", { alias: "r", type: "string", description: "delegation address" })
    .option("contractName", { alias: "m", type: "string", description: "contract name" })
@@ -67,9 +73,10 @@ async function propose(proposerIndex: number, description: string) {
    )
 }
 
-async function castVote(voterIndex: number, proposalId: number, type: VoteType) {
+async function castVote(voterIndex: number, proposalId: string, type: VoteType) {
    let sender = testAccountService.getProposerAccount(voterIndex);
    let governorReject = await contractService.governorReject();
+   console.log(proposalId, type)
    return await contractService.signSendAndFinalize(
       sender,
       "castVote",

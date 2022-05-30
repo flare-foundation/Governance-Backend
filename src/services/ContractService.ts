@@ -162,6 +162,9 @@ export class ContractService {
          } as ContractEventBatch;
       }
       const events = await contract.getPastEvents("allEvents", { fromBlock: startBlock, toBlock: endBlock });
+      if(events.length > 0) {
+         this.logger.info(`${contractName}: ${events.length} new event(s)`);
+      }
       return {
          contractName,
          startBlock,
@@ -170,9 +173,9 @@ export class ContractService {
       } as ContractEventBatch;
    }
 
-   public async getEventsFromBlock(contractNames: string[], startBlock: number, batchSize = 100): Promise<ContractEventBatch[]> {
+   // endBlock should already be produce, otherwise exception is thrown.
+   public async getEventsFromBlocks(contractNames: string[], startBlock: number, endBlock: number): Promise<ContractEventBatch[]> {
       let promises = [];
-      let endBlock = startBlock + batchSize - 1;
       for (let contractName of contractNames) {
          promises.push(this.getEventsFromBlockForContract(contractName, startBlock, endBlock))
       }

@@ -26,6 +26,19 @@ export function toHex(x: string | number | BN, padToBytes?: number) {
    return Web3.utils.toHex(x);
 }
 
+export function toBN(x: string | number | BN, toZeroIfFails = false) {
+   if (x && x.constructor?.name === "BN") return x as BN;
+   try {
+      return Web3.utils.toBN(x as any);
+   } catch (e) {
+      if (toZeroIfFails) {
+         return Web3.utils.toBN(0);
+      }
+      throw new Error(e);
+   }
+}
+
+
 
 export function getWeb3(rpcLink: string, logger?: any) {
    const web3 = new Web3();
