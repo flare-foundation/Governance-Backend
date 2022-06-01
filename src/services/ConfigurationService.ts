@@ -68,7 +68,7 @@ export class ConfigurationService {
          let i = 0;
          let pk = process.env[`VOTER_PK_${i}`];
          while (pk) {
-            this.proposerPrivateKeys.push(pk);
+            this.voterPrivateKeys.push(pk);
             i++;
             pk = process.env[`VOTER_PK_${i}`];
          }

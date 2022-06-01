@@ -76,6 +76,7 @@ export class ContractService {
       label: string,
       toAddress: string,
       fnToEncode: any,
+      value = "0",
       gas: string = DEFAULT_GAS,
       gasPrice: string = DEFAULT_GAS_PRICE
    ): Promise<any> {
@@ -87,6 +88,7 @@ export class ContractService {
             gas,
             gasPrice,
             data: fnToEncode.encodeABI(),
+            value,
             nonce,
          };
          const signedTx = await account.signTransaction(tx);

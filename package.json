@@ -19,7 +19,7 @@
       "sync": "ts-node ./src/utils/sync-artifacts.ts",
       "typechain-web3-v1": "yarn typechain --target=web3-v1 --out-dir typechain-web3-v1 \"artifacts/!(build-info)/**/+([a-zA-Z0-9_]).json\" 1> nul",
       "artifacts": "npm-run-all sync typechain-web3-v1",
-      "reject-cli": "yarn ts-node src/test-scripts/governor-reject.ts -n coston",
+      "governor-cli": "yarn ts-node src/test-scripts/governor-cli.ts -n coston",
       "event-collector": "yarn ts-node src/eventCollector.ts -n coston"
    },
    "dependencies": {
@@ -28,6 +28,7 @@
       "compression": "^1.7.4",
       "cookie-parser": "^1.4.5",
       "dotenv": "^8.2.0",
+      "ethereumjs-wallet": "^1.0.2",
       "express": "^4.17.1",
       "glob": "^8.0.3",
       "helmet": "^4.2.0",

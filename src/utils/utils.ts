@@ -101,11 +101,11 @@ export function prefix0x(tx: string) {
    return tx.startsWith("0x") ? tx : "0x" + tx;
 }
 
-export function getWeb3Wallet(web3: any, privateKey: string) {
+export function getWeb3Wallet(web3: Web3, privateKey: string) {
    return web3.eth.accounts.privateKeyToAccount(prefix0x(privateKey));
 }
 
-export function waitFinalize3Factory(web3: any) {
+export function waitFinalize3Factory(web3: Web3) {
    return async (address: string, func: () => any, delay: number = 1000) => {
       const nonce = await web3.eth.getTransactionCount(address);
       const res = await func();
@@ -209,5 +209,12 @@ export async function refreshArtifacts(contracts: string[], artifactsPath = '../
 
 }
 
+export function formatBN(val: any) {
+   let sm = val.toString()
+   if(!sm || sm === "0" || sm === "") {
+      return "0";
+   }
+   return sm.toString().slice(0, -18) + '.' + sm.toString().slice(-18)
+}
 
 
