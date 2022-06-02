@@ -5,15 +5,19 @@
 // yarn governor-cli -a settings
 // 
 // Examples:
-// yarn governor-cli -a propose -i 0 -d "Test proposal CLI2"
-// yarn governor-cli -a castVote -i 0 -p 0xf3df5f5cdb0ba92b28e787aa38c22415817ea8a8646b196cf418d86440fb3d52 -v 0
+// yarn governor-cli -a propose -i 0 -d "Test proposal CLI5"
+// yarn governor-cli -a castVote -i 0 -p 0x119c34902e27e9af7d0686bcf9518b1c9dff170b8603acd79a6d3cd678d6b46d -v 0
 // yarn governor-cli -a generateAccounts -s 0 -e 100 -f .env
 // yarn governor-cli -a accountStatus
+// yarn governor-cli -a fund -t 110 -k 0x00000...<private-key>
+// yarn governor-cli -a wrapAll -t 100
+// yarn governor-cli -a castAllVotesRandomly -p 0x119c34902e27e9af7d0686bcf9518b1c9dff170b8603acd79a6d3cd678d6b46d
 // TODO:
-// - Wrap funds from account
-// - Fill account 
-// - Generate many voting accounts, fill them with faucet
-// - Delegate/undelegate
+// - adapt for reject and accept
+// - check database
+// - create listable APIs
+// - create aggregates
+// - check against specs
 
 import BN from "bn.js";
 import dotenv from "dotenv";
@@ -26,9 +30,9 @@ import { ConfigurationService } from "../services/ConfigurationService";
 import { ContractService } from "../services/ContractService";
 import { TestAccountsService } from "../services/TestAccountsService";
 import { VoteType } from "../utils/enums";
-import { formatBN, toHex } from "../utils/utils";
+import { formatBN, randomByWeights, sendETH, stringDecimalETHToWei, toHex } from "../utils/utils";
 
-type ActionType =  "settings" | "contract" | "propose" | "castVote" | "delegate" | "undelegate" | "wrap" | "unwrap" | "fund" | "generateAccounts" | "accountStatus";
+type ActionType = "settings" | "contract" | "propose" | "castVote" | "castAllVotesRandomly" | "delegate" | "undelegate" | "wrap" | "wrapAll" | "unwrap" | "fund" | "generateAccounts" | "accountStatus";
 
 // initialize configuration
 dotenv.config();
@@ -45,10 +49,11 @@ let args = yargs
    .option("voteType", { alias: "v", type: "number", description: "vote type 0 - against, 1 - for, 2 - abstain" })
    .option("delegationAddress", { alias: "r", type: "string", description: "delegation address" })
    .option("contractName", { alias: "m", type: "string", description: "contract name" })
-   .option("amount", { alias: "t", type: "string", description: "amount for wrapping/unwrapping" })
+   .option("amount", { alias: "t", type: "string", description: "amount for wrapping/unwrapping/distribution" })
    .option("startIndex", { alias: "s", type: "string", description: "start index for account generation" })
    .option("endIndex", { alias: "e", type: "string", description: "end index for account generation" })
    .option("appendAccountFile", { alias: "f", type: "string", description: "filename to append generated accounts" })
+   .option("privateKey", { alias: "k", type: "string", description: "private key for for funding voter accounts" })
    .argv;
 
 ConfigurationService.network = args['network'];
@@ -58,6 +63,8 @@ const configurationService = iocContainer(null).get(ConfigurationService)
 const contractService = iocContainer(null).get(ContractService);
 
 const testAccountService = iocContainer(null).get(TestAccountsService);
+
+const logger = contractService.logger;
 
 async function pollingContract() {
    if (args["contract"] === "accept") {
@@ -74,19 +81,19 @@ function isAccept() {
 async function settings() {
    await contractService.waitForInitialization();
    let pollingContract: GovernorAccept | GovernorReject = await contractService.governorReject();
-   console.log(`Network: ${ConfigurationService.network}`);
+   logger.info(`Network: ${ConfigurationService.network}`);
    // TODO
-   console.log(`Proposal threshold: ${(await pollingContract.methods.rejectionThreshold().call()).toString()}`)
+   logger.info(`Proposal threshold: ${(await pollingContract.methods.rejectionThreshold().call()).toString()}`)
 
-   console.log(`Rejection threshold: ${(await pollingContract.methods.proposalThreshold().call()).toString()}`)
-   console.log(`Voting delay: ${(await pollingContract.methods.votingDelay().call()).toString()}`)
-   console.log(`Voting period: ${(await pollingContract.methods.votingPeriod().call()).toString()}`)
-   console.log(`Execution delay: ${(await pollingContract.methods.executionDelay().call()).toString()}`)
-   console.log(`Execution period: ${(await pollingContract.methods.executionPeriod().call()).toString()}`)
-   console.log(`Quorum threshold: ${(await pollingContract.methods.quorumThreshold().call()).toString()}`)
-   console.log(`Vote power life time days: ${(await pollingContract.methods.getVotePowerLifeTimeDays().call()).toString()}`)
-   console.log(`Vote power block period seconds: ${(await pollingContract.methods.getVpBlockPeriodSeconds().call()).toString()}`)
-   console.log(`Voting delay: ${(await pollingContract.methods.votingDelay().call()).toString()}`)
+   logger.info(`Rejection threshold: ${(await pollingContract.methods.proposalThreshold().call()).toString()}`)
+   logger.info(`Voting delay: ${(await pollingContract.methods.votingDelay().call()).toString()}`)
+   logger.info(`Voting period: ${(await pollingContract.methods.votingPeriod().call()).toString()}`)
+   logger.info(`Execution delay: ${(await pollingContract.methods.executionDelay().call()).toString()}`)
+   logger.info(`Execution period: ${(await pollingContract.methods.executionPeriod().call()).toString()}`)
+   logger.info(`Quorum threshold: ${(await pollingContract.methods.quorumThreshold().call()).toString()}`)
+   logger.info(`Vote power life time days: ${(await pollingContract.methods.getVotePowerLifeTimeDays().call()).toString()}`)
+   logger.info(`Vote power block period seconds: ${(await pollingContract.methods.getVpBlockPeriodSeconds().call()).toString()}`)
+   logger.info(`Voting delay: ${(await pollingContract.methods.votingDelay().call()).toString()}`)
 
    // expect(await governorReject.isProposer(accounts[3])).to.equals(true);
    // expect(await governorReject.isProposer(accounts[4])).to.equals(false);
@@ -96,24 +103,42 @@ async function settings() {
 async function propose(proposerIndex: number, description: string) {
    let sender = testAccountService.getProposerAccount(proposerIndex);
    let governorReject = await contractService.governorReject();
-   return await contractService.signSendAndFinalize(
+   let fnToCall = governorReject.methods["propose(string)"](description);
+   let proposalId = await fnToCall.call({from: sender.address});
+   
+   await contractService.signSendAndFinalize(
       sender,
       "propose",
       governorReject.options.address,
-      governorReject.methods["propose(string)"](description)
-   )
+      fnToCall
+   );
+   logger.info(`Proposal created: ${toHex(proposalId, 32)}`);
 }
 
 async function castVote(voterIndex: number, proposalId: string, type: VoteType) {
    let sender = testAccountService.getVoterAccount(voterIndex);
    let governorReject = await contractService.governorReject();
-   console.log(proposalId, type)
    return await contractService.signSendAndFinalize(
       sender,
       "castVote",
       governorReject.options.address,
       governorReject.methods.castVote(proposalId, type)
    )
+}
+
+
+async function castAllVotesRandomly(proposalId: string) {
+   let i = 0;
+   while (true) {
+      try {
+         let voteType = randomByWeights<VoteType>([0, 1, 2] as VoteType[], [40, 50, 10])
+         await castVote(i, proposalId, voteType);
+         logger.info(`Voter ${i} voted ${voteType}`)
+         i++;
+      } catch (e: any) {
+         break;
+      }
+   }
 }
 
 async function delegate(voterIndex: number, address: string) {
@@ -150,6 +175,18 @@ async function wrap(voterIndex: number, value: number | string | BN) {
    )
 }
 
+async function wrapAllVoterAccounts(value: number | string | BN) {
+   let i = 0;
+   while (true) {
+      try {
+         await wrap(i, value);
+         logger.info(`Account ${i} wrapped value ${formatBN(value)}`)
+         i++;
+      } catch (e: any) {
+         break;
+      }
+   }
+}
 
 async function unwrap(voterIndex: number, value: number | string | BN) {
    let sender = testAccountService.getVoterAccount(voterIndex);
@@ -162,15 +199,18 @@ async function unwrap(voterIndex: number, value: number | string | BN) {
    )
 }
 
-async function fund(voterIndex: number, value: number | string | BN) {
-   // let sender = testAccountService.getVoterAccount(voterIndex);
-   // let wNat = await contractService.wNat();
-   // return await contractService.signSendAndFinalize(
-   //    sender,
-   //    "fund",
-   //    wNat.options.address,
-   //    wNat.methods.withdraw(value)
-   // )
+async function fundVoterAccounts(value: number | string | BN, privateKey: string) {
+   let i = 0;
+   while (true) {
+      try {
+         let recipient = testAccountService.getVoterAccount(i);
+         await sendETH(contractService.web3, privateKey, recipient.address, value)
+         logger.info(`Account ${i} (${recipient.address}) funded by ${formatBN(value)}`)
+         i++;
+      } catch (e: any) {
+         break;
+      }
+   }
 }
 
 async function generateAccounts(startIndex: number, endIndex: number, fname: string) {
@@ -182,7 +222,7 @@ async function generateAccounts(startIndex: number, endIndex: number, fname: str
       text += `VOTER_PK_${i}=${privateKey}\n`
    }
    fs.appendFileSync(fname, text);
-   console.log(`${endIndex - startIndex + 1} accounts generated`);
+   logger.info(`${endIndex - startIndex + 1} accounts generated`);
 }
 
 async function voterAccountStatus() {
@@ -196,7 +236,7 @@ async function voterAccountStatus() {
          let balance = await contractService.web3.eth.getBalance(address);
          let wNatBalance = await wNat.methods.balanceOf(address).call();
          let delegateOf = (await governanceVotePower.methods.getDelegateOfAtNow(address).call()) || "---";
-         console.log(`${i}\t${address}\t${formatBN(balance)}\t${wNatBalance}\t${delegateOf}`);
+         logger.info(`${i}\t${address}\t${formatBN(balance)}\t${formatBN(wNatBalance)}\t${delegateOf}`);
       } catch (e: any) {
          break;
       }
@@ -205,7 +245,7 @@ async function voterAccountStatus() {
 }
 
 async function contract(name: string) {
-   console.log(await contractService.getContract(name))
+   logger.info(await contractService.getContract(name))
 }
 
 async function runGovernorRejectCli() {
@@ -222,6 +262,9 @@ async function runGovernorRejectCli() {
       case "castVote":
          await castVote(args["senderIndex"], args["proposalId"], args["voteType"]);
          return;
+      case "castAllVotesRandomly":
+         await castAllVotesRandomly(args["proposalId"]);
+         return;
       case "delegate":
          await delegate(args["senderIndex"], args["delegationAddress"]);
          return;
@@ -229,13 +272,16 @@ async function runGovernorRejectCli() {
          await undelegate(args["senderIndex"]);
          return;
       case "wrap":
-         await wrap(args["senderIndex"], args["amount"]);
+         await wrap(args["senderIndex"], stringDecimalETHToWei(args["amount"]));
+         return;
+      case "wrapAll":
+         await wrapAllVoterAccounts(stringDecimalETHToWei(args["amount"]));
          return;
       case "unwrap":
-         await unwrap(args["senderIndex"], args["amount"]);
+         await unwrap(args["senderIndex"], stringDecimalETHToWei(args["amount"]));
          return;
       case "fund":
-         await fund(args["senderIndex"], args["amount"]);
+         await fundVoterAccounts(stringDecimalETHToWei(args["amount"]), args["privateKey"]);
          return;
       case "generateAccounts":
          await generateAccounts(args["startIndex"], args["endIndex"], args["appendAccountFile"]);
@@ -244,7 +290,7 @@ async function runGovernorRejectCli() {
          await voterAccountStatus();
          return;
       default:
-         console.log("Wrong action!")
+         logger.info("Wrong action!")
    }
 }
 

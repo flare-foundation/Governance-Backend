@@ -2,6 +2,7 @@ import * as fs from "fs";
 import glob from "glob";
 import Web3 from "web3";
 import BN from "bn.js";
+import { ContractService, DEFAULT_GAS, DEFAULT_GAS_PRICE } from "../services/ContractService";
 
 export async function sleepms(milliseconds: number) {
    await new Promise((resolve: any) => {
@@ -209,12 +210,52 @@ export async function refreshArtifacts(contracts: string[], artifactsPath = '../
 
 }
 
-export function formatBN(val: any) {
+export function formatBN(val: any, decimals = 5) {
    let sm = val.toString()
-   if(!sm || sm === "0" || sm === "") {
+   if (!sm || sm === "0" || sm === "") {
       return "0";
    }
-   return sm.toString().slice(0, -18) + '.' + sm.toString().slice(-18)
+   return sm.toString().slice(0, -18) + '.' + sm.toString().slice(-18).slice(0, decimals)
 }
 
+export async function sendETH(web3: Web3, privateKey: string, toAddress: string, amount: number | string | BN, gas = DEFAULT_GAS, gasPrice = DEFAULT_GAS_PRICE) {
+   let sender = web3.eth.accounts.privateKeyToAccount(privateKey)
+   let tx = {
+      from: sender.address,
+      to: toAddress,
+      value: amount.toString(),
+      gas,
+      gasPrice
+   }
+   let signed = (await sender.signTransaction(tx)).rawTransaction;
+   let receipt = await web3.eth.sendSignedTransaction(signed);
+   return receipt;
+}
 
+export function stringDecimalETHToWei(ethValue: string) {
+   let [whole, decimal] = ethValue.split(".");
+   decimal = (decimal || "").slice(0, 18);
+   decimal = Web3.utils.padRight(decimal, 18);
+   return whole + decimal;
+}
+
+export function randomByWeights<T>(values: T[], weights: number[]): T {
+   if(values.length != weights.length) {
+      throw new Error("Lengths do not match")
+   }
+   if(!values.length) {
+      throw new Error("Empty choices now allowed")
+   }
+
+   let total = weights.reduce((a, b) => a + b);
+   let rand = Math.random()*total;
+   let sum = 0;
+   for(let i = 0; i < values.length; i++) {
+      let weight = weights[i];
+      if(sum + weight > rand) {
+         return values[i];
+      }
+      sum += weight;
+   }
+   return values[values.length - 1];
+}
