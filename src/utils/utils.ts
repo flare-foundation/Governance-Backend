@@ -1,8 +1,14 @@
+import BN from "bn.js";
 import * as fs from "fs";
 import glob from "glob";
 import Web3 from "web3";
-import BN from "bn.js";
-import { ContractService, DEFAULT_GAS, DEFAULT_GAS_PRICE } from "../services/ContractService";
+import { add } from "winston";
+import { DEFAULT_GAS, DEFAULT_GAS_PRICE } from "./interfaces";
+
+export interface ContractWithAbi {
+   contract: any;
+   abi: string;
+}
 
 export async function sleepms(milliseconds: number) {
    await new Promise((resolve: any) => {
@@ -80,18 +86,21 @@ export function getAbi(abiPath: string) {
 }
 
 export async function getWeb3Contract(web3: any, address: string, name: string) {
+   let contractData = await getWeb3ContractWithAbi(web3, address, name);
+   return contractData.contract;
+}
+
+export async function getWeb3ContractWithAbi(web3: any, address: string, name: string): Promise<ContractWithAbi> {
    let abiPath = "";
    try {
       abiPath = await relativeContractABIPathForContractName(name, "artifacts");
-      return new web3.eth.Contract(getAbi(`artifacts/${abiPath}`), address);
+      let abi = getAbi(`artifacts/${abiPath}`);
+      return {
+         contract: new web3.eth.Contract(abi, address),
+         abi
+      }
    } catch (e: any) {
-      try {
-         abiPath = await relativeContractABIPathForContractName(name, "data/artifacts");
-         return new web3.eth.Contract(getAbi(`data/artifacts/${abiPath}`), address);
-      }
-      catch (e2) {
-         console.error(`getWeb3Contract error - ABI not found (run yarn c): ${e2}`);
-      }
+      console.error(`getWeb3Contract error - ABI not found: ${e}`);
    }
 }
 
@@ -193,23 +202,6 @@ export function secToHHMMSS(time: number, secDecimals = 0) {
    return sdays + shours + ':' + smin + ':' + ssec;
 }
 
-export async function refreshArtifacts(contracts: string[], artifactsPath = '../flare-smart-contracts/artifacts') {
-   const fse = require('fs-extra');
-   const path = require('path');
-
-   for (let contract of contracts) {
-      let abiPath = "";
-      try {
-         abiPath = await relativeContractABIPathForContractName(contract, artifactsPath);
-      } catch (e: any) {
-         console.log(`Cannot find contract ${contract}`)
-         continue;
-      }
-      fse.copySync(path.join(artifactsPath, abiPath), path.join("artifacts", abiPath));
-   }
-
-}
-
 export function formatBN(val: any, decimals = 5) {
    let sm = val.toString()
    if (!sm || sm === "0" || sm === "") {
@@ -240,22 +232,27 @@ export function stringDecimalETHToWei(ethValue: string) {
 }
 
 export function randomByWeights<T>(values: T[], weights: number[]): T {
-   if(values.length != weights.length) {
+   if (values.length != weights.length) {
       throw new Error("Lengths do not match")
    }
-   if(!values.length) {
+   if (!values.length) {
       throw new Error("Empty choices now allowed")
    }
 
    let total = weights.reduce((a, b) => a + b);
-   let rand = Math.random()*total;
+   let rand = Math.random() * total;
    let sum = 0;
-   for(let i = 0; i < values.length; i++) {
+   for (let i = 0; i < values.length; i++) {
       let weight = weights[i];
-      if(sum + weight > rand) {
+      if (sum + weight > rand) {
          return values[i];
       }
       sum += weight;
    }
    return values[values.length - 1];
+}
+
+export async function delayPromise<T>(call: () => Promise<T>, delayMs = 100) {
+   await sleepms(delayMs);
+   return call();
 }

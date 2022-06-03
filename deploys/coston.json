@@ -4,14 +4,24 @@
      "contractName": "GovernanceVotePower.sol",
      "address": "0x5dFddd30Ebf4fF41a107ED6214F9d32BaDB96D43"
    },
-   {
-      "name": "GovernorReject",
-      "contractName": "GovernorReject.sol",
-      "address": "0xB439BDeDe63Bcc3Cbb589F0822a18a415952bFF0"
-    },
     {
       "name": "wNat",
       "contractName": "wNat.sol",
       "address": "0x5c1b3D6dBd2D1C30B14CA20919A34Fe36eFECbCC"
+    },
+    {
+      "name": "PollingReject",
+      "contractName": "PollingReject.sol",
+      "address": "0x46fAd47cea64cAb996798c3CfaA421cf63b012Ef"
+    },
+    {
+      "name": "PollingAccept",
+      "contractName": "PollingAccept.sol",
+      "address": "0x2300ad03458D5E6c65498fbeEA2e65193D7a6c8F"
+    },
+    {
+      "name": "PollingAccept1",
+      "contractName": "PollingAccept.sol",
+      "address": "0xe222AF175E3b07306De963931D72824cEf8E466C"
     }
 ]

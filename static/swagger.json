@@ -106,6 +106,251 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"PollingContractType": {
+				"type": "string",
+				"enum": [
+					"accept",
+					"reject"
+				]
+			},
+			"Proposal": {
+				"properties": {
+					"contract": {
+						"type": "string"
+					},
+					"pollingType": {
+						"$ref": "#/components/schemas/PollingContractType"
+					},
+					"proposalId": {
+						"type": "string"
+					},
+					"proposer": {
+						"type": "string"
+					},
+					"targets": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"values": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"signatures": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"calldatas": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"startTime": {
+						"type": "number",
+						"format": "double"
+					},
+					"endTime": {
+						"type": "number",
+						"format": "double"
+					},
+					"description": {
+						"type": "string"
+					},
+					"votePowerBlock": {
+						"type": "number",
+						"format": "double"
+					},
+					"wrappingThreshold": {
+						"type": "number",
+						"format": "double"
+					},
+					"absoluteThreshold": {
+						"type": "number",
+						"format": "double"
+					},
+					"relativeThreshold": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"contract",
+					"pollingType",
+					"proposalId",
+					"proposer",
+					"targets",
+					"values",
+					"signatures",
+					"calldatas",
+					"startTime",
+					"endTime",
+					"description",
+					"votePowerBlock",
+					"wrappingThreshold",
+					"absoluteThreshold",
+					"relativeThreshold"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"PaginatedList_Proposal_": {
+				"properties": {
+					"count": {
+						"type": "number",
+						"format": "double",
+						"description": "Count of all items satisfying 'paginatable' request."
+					},
+					"items": {
+						"items": {
+							"$ref": "#/components/schemas/Proposal"
+						},
+						"type": "array",
+						"description": "Response items."
+					},
+					"limit": {
+						"type": "number",
+						"format": "double",
+						"description": "Limit got from request"
+					},
+					"offset": {
+						"type": "number",
+						"format": "double",
+						"description": "Offset got from request"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ApiResponse_PaginatedList_Proposal__": {
+				"properties": {
+					"data": {
+						"$ref": "#/components/schemas/PaginatedList_Proposal_"
+					},
+					"errorDetails": {
+						"type": "string",
+						"description": "Optional details for unexpected error responses."
+					},
+					"errorMessage": {
+						"type": "string",
+						"description": "Simple message to explain client developers the reason for error."
+					},
+					"status": {
+						"$ref": "#/components/schemas/ApiDefaultResponseStatusEnum",
+						"description": "Response status. OK for successful reponses."
+					},
+					"validationErrorDetails": {
+						"$ref": "#/components/schemas/ApiValidationErrorDetails"
+					}
+				},
+				"required": [
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"SortType": {
+				"type": "string",
+				"enum": [
+					"ASC",
+					"DESC"
+				]
+			},
+			"ProposalSortType": {
+				"type": "string",
+				"enum": [
+					"startTime",
+					"endTime",
+					"votePowerBlock",
+					"contract",
+					"proposalId",
+					"pollingType",
+					"description"
+				]
+			},
+			"ApiResponse_Proposal_": {
+				"properties": {
+					"data": {
+						"$ref": "#/components/schemas/Proposal"
+					},
+					"errorDetails": {
+						"type": "string",
+						"description": "Optional details for unexpected error responses."
+					},
+					"errorMessage": {
+						"type": "string",
+						"description": "Simple message to explain client developers the reason for error."
+					},
+					"status": {
+						"$ref": "#/components/schemas/ApiDefaultResponseStatusEnum",
+						"description": "Response status. OK for successful reponses."
+					},
+					"validationErrorDetails": {
+						"$ref": "#/components/schemas/ApiValidationErrorDetails"
+					}
+				},
+				"required": [
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ContractDeploy": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"contractName": {
+						"type": "string"
+					},
+					"address": {
+						"type": "string"
+					},
+					"abi": {}
+				},
+				"required": [
+					"name",
+					"contractName",
+					"address"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ApiResponse_ContractDeploy-Array_": {
+				"properties": {
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/ContractDeploy"
+						},
+						"type": "array"
+					},
+					"errorDetails": {
+						"type": "string",
+						"description": "Optional details for unexpected error responses."
+					},
+					"errorMessage": {
+						"type": "string",
+						"description": "Simple message to explain client developers the reason for error."
+					},
+					"status": {
+						"$ref": "#/components/schemas/ApiDefaultResponseStatusEnum",
+						"description": "Response status. OK for successful reponses."
+					},
+					"validationErrorDetails": {
+						"$ref": "#/components/schemas/ApiValidationErrorDetails"
+					}
+				},
+				"required": [
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -118,7 +363,7 @@
 	},
 	"openapi": "3.0.0",
 	"paths": {
-		"/api/demo-message": {
+		"/api/demo/demo-message": {
 			"get": {
 				"operationId": "DemoMessage",
 				"responses": {
@@ -140,7 +385,7 @@
 				"parameters": []
 			}
 		},
-		"/api/create": {
+		"/api/demo/create": {
 			"post": {
 				"operationId": "CreateUserComment",
 				"responses": {
@@ -172,7 +417,7 @@
 				}
 			}
 		},
-		"/api/get-comments/{user}": {
+		"/api/demo/get-comments/{user}": {
 			"get": {
 				"operationId": "GetUserComments",
 				"responses": {
@@ -201,6 +446,176 @@
 						}
 					}
 				]
+			}
+		},
+		"/api/governance/proposals/list": {
+			"get": {
+				"operationId": "GetProposalList",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_PaginatedList_Proposal__"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Governance"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "offset",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "sort",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/SortType"
+						}
+					},
+					{
+						"in": "query",
+						"name": "sortBy",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/ProposalSortType"
+						}
+					},
+					{
+						"in": "query",
+						"name": "pollingContractType",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/PollingContractType"
+						}
+					},
+					{
+						"in": "query",
+						"name": "contract",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "description",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "minStartTime",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "maxStartTime",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "minEndTime",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "maxEndTime",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/api/governance/proposals/{proposalId}": {
+			"get": {
+				"operationId": "GetProposalById",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_Proposal_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Governance"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "proposalId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/governance/deployed-contract-data": {
+			"get": {
+				"operationId": "DeployedContractData",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_ContractDeploy-Array_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Governance"
+				],
+				"security": [],
+				"parameters": []
 			}
 		}
 	},

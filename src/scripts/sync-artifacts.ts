@@ -1,9 +1,9 @@
-import { refreshArtifacts } from "./utils";
+import { refreshArtifacts } from "../utils/artifact-utils";
 
 const contractToSync = [
    "GovernanceVotePower",
-   "GovernorReject",
-   "GovernorAccept",
+   "PollingReject",
+   "PollingAccept",
    "wNat"
 ];
 

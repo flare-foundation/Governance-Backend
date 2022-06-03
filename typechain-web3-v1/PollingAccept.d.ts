@@ -21,9 +21,9 @@ interface EventOptions {
   topics?: string[];
 }
 
-export type AcceptanceThresholdSet = ContractEventLog<{
-  oldAcceptanceThreshold: string;
-  newAcceptanceThreshold: string;
+export type AbsoluteThresholdSet = ContractEventLog<{
+  oldAbsoluteThreshold: string;
+  newAbsoluteThreshold: string;
   0: string;
   1: string;
 }>;
@@ -49,10 +49,6 @@ export type GovernanceUpdated = ContractEventLog<{
   0: string;
   1: string;
 }>;
-export type ProposalCanceled = ContractEventLog<{
-  proposalId: string;
-  0: string;
-}>;
 export type ProposalCreated = ContractEventLog<{
   proposalId: string;
   proposer: string;
@@ -63,6 +59,10 @@ export type ProposalCreated = ContractEventLog<{
   startTime: string;
   endTime: string;
   description: string;
+  votePowerBlock: string;
+  wrappingThreshold: string;
+  absoluteThreshold: string;
+  relativeThreshold: string;
   0: string;
   1: string;
   2: string[];
@@ -72,20 +72,14 @@ export type ProposalCreated = ContractEventLog<{
   6: string;
   7: string;
   8: string;
+  9: string;
+  10: string;
+  11: string;
+  12: string;
 }>;
 export type ProposalExecuted = ContractEventLog<{
   proposalId: string;
   0: string;
-}>;
-export type ProposalSettingsAccept = ContractEventLog<{
-  proposalId: string;
-  votePowerBlock: string;
-  quorumThreshold: string;
-  acceptanceThreshold: string;
-  0: string;
-  1: string;
-  2: string;
-  3: string;
 }>;
 export type ProposalThresholdSet = ContractEventLog<{
   oldProposalThreshold: string;
@@ -93,9 +87,9 @@ export type ProposalThresholdSet = ContractEventLog<{
   0: string;
   1: string;
 }>;
-export type QuorumThresholdSet = ContractEventLog<{
-  oldQuorumThreshold: string;
-  newQuorumThreshold: string;
+export type RelativeThresholdSet = ContractEventLog<{
+  oldRelativeThreshold: string;
+  newRelativeThreshold: string;
   0: string;
   1: string;
 }>;
@@ -135,18 +129,24 @@ export type VpBlockPeriodSecondsSet = ContractEventLog<{
   0: string;
   1: string;
 }>;
+export type WrappingThresholdSet = ContractEventLog<{
+  oldWrappingThreshold: string;
+  newWrappingThreshold: string;
+  0: string;
+  1: string;
+}>;
 
-export interface GovernorAccept extends BaseContract {
+export interface PollingAccept extends BaseContract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
-  ): GovernorAccept;
-  clone(): GovernorAccept;
+  ): PollingAccept;
+  clone(): PollingAccept;
   methods: {
     BALLOT_TYPEHASH(): NonPayableTransactionObject<string>;
 
-    acceptanceThreshold(): NonPayableTransactionObject<string>;
+    absoluteThreshold(): NonPayableTransactionObject<string>;
 
     castVote(
       _proposalId: number | string | BN,
@@ -166,6 +166,8 @@ export interface GovernorAccept extends BaseContract {
       _support: number | string | BN,
       _reason: string
     ): NonPayableTransactionObject<string>;
+
+    chainId(): NonPayableTransactionObject<string>;
 
     claimGovernance(): NonPayableTransactionObject<void>;
 
@@ -249,13 +251,6 @@ export interface GovernorAccept extends BaseContract {
 
     proposalThreshold(): NonPayableTransactionObject<string>;
 
-    proposalsSettings(arg0: number | string | BN): NonPayableTransactionObject<{
-      quorumThreshold: string;
-      acceptanceThreshold: string;
-      0: string;
-      1: string;
-    }>;
-
     "propose(address[],uint256[],bytes[],string)"(
       _targets: string[],
       _values: (number | string | BN)[],
@@ -275,10 +270,10 @@ export interface GovernorAccept extends BaseContract {
       _blockNumber: number | string | BN
     ): NonPayableTransactionObject<string>;
 
-    quorumThreshold(): NonPayableTransactionObject<string>;
+    relativeThreshold(): NonPayableTransactionObject<string>;
 
-    setAcceptanceThreshold(
-      _acceptanceThresholdBIPS: number | string | BN
+    setAbsoluteThreshold(
+      _absoluteThresholdBIPS: number | string | BN
     ): NonPayableTransactionObject<void>;
 
     setExecutionDelay(
@@ -293,8 +288,8 @@ export interface GovernorAccept extends BaseContract {
       _proposalThresholdBIPS: number | string | BN
     ): NonPayableTransactionObject<void>;
 
-    setQuorumThreshold(
-      _quorumThresholdBIPS: number | string | BN
+    setRelativeThreshold(
+      _relativeThresholdBIPS: number | string | BN
     ): NonPayableTransactionObject<void>;
 
     setVotePowerLifeTimeDays(
@@ -313,9 +308,15 @@ export interface GovernorAccept extends BaseContract {
       _vpBlockPeriodSeconds: number | string | BN
     ): NonPayableTransactionObject<void>;
 
+    setWrappingThreshold(
+      _wrappingThresholdBIPS: number | string | BN
+    ): NonPayableTransactionObject<void>;
+
     state(
       _proposalId: number | string | BN
     ): NonPayableTransactionObject<string>;
+
+    supply(): NonPayableTransactionObject<string>;
 
     transferGovernance(_governance: string): NonPayableTransactionObject<void>;
 
@@ -329,12 +330,14 @@ export interface GovernorAccept extends BaseContract {
     votingDelay(): NonPayableTransactionObject<string>;
 
     votingPeriod(): NonPayableTransactionObject<string>;
+
+    wrappingThreshold(): NonPayableTransactionObject<string>;
   };
   events: {
-    AcceptanceThresholdSet(cb?: Callback<AcceptanceThresholdSet>): EventEmitter;
-    AcceptanceThresholdSet(
+    AbsoluteThresholdSet(cb?: Callback<AbsoluteThresholdSet>): EventEmitter;
+    AbsoluteThresholdSet(
       options?: EventOptions,
-      cb?: Callback<AcceptanceThresholdSet>
+      cb?: Callback<AbsoluteThresholdSet>
     ): EventEmitter;
 
     ExecutionDelaySet(cb?: Callback<ExecutionDelaySet>): EventEmitter;
@@ -361,12 +364,6 @@ export interface GovernorAccept extends BaseContract {
       cb?: Callback<GovernanceUpdated>
     ): EventEmitter;
 
-    ProposalCanceled(cb?: Callback<ProposalCanceled>): EventEmitter;
-    ProposalCanceled(
-      options?: EventOptions,
-      cb?: Callback<ProposalCanceled>
-    ): EventEmitter;
-
     ProposalCreated(cb?: Callback<ProposalCreated>): EventEmitter;
     ProposalCreated(
       options?: EventOptions,
@@ -379,22 +376,16 @@ export interface GovernorAccept extends BaseContract {
       cb?: Callback<ProposalExecuted>
     ): EventEmitter;
 
-    ProposalSettingsAccept(cb?: Callback<ProposalSettingsAccept>): EventEmitter;
-    ProposalSettingsAccept(
-      options?: EventOptions,
-      cb?: Callback<ProposalSettingsAccept>
-    ): EventEmitter;
-
     ProposalThresholdSet(cb?: Callback<ProposalThresholdSet>): EventEmitter;
     ProposalThresholdSet(
       options?: EventOptions,
       cb?: Callback<ProposalThresholdSet>
     ): EventEmitter;
 
-    QuorumThresholdSet(cb?: Callback<QuorumThresholdSet>): EventEmitter;
-    QuorumThresholdSet(
+    RelativeThresholdSet(cb?: Callback<RelativeThresholdSet>): EventEmitter;
+    RelativeThresholdSet(
       options?: EventOptions,
-      cb?: Callback<QuorumThresholdSet>
+      cb?: Callback<RelativeThresholdSet>
     ): EventEmitter;
 
     VoteCast(cb?: Callback<VoteCast>): EventEmitter;
@@ -428,17 +419,20 @@ export interface GovernorAccept extends BaseContract {
       cb?: Callback<VpBlockPeriodSecondsSet>
     ): EventEmitter;
 
+    WrappingThresholdSet(cb?: Callback<WrappingThresholdSet>): EventEmitter;
+    WrappingThresholdSet(
+      options?: EventOptions,
+      cb?: Callback<WrappingThresholdSet>
+    ): EventEmitter;
+
     allEvents(options?: EventOptions, cb?: Callback<EventLog>): EventEmitter;
   };
 
+  once(event: "AbsoluteThresholdSet", cb: Callback<AbsoluteThresholdSet>): void;
   once(
-    event: "AcceptanceThresholdSet",
-    cb: Callback<AcceptanceThresholdSet>
-  ): void;
-  once(
-    event: "AcceptanceThresholdSet",
+    event: "AbsoluteThresholdSet",
     options: EventOptions,
-    cb: Callback<AcceptanceThresholdSet>
+    cb: Callback<AbsoluteThresholdSet>
   ): void;
 
   once(event: "ExecutionDelaySet", cb: Callback<ExecutionDelaySet>): void;
@@ -469,13 +463,6 @@ export interface GovernorAccept extends BaseContract {
     cb: Callback<GovernanceUpdated>
   ): void;
 
-  once(event: "ProposalCanceled", cb: Callback<ProposalCanceled>): void;
-  once(
-    event: "ProposalCanceled",
-    options: EventOptions,
-    cb: Callback<ProposalCanceled>
-  ): void;
-
   once(event: "ProposalCreated", cb: Callback<ProposalCreated>): void;
   once(
     event: "ProposalCreated",
@@ -490,16 +477,6 @@ export interface GovernorAccept extends BaseContract {
     cb: Callback<ProposalExecuted>
   ): void;
 
-  once(
-    event: "ProposalSettingsAccept",
-    cb: Callback<ProposalSettingsAccept>
-  ): void;
-  once(
-    event: "ProposalSettingsAccept",
-    options: EventOptions,
-    cb: Callback<ProposalSettingsAccept>
-  ): void;
-
   once(event: "ProposalThresholdSet", cb: Callback<ProposalThresholdSet>): void;
   once(
     event: "ProposalThresholdSet",
@@ -507,11 +484,11 @@ export interface GovernorAccept extends BaseContract {
     cb: Callback<ProposalThresholdSet>
   ): void;
 
-  once(event: "QuorumThresholdSet", cb: Callback<QuorumThresholdSet>): void;
+  once(event: "RelativeThresholdSet", cb: Callback<RelativeThresholdSet>): void;
   once(
-    event: "QuorumThresholdSet",
+    event: "RelativeThresholdSet",
     options: EventOptions,
-    cb: Callback<QuorumThresholdSet>
+    cb: Callback<RelativeThresholdSet>
   ): void;
 
   once(event: "VoteCast", cb: Callback<VoteCast>): void;
@@ -549,5 +526,12 @@ export interface GovernorAccept extends BaseContract {
     event: "VpBlockPeriodSecondsSet",
     options: EventOptions,
     cb: Callback<VpBlockPeriodSecondsSet>
+  ): void;
+
+  once(event: "WrappingThresholdSet", cb: Callback<WrappingThresholdSet>): void;
+  once(
+    event: "WrappingThresholdSet",
+    options: EventOptions,
+    cb: Callback<WrappingThresholdSet>
   ): void;
 }

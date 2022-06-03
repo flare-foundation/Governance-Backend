@@ -1,9 +1,9 @@
+export type SortType = 'ASC' | 'DESC';
 export interface PaginationRequest {
-
     limit?: number;
     offset?: number;
-    sort?: 'ASC' | 'DESC';
+    sort?: SortType;
     sortBy?: string;
     query?: string;
-
 }
+

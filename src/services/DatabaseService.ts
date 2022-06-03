@@ -1,9 +1,10 @@
 import { Factory, Inject, Singleton } from "typescript-ioc";
-import { ConfigurationService, DatabaseConnectOptions } from "./ConfigurationService";
+import { ConfigurationService } from "./ConfigurationService";
 import { Connection, createConnection } from "typeorm";
 import { LoggerService } from "./LoggerService";
 import { AttLogger, logException } from "../logger/logger";
 import { sleepms } from "../utils/utils";
+import { DatabaseConnectOptions } from "../utils/interfaces";
 
 
 @Singleton
@@ -14,7 +15,7 @@ export class DatabaseService {
    configurationService: ConfigurationService;
 
    @Inject
-   loggerService: LoggerService
+   loggerService: LoggerService;
 
    get logger(): AttLogger {
       return this.loggerService.logger;

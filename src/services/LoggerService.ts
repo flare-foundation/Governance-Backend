@@ -1,8 +1,12 @@
 import { Factory, Singleton } from "typescript-ioc";
-import { getGlobalLogger } from "../logger/logger";
+import { AttLogger, getGlobalLogger } from "../logger/logger";
 
 @Singleton
 @Factory(() => new LoggerService())
 export class LoggerService {
-   public logger = getGlobalLogger();
+   public logger: AttLogger;
+
+   constructor() {
+      this.logger = getGlobalLogger();
+   }
 }

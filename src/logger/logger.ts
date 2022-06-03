@@ -267,7 +267,6 @@ export function setGlobalLoggerLabel(label: string) {
 
 // return one instance of logger
 export function getGlobalLogger(label?: string): AttLogger {
-
   if( !label ) {
     label = globalLoggerLabel;
   }
@@ -282,7 +281,6 @@ export function getGlobalLogger(label?: string): AttLogger {
     logger = createLogger(label);
     globalLogger.set(label,logger)
   }
-
   return logger;
 }
 

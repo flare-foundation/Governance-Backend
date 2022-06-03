@@ -1,28 +1,15 @@
 import { Factory, Singleton } from "typescript-ioc";
-
-export interface DatabaseConnectOptions {
-   type: string;
-   host: string;
-   port: number;
-   database: string;
-   username: string;
-   password: string;
-}
-
-export interface WebServerOptions {
-   port: number;
-}
-
+import { DatabaseConnectOptions, WebServerOptions } from "../utils/interfaces";
 @Singleton
 @Factory(() => new ConfigurationService())
 export class ConfigurationService {
 
-   // should be set on the start-up of the service once (global constant)
-   public static network = "";
+   network = process.env.NETWORK;
 
    networkRPC = process.env.RPC;
+   maxBlocksForEventReads = process.env.MAX_BLOCKS_FOR_EVENT_READS;
 
-   databaseConnectOptions = {
+   databaseConnectOptions: DatabaseConnectOptions = {
       type: process.env.DB_TYPE,
       host: process.env.DB_HOST,
       port: parseInt(process.env.DB_PORT),
@@ -31,14 +18,17 @@ export class ConfigurationService {
       password: process.env.DB_PASSWORD
    }
 
+   // These names should match
    eventCollectedContracts = [
       "GovernanceVotePower",
       "GovernorReject",
       "GovernorAccept",
+      "GovernorAccept1",
+      "GovernorAccept2",
       "wNat"
    ];
    
-   webServerOptions = {
+   webServerOptions: WebServerOptions = {
       port: parseInt(process.env.WEB_SERVER_PORT),
    }
 

@@ -24,6 +24,7 @@ export class TestAccountsService {
    }
 
    async init() {
+      await this.contractService.waitForInitialization();
       for(let pk of this.configurationService.proposerPrivateKeys) {
          let account = getWeb3Wallet(this.contractService.web3, pk);
          this.proposerAccounts.push(account);

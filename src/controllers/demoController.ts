@@ -5,7 +5,7 @@ import { ApiResponse, handleApiResponse } from "../dto/generic/ApiResponse";
 import { ApiUserComment } from "../dto/APIUserComment";
 
 @Tags('Demo')
-@Route("api")
+@Route("api/demo")
 @Singleton
 @Factory(() => new DemoController())
 export class DemoController extends Controller {
