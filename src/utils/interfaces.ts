@@ -1,5 +1,5 @@
 import { DBProposal } from "../entity/DBProposal";
-import { DBVoteCast } from "../entity/DBVoteCast";
+import { DBVote } from "../entity/DBVote";
 
 export interface ContractDeploy {
    name: string;

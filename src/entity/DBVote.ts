@@ -1,9 +1,10 @@
 import { Column, Entity, Index } from "typeorm";
+import { Vote } from "../dto/Vote";
 import { toBN, toHex } from "../utils/utils";
 import { BaseEntity } from "./BaseEntity";
 
-@Entity({ name: "vote_cast" })
-export class DBVoteCast extends BaseEntity {
+@Entity({ name: "vote" })
+export class DBVote extends BaseEntity {
    @Column({ nullable: false }) @Index() voter: string;
    @Column({ nullable: false }) @Index() proposalId: string;
    @Column({ nullable: false }) @Index() support: number;
@@ -11,8 +12,8 @@ export class DBVoteCast extends BaseEntity {
    @Column({ type: "double", nullable: false }) @Index() weightFloat: number; // approximate vote power allowing for aggregations
    @Column({ nullable: false }) @Index() reason: string;
 
-   static fromEvent(event: any): DBVoteCast {
-      const entity = new DBVoteCast();
+   static fromEvent(event: any): DBVote {
+      const entity = new DBVote();
       let params = event.returnValues;
       entity.voter = toHex(params.voter);
       entity.proposalId = toHex(toBN(params.proposalId), 32);
@@ -21,7 +22,18 @@ export class DBVoteCast extends BaseEntity {
       entity.weightFloat = parseFloat(params.weight);
       entity.reason = params.reason;
       return entity;
-   }  
+   }
+
+   public toDTO(): Vote {
+      return {
+         voter: this.voter,
+         proposalId: this.proposalId,
+         support: this.support,
+         weight: this.weight,
+         weightFloat: this.weightFloat,
+         reason: this.reason
+      }
+   }
 }
 
 // event VoteCast(

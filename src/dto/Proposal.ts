@@ -15,21 +15,12 @@ export interface Proposal {
    wrappingThreshold: number;
    absoluteThreshold: number;
    relativeThreshold: number;
+   execStartTime: number;
+   execEndTime: number;
+   totalVotePower: string;
+   executableOnChain: boolean;
+   executed: boolean;
+   for: string;
+   against: string;
+   abstain: string;
 }
-
-
-// event ProposalCreated(
-//    uint256 proposalId,
-//    address proposer,
-//    address[] targets,
-//    uint256[] values,
-//    string[] signatures,
-//    bytes[] calldatas,
-//    uint256 startTime,
-//    uint256 endTime,
-//    string description,
-//    uint256 votePowerBlock,
-//    uint256 wrappingThreshold,
-//    uint256 absoluteThreshold,
-//    uint256 relativeThreshold
-// );

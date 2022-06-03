@@ -4,7 +4,8 @@ import { ApiResponse, handleApiResponse } from "../dto/generic/ApiResponse";
 import { PaginatedList } from "../dto/generic/PaginatedList";
 import { SortType } from "../dto/generic/PaginationRequest";
 import { PollingContractType, Proposal } from "../dto/Proposal";
-import { GovernanceEngine, ProposalSortType } from "../engines/governanceEngine";
+import { Vote } from "../dto/Vote";
+import { GovernanceEngine, ProposalSortType, VoteSortType } from "../engines/governanceEngine";
 import { ContractDeploy } from "../utils/interfaces";
 
 @Tags('Governance')
@@ -53,6 +54,20 @@ export class GovernanceController extends Controller {
    ): Promise<ApiResponse<ContractDeploy[]>> {
       return handleApiResponse(
          this.governanceEngine.deployedContractData()
+      )
+   }
+
+   @Get("votes-for-proposal/{proposalId}")
+   public async getVotesForProposal(
+      @Path() proposalId: string,
+      @Query() limit?: number,
+      @Query() offset?: number,
+      @Query() sort?: SortType,
+      @Query() sortBy?: VoteSortType,
+      @Query() voter?: string,
+   ): Promise<ApiResponse<PaginatedList<Vote>>> {
+      return handleApiResponse(
+         this.governanceEngine.getVotesForProposal({proposalId, limit, offset, sort, sortBy, voter})
       )
    }
 

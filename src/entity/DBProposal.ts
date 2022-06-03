@@ -105,7 +105,15 @@ export class DBProposal extends BaseEntity {
          votePowerBlock: this.votePowerBlock,
          wrappingThreshold: this.wrappingThreshold,
          absoluteThreshold: this.absoluteThreshold,
-         relativeThreshold: this.relativeThreshold
+         relativeThreshold: this.relativeThreshold,
+         execStartTime: this.execStartTime,
+         execEndTime: this.execEndTime,
+         totalVotePower: this.totalVotePower,
+         executableOnChain: this.executableOnChain,
+         executed: this.executed,
+         for: this.for,
+         against: this.against,
+         abstain: this.abstain
       }
    }
 }

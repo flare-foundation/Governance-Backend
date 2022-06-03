@@ -6,107 +6,6 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"ApiUserComment": {
-				"properties": {
-					"name": {
-						"type": "string"
-					},
-					"message": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"name",
-					"message"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"ApiDefaultResponseStatusEnum": {
-				"type": "string",
-				"enum": [
-					"OK",
-					"ERROR",
-					"REQUEST_BODY_ERROR",
-					"VALIDATION_ERROR",
-					"TOO_MANY_REQUESTS",
-					"UNAUTHORIZED",
-					"AUTH_ERROR",
-					"UPSTREAM_HTTP_ERROR",
-					"INVALID_REQUEST",
-					"NOT_IMPLEMENTED",
-					"PENDING"
-				],
-				"description": "All possible values of status."
-			},
-			"ApiValidationErrorDetails": {
-				"properties": {
-					"className": {
-						"type": "string"
-					},
-					"fieldErrors": {
-						"properties": {},
-						"additionalProperties": {
-							"type": "string"
-						},
-						"type": "object"
-					}
-				},
-				"type": "object",
-				"additionalProperties": false
-			},
-			"ApiResponse_ApiUserComment_": {
-				"properties": {
-					"data": {
-						"$ref": "#/components/schemas/ApiUserComment"
-					},
-					"errorDetails": {
-						"type": "string",
-						"description": "Optional details for unexpected error responses."
-					},
-					"errorMessage": {
-						"type": "string",
-						"description": "Simple message to explain client developers the reason for error."
-					},
-					"status": {
-						"$ref": "#/components/schemas/ApiDefaultResponseStatusEnum",
-						"description": "Response status. OK for successful reponses."
-					},
-					"validationErrorDetails": {
-						"$ref": "#/components/schemas/ApiValidationErrorDetails"
-					}
-				},
-				"required": [
-					"status"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"ApiResponse_any_": {
-				"properties": {
-					"data": {},
-					"errorDetails": {
-						"type": "string",
-						"description": "Optional details for unexpected error responses."
-					},
-					"errorMessage": {
-						"type": "string",
-						"description": "Simple message to explain client developers the reason for error."
-					},
-					"status": {
-						"$ref": "#/components/schemas/ApiDefaultResponseStatusEnum",
-						"description": "Response status. OK for successful reponses."
-					},
-					"validationErrorDetails": {
-						"$ref": "#/components/schemas/ApiValidationErrorDetails"
-					}
-				},
-				"required": [
-					"status"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
 			"PollingContractType": {
 				"type": "string",
 				"enum": [
@@ -178,6 +77,32 @@
 					"relativeThreshold": {
 						"type": "number",
 						"format": "double"
+					},
+					"execStartTime": {
+						"type": "number",
+						"format": "double"
+					},
+					"execEndTime": {
+						"type": "number",
+						"format": "double"
+					},
+					"totalVotePower": {
+						"type": "string"
+					},
+					"executableOnChain": {
+						"type": "boolean"
+					},
+					"executed": {
+						"type": "boolean"
+					},
+					"for": {
+						"type": "string"
+					},
+					"against": {
+						"type": "string"
+					},
+					"abstain": {
+						"type": "string"
 					}
 				},
 				"required": [
@@ -195,7 +120,15 @@
 					"votePowerBlock",
 					"wrappingThreshold",
 					"absoluteThreshold",
-					"relativeThreshold"
+					"relativeThreshold",
+					"execStartTime",
+					"execEndTime",
+					"totalVotePower",
+					"executableOnChain",
+					"executed",
+					"for",
+					"against",
+					"abstain"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -223,6 +156,39 @@
 						"type": "number",
 						"format": "double",
 						"description": "Offset got from request"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ApiDefaultResponseStatusEnum": {
+				"type": "string",
+				"enum": [
+					"OK",
+					"ERROR",
+					"REQUEST_BODY_ERROR",
+					"VALIDATION_ERROR",
+					"TOO_MANY_REQUESTS",
+					"UNAUTHORIZED",
+					"AUTH_ERROR",
+					"UPSTREAM_HTTP_ERROR",
+					"INVALID_REQUEST",
+					"NOT_IMPLEMENTED",
+					"PENDING"
+				],
+				"description": "All possible values of status."
+			},
+			"ApiValidationErrorDetails": {
+				"properties": {
+					"className": {
+						"type": "string"
+					},
+					"fieldErrors": {
+						"properties": {},
+						"additionalProperties": {
+							"type": "string"
+						},
+						"type": "object"
 					}
 				},
 				"type": "object",
@@ -351,6 +317,102 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"Vote": {
+				"properties": {
+					"voter": {
+						"type": "string"
+					},
+					"proposalId": {
+						"type": "string"
+					},
+					"support": {
+						"type": "number",
+						"format": "double"
+					},
+					"weight": {
+						"type": "string"
+					},
+					"weightFloat": {
+						"type": "number",
+						"format": "double"
+					},
+					"reason": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"voter",
+					"proposalId",
+					"support",
+					"weight",
+					"weightFloat",
+					"reason"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"PaginatedList_Vote_": {
+				"properties": {
+					"count": {
+						"type": "number",
+						"format": "double",
+						"description": "Count of all items satisfying 'paginatable' request."
+					},
+					"items": {
+						"items": {
+							"$ref": "#/components/schemas/Vote"
+						},
+						"type": "array",
+						"description": "Response items."
+					},
+					"limit": {
+						"type": "number",
+						"format": "double",
+						"description": "Limit got from request"
+					},
+					"offset": {
+						"type": "number",
+						"format": "double",
+						"description": "Offset got from request"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ApiResponse_PaginatedList_Vote__": {
+				"properties": {
+					"data": {
+						"$ref": "#/components/schemas/PaginatedList_Vote_"
+					},
+					"errorDetails": {
+						"type": "string",
+						"description": "Optional details for unexpected error responses."
+					},
+					"errorMessage": {
+						"type": "string",
+						"description": "Simple message to explain client developers the reason for error."
+					},
+					"status": {
+						"$ref": "#/components/schemas/ApiDefaultResponseStatusEnum",
+						"description": "Response status. OK for successful reponses."
+					},
+					"validationErrorDetails": {
+						"$ref": "#/components/schemas/ApiValidationErrorDetails"
+					}
+				},
+				"required": [
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"VoteSortType": {
+				"type": "string",
+				"enum": [
+					"weight",
+					"id"
+				]
 			}
 		},
 		"securitySchemes": {}
@@ -363,91 +425,6 @@
 	},
 	"openapi": "3.0.0",
 	"paths": {
-		"/api/demo/demo-message": {
-			"get": {
-				"operationId": "DemoMessage",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ApiResponse_ApiUserComment_"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Demo"
-				],
-				"security": [],
-				"parameters": []
-			}
-		},
-		"/api/demo/create": {
-			"post": {
-				"operationId": "CreateUserComment",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ApiResponse_any_"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Demo"
-				],
-				"security": [],
-				"parameters": [],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/ApiUserComment"
-							}
-						}
-					}
-				}
-			}
-		},
-		"/api/demo/get-comments/{user}": {
-			"get": {
-				"operationId": "GetUserComments",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ApiResponse_any_"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Demo"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "user",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
-			}
-		},
 		"/api/governance/proposals/list": {
 			"get": {
 				"operationId": "GetProposalList",
@@ -616,6 +593,79 @@
 				],
 				"security": [],
 				"parameters": []
+			}
+		},
+		"/api/governance/votes-for-proposal/{proposalId}": {
+			"get": {
+				"operationId": "GetVotesForProposal",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_PaginatedList_Vote__"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Governance"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "proposalId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "offset",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "sort",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/SortType"
+						}
+					},
+					{
+						"in": "query",
+						"name": "sortBy",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/VoteSortType"
+						}
+					},
+					{
+						"in": "query",
+						"name": "voter",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		}
 	},

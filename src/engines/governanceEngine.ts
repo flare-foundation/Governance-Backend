@@ -6,6 +6,8 @@ import { DBProposal } from "../entity/DBProposal";
 import { ContractService } from "../services/ContractService";
 import { ContractDeploy } from "../utils/interfaces";
 import { DatabaseService } from "../services/DatabaseService";
+import { Vote } from "../dto/Vote";
+import { DBVote } from "../entity/DBVote";
 
 export interface ProposalPaginationRequest extends PaginationRequest {
    contract?: string;
@@ -17,10 +19,19 @@ export interface ProposalPaginationRequest extends PaginationRequest {
    maxEndTime?: number
 }
 
+export interface VotePaginationRequest extends PaginationRequest {
+   proposalId?: string;
+   voter?: string;
+}
+
 // These should be synced!
 export type ProposalSortType = "startTime" | "endTime" | "votePowerBlock" | "contract" | "proposalId" | "pollingType" | "description";
 const PROPOSAL_LEGIT_SORT_TYPES = ["startTime", "endTime", "votePowerBlock", "contract", "proposalId", "pollingType", "description"];
 const PROPOSAL_MAX_LIMIT = 100;
+
+export type VoteSortType = "weight" | "id";
+const VOTE_LEGIT_SORT_TYPES = ["weight", "id"];
+const VOTE_MAX_LIMIT = 100;
 
 @Singleton
 @Factory(() => new GovernanceEngine())
@@ -92,5 +103,37 @@ export class GovernanceEngine {
       await this.contractService.waitForInitialization();
       return this.contractService.deployData;
    }
+
+   public async getVotesForProposal(options: VotePaginationRequest): Promise<PaginatedList<Vote>> {
+      let query = this.dbService.connection.manager.createQueryBuilder(DBVote, "vote");
+
+      if (options.proposalId) {
+         query = query.andWhere("vote.proposalId = :proposalId", { proposalId: options.proposalId });
+      }
+      if (options.voter) {
+         query = query.andWhere("vote.voter = :voter", { voter: options.voter });
+      }
+
+      if (options.sortBy && VOTE_LEGIT_SORT_TYPES.indexOf(options.sortBy) >= 0) {
+         // important verification due possible SQL injection!
+         let order: SortType = options.sort === 'DESC' ? 'DESC' : 'ASC';
+         query = query.orderBy(`vote.${options.sortBy}`, order)
+      }
+
+      let count = await query.getCount();
+      let limit = !options.limit || options.limit < 0 || options.limit > VOTE_MAX_LIMIT ? VOTE_MAX_LIMIT : options.limit;
+      let offset = options.offset < 0 || !options.offset ? 0 : options.offset;
+
+      query = query.limit(limit).offset(offset);
+
+      let result = await query.getMany() as DBVote[];
+      return new PaginatedList<Vote>(
+         result.map(dbVote => dbVote.toDTO()),
+         count,
+         limit,
+         offset
+      )
+   }
+
    
 }

@@ -41,6 +41,6 @@ yarn governor-cli -a settings
 // yarn governor-cli -a castAllVotesRandomly -p 0xed20f5db7c22982ecba4697d5762797886c4dc76da952aa61f6ba3fd9f5accb7 -c PollingAccept
 // yarn governor-cli -a castAllVotesRandomly -p 0x91b099bbdb9dda0ba43f3514129a6c1eaa86a0e3f1f8cbe4cc8069368c083cf5 -c PollingReject
 
-// yarn governor-cli -a propose -i 0 -d "New PollingAccept1 - 8" -c PollingAccept1
-// yarn governor-cli -a castAllVotesRandomly -p 0xfbb31e4c919b36d5b40c36dd54408d8fe93afc59635903a052114857bffc216a -c PollingAccept1 -s 0 -e 10
+// yarn governor-cli -a propose -i 0 -d "New PollingAccept1 - 9" -c PollingAccept1
+// yarn governor-cli -a castAllVotesRandomly -p 0x6698c02478da43161e6e2a9586a2d0c0c7abb6c9532eb0b20d6312e9763d75f5 -c PollingAccept1 -s 0 -e 10
 // yarn governor-cli -a settings -c PollingAccept1

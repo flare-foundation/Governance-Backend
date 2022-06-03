@@ -8,7 +8,7 @@ import { WNat } from "../../typechain-web3-v1/wNat";
 import { PollingContractType } from "../dto/Proposal";
 import { DBContract } from "../entity/DBContract";
 import { DBProposal } from "../entity/DBProposal";
-import { DBVoteCast } from "../entity/DBVoteCast";
+import { DBVote } from "../entity/DBVote";
 import { AttLogger, logException } from "../logger/logger";
 import { DBEntities } from "../utils/DBEntities";
 import { ContractDeploy, ContractEventBatch, DEFAULT_GAS, DEFAULT_GAS_PRICE } from "../utils/interfaces";
@@ -221,7 +221,7 @@ export class ContractService {
             result.proposals.push(DBProposal.fromEvent(event, voteType))
          }
          if (event.event === "VoteCast") {
-            result.castedVotes.push(DBVoteCast.fromEvent(event))
+            result.castedVotes.push(DBVote.fromEvent(event))
          }
          if (event.event === "ProposalExecuted") {
             result.refreshProposalIds.push(event.returnValues.proposalId)

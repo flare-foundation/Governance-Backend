@@ -1,8 +1,8 @@
 import { DBProposal } from "../entity/DBProposal";
-import { DBVoteCast } from "../entity/DBVoteCast";
+import { DBVote } from "../entity/DBVote";
 
 export class DBEntities {
    public proposals: DBProposal[] = [];
-   public castedVotes: DBVoteCast[] = [];
+   public castedVotes: DBVote[] = [];
    public refreshProposalIds: string[] = [];
 }

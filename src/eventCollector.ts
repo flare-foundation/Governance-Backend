@@ -24,7 +24,7 @@ configurationService.network = args['network'];
 
 async function runEventCollector() {
    await contractService.waitForInitialization();
-   let batchSize = args['batchSize'] ? args['batchSize'] : this.configurationService.maxBlocksForEventReads;
+   let batchSize = args['batchSize'] ? args['batchSize'] : configurationService.maxBlocksForEventReads;
    await eventProcessorService.processEvents(batchSize);
 }
 

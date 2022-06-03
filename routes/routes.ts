@@ -3,8 +3,6 @@
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute, HttpStatusCodeLiteral, TsoaResponse } from '@tsoa/runtime';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { DemoController } from './../src/controllers/demoController';
-// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { GovernanceController } from './../src/controllers/governanceController';
 import { expressAuthentication } from './../src/authentication';
 // @ts-ignore - no great way to install types from subpackage
@@ -16,53 +14,6 @@ import * as express from 'express';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
-    "ApiUserComment": {
-        "dataType": "refObject",
-        "properties": {
-            "name": {"dataType":"string","required":true},
-            "message": {"dataType":"string","required":true},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ApiDefaultResponseStatusEnum": {
-        "dataType": "refAlias",
-        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["OK"]},{"dataType":"enum","enums":["ERROR"]},{"dataType":"enum","enums":["REQUEST_BODY_ERROR"]},{"dataType":"enum","enums":["VALIDATION_ERROR"]},{"dataType":"enum","enums":["TOO_MANY_REQUESTS"]},{"dataType":"enum","enums":["UNAUTHORIZED"]},{"dataType":"enum","enums":["AUTH_ERROR"]},{"dataType":"enum","enums":["UPSTREAM_HTTP_ERROR"]},{"dataType":"enum","enums":["INVALID_REQUEST"]},{"dataType":"enum","enums":["NOT_IMPLEMENTED"]},{"dataType":"enum","enums":["PENDING"]}],"validators":{}},
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ApiValidationErrorDetails": {
-        "dataType": "refObject",
-        "properties": {
-            "className": {"dataType":"string"},
-            "fieldErrors": {"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"string"}},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ApiResponse_ApiUserComment_": {
-        "dataType": "refObject",
-        "properties": {
-            "data": {"ref":"ApiUserComment"},
-            "errorDetails": {"dataType":"string"},
-            "errorMessage": {"dataType":"string"},
-            "status": {"ref":"ApiDefaultResponseStatusEnum","required":true},
-            "validationErrorDetails": {"ref":"ApiValidationErrorDetails"},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ApiResponse_any_": {
-        "dataType": "refObject",
-        "properties": {
-            "data": {"dataType":"any"},
-            "errorDetails": {"dataType":"string"},
-            "errorMessage": {"dataType":"string"},
-            "status": {"ref":"ApiDefaultResponseStatusEnum","required":true},
-            "validationErrorDetails": {"ref":"ApiValidationErrorDetails"},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "PollingContractType": {
         "dataType": "refAlias",
         "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["accept"]},{"dataType":"enum","enums":["reject"]}],"validators":{}},
@@ -86,6 +37,14 @@ const models: TsoaRoute.Models = {
             "wrappingThreshold": {"dataType":"double","required":true},
             "absoluteThreshold": {"dataType":"double","required":true},
             "relativeThreshold": {"dataType":"double","required":true},
+            "execStartTime": {"dataType":"double","required":true},
+            "execEndTime": {"dataType":"double","required":true},
+            "totalVotePower": {"dataType":"string","required":true},
+            "executableOnChain": {"dataType":"boolean","required":true},
+            "executed": {"dataType":"boolean","required":true},
+            "for": {"dataType":"string","required":true},
+            "against": {"dataType":"string","required":true},
+            "abstain": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
     },
@@ -97,6 +56,20 @@ const models: TsoaRoute.Models = {
             "items": {"dataType":"array","array":{"dataType":"refObject","ref":"Proposal"}},
             "limit": {"dataType":"double"},
             "offset": {"dataType":"double"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ApiDefaultResponseStatusEnum": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["OK"]},{"dataType":"enum","enums":["ERROR"]},{"dataType":"enum","enums":["REQUEST_BODY_ERROR"]},{"dataType":"enum","enums":["VALIDATION_ERROR"]},{"dataType":"enum","enums":["TOO_MANY_REQUESTS"]},{"dataType":"enum","enums":["UNAUTHORIZED"]},{"dataType":"enum","enums":["AUTH_ERROR"]},{"dataType":"enum","enums":["UPSTREAM_HTTP_ERROR"]},{"dataType":"enum","enums":["INVALID_REQUEST"]},{"dataType":"enum","enums":["NOT_IMPLEMENTED"]},{"dataType":"enum","enums":["PENDING"]}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ApiValidationErrorDetails": {
+        "dataType": "refObject",
+        "properties": {
+            "className": {"dataType":"string"},
+            "fieldErrors": {"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"string"}},
         },
         "additionalProperties": false,
     },
@@ -158,6 +131,47 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Vote": {
+        "dataType": "refObject",
+        "properties": {
+            "voter": {"dataType":"string","required":true},
+            "proposalId": {"dataType":"string","required":true},
+            "support": {"dataType":"double","required":true},
+            "weight": {"dataType":"string","required":true},
+            "weightFloat": {"dataType":"double","required":true},
+            "reason": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "PaginatedList_Vote_": {
+        "dataType": "refObject",
+        "properties": {
+            "count": {"dataType":"double"},
+            "items": {"dataType":"array","array":{"dataType":"refObject","ref":"Vote"}},
+            "limit": {"dataType":"double"},
+            "offset": {"dataType":"double"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ApiResponse_PaginatedList_Vote__": {
+        "dataType": "refObject",
+        "properties": {
+            "data": {"ref":"PaginatedList_Vote_"},
+            "errorDetails": {"dataType":"string"},
+            "errorMessage": {"dataType":"string"},
+            "status": {"ref":"ApiDefaultResponseStatusEnum","required":true},
+            "validationErrorDetails": {"ref":"ApiValidationErrorDetails"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "VoteSortType": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["weight"]},{"dataType":"enum","enums":["id"]}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
 const validationService = new ValidationService(models);
 
@@ -168,89 +182,6 @@ export function RegisterRoutes(app: express.Router) {
     //  NOTE: If you do not see routes for all of your controllers in this file, then you might not have informed tsoa of where to look
     //      Please look into the "controllerPathGlobs" config option described in the readme: https://github.com/lukeautry/tsoa
     // ###########################################################################################################
-        app.get('/api/demo/demo-message',
-
-            async function DemoController_demoMessage(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request, response);
-
-                const container: IocContainer = typeof iocContainer === 'function' ? (iocContainer as IocContainerFactory)(request) : iocContainer;
-
-                const controller: any = await container.get<DemoController>(DemoController);
-                if (typeof controller['setStatus'] === 'function') {
-                controller.setStatus(undefined);
-                }
-
-
-              const promise = controller.demoMessage.apply(controller, validatedArgs as any);
-              promiseHandler(controller, promise, response, undefined, next);
-            } catch (err) {
-                return next(err);
-            }
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/api/demo/create',
-
-            async function DemoController_createUserComment(request: any, response: any, next: any) {
-            const args = {
-                    requestBody: {"in":"body","name":"requestBody","required":true,"ref":"ApiUserComment"},
-            };
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request, response);
-
-                const container: IocContainer = typeof iocContainer === 'function' ? (iocContainer as IocContainerFactory)(request) : iocContainer;
-
-                const controller: any = await container.get<DemoController>(DemoController);
-                if (typeof controller['setStatus'] === 'function') {
-                controller.setStatus(undefined);
-                }
-
-
-              const promise = controller.createUserComment.apply(controller, validatedArgs as any);
-              promiseHandler(controller, promise, response, undefined, next);
-            } catch (err) {
-                return next(err);
-            }
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/api/demo/get-comments/:user',
-
-            async function DemoController_getUserComments(request: any, response: any, next: any) {
-            const args = {
-                    user: {"in":"path","name":"user","required":true,"dataType":"string"},
-            };
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request, response);
-
-                const container: IocContainer = typeof iocContainer === 'function' ? (iocContainer as IocContainerFactory)(request) : iocContainer;
-
-                const controller: any = await container.get<DemoController>(DemoController);
-                if (typeof controller['setStatus'] === 'function') {
-                controller.setStatus(undefined);
-                }
-
-
-              const promise = controller.getUserComments.apply(controller, validatedArgs as any);
-              promiseHandler(controller, promise, response, undefined, next);
-            } catch (err) {
-                return next(err);
-            }
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/api/governance/proposals/list',
 
             async function GovernanceController_getProposalList(request: any, response: any, next: any) {
@@ -338,6 +269,39 @@ export function RegisterRoutes(app: express.Router) {
 
 
               const promise = controller.deployedContractData.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/api/governance/votes-for-proposal/:proposalId',
+
+            async function GovernanceController_getVotesForProposal(request: any, response: any, next: any) {
+            const args = {
+                    proposalId: {"in":"path","name":"proposalId","required":true,"dataType":"string"},
+                    limit: {"in":"query","name":"limit","dataType":"double"},
+                    offset: {"in":"query","name":"offset","dataType":"double"},
+                    sort: {"in":"query","name":"sort","ref":"SortType"},
+                    sortBy: {"in":"query","name":"sortBy","ref":"VoteSortType"},
+                    voter: {"in":"query","name":"voter","dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const container: IocContainer = typeof iocContainer === 'function' ? (iocContainer as IocContainerFactory)(request) : iocContainer;
+
+                const controller: any = await container.get<GovernanceController>(GovernanceController);
+                if (typeof controller['setStatus'] === 'function') {
+                controller.setStatus(undefined);
+                }
+
+
+              const promise = controller.getVotesForProposal.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);
