@@ -1,4 +1,6 @@
-### Database configuration
+# Database configuration
+
+## For local development 
 
 Use MySQL Workbench. Connect to database as administrator. Right-click on empty space (bottom-left) below the listing of schemas. Choose `Create schema`.
 
@@ -11,7 +13,7 @@ Create user `govbackuser`. Choose `Users and Privileges`, add new user (username
 
 Set priviledges on user. Click on user, choose `Schema privileges` tab, press `Add entry` button, select under `Selected schema` the schema `govbackdb`, press `Ok`. Then press `Select all` button (privileges), and then press `Apply` button.    
 
-## Creation of the database on a server
+## In deployment on server
 
 MySQL server version should be 8.0.0+.
 

@@ -1,46 +1,67 @@
 # `governor-cli`
 
-This is a command line tool for running actions on governance smart contracts and related contracts in order to carry out tests.
+This is a command line tool for running actions on governance smart contracts and related contracts in order to carry out tests while developing.
+For development we usually deploy the set of governance/polling contracts to a blockchain. 
+To be able to use `governor-cli` properly, use the optional configurations in `.env` file to provider one or multiple proposer and voter private keys. Also, take care of all network configurations in `.env` (see [here](./configurations.md)).
 
+During the development, `governor-cli` is run using `ts-node`
 
-Example command line:
+Example command line that prints out settings on the contract named `PollingAccept1` in `deploys/coston.json`.
 ```bash
-yarn ts-node src/test-scripts/governor-cli.ts -n coston -a settings
+yarn ts-node src/scripts/governor-cli.ts -n coston -a settings -c PollingAccept1
 ```
 
-There is an equivalent shortcut in `package.json` which has preset parameter for the coston network. Note that you have to have the following environment variables set in `.env` file:
-- `RPC` - rpc link to a network node. It has to support 
-- `MAX_BLOCKS_FOR_EVENT_READS` - from how many blocks can `getPastEvents` function in a web3.js contract read in one call.
-- `PROPOSER_PK_<index>` - where `<index>` is a number. There can be several sequential such variables with different numbers but in sequence from 0 on. They contain `0x`-prefixed private keys of whitelisted proposers of the `PollingReject` contracts.
-- `VOTER_PK_<number>` - where `<index>` is a number. There can be several sequential such variables with different numbers but in sequence from 0 on. They contain `0x`-prefixed private keys of voters. Voters should have some funds.
-
-
-
+We can also compile Typescript by running `yarn build` and then run `governor-cli` by 
 ```bash
-yarn governor-cli -a settings
+node dist/src/scripts/governor-cli.ts -n coston -a settings -c PollingAccept1
 ```
 
+There is an equivalent shortcut in `package.json` using `ts-node`, which has preset parameter for the `coston` network. The equivalent call can be done as follows.
 
-// 
-// Examples:
-// yarn governor-cli -a propose -i 0 -d "Test proposal CLI9"
-// yarn governor-cli -a castVote -i 0 -p 0x2441657af5d246c1e40e8199590c02e3904e93aeda61d2c35a6b0f4068dedb91 -v 0
-// yarn governor-cli -a generateAccounts -s 0 -e 100 -f .env
-// yarn governor-cli -a accountStatus
-// yarn governor-cli -a fund -t 110 -k 0x00000...<private-key>
-// yarn governor-cli -a wrapAll -t 100
-// yarn governor-cli -a castAllVotesRandomly -p 0x153046e7c19228e570d0811555cb2bf11a38a2c39010af27a7626cba2505f4df
-// PollingAccept1 demo:
-// yarn governor-cli -a propose -i 0 -d "Test proposal CLI9 PollingAccept2" -c PollingAccept1
-// yarn governor-cli -a castAllVotesRandomly -p 0x303e298de4adfe883bb3ff078da0c1057bc5c7565a47e56df15f35678cf8eae6 -c PollingAccept1
+```bash
+yarn governor-cli -a settings -c PollingAccept1
+```
 
-// yarn governor-cli -a propose -i 0 -d "Test proposal CLI3 PollingAccept1" -c PollingAccept1
-// yarn governor-cli -a propose -i 0 -d "Test proposal CLI3 PollingAccept" -c PollingAccept
-// yarn governor-cli -a propose -i 0 -d "Test proposal CLI3 PollingReject" -c PollingReject
-// yarn governor-cli -a castAllVotesRandomly -p 0x421a39dab9a03f8c199868ed78117ef0eb956098a5ccab1f8d32d6f492cb9134 -c PollingAccept1
-// yarn governor-cli -a castAllVotesRandomly -p 0xed20f5db7c22982ecba4697d5762797886c4dc76da952aa61f6ba3fd9f5accb7 -c PollingAccept
-// yarn governor-cli -a castAllVotesRandomly -p 0x91b099bbdb9dda0ba43f3514129a6c1eaa86a0e3f1f8cbe4cc8069368c083cf5 -c PollingReject
+## Examples
 
-// yarn governor-cli -a propose -i 0 -d "New PollingAccept1 - 9" -c PollingAccept1
-// yarn governor-cli -a castAllVotesRandomly -p 0x6698c02478da43161e6e2a9586a2d0c0c7abb6c9532eb0b20d6312e9763d75f5 -c PollingAccept1 -s 0 -e 10
-// yarn governor-cli -a settings -c PollingAccept1
+- Create a proposal as proposer `0` (corresponding to the private key `PROPOSER_PK_0` in `.env`)
+```bash
+yarn governor-cli -a propose -i 0 -d "Some description"
+````
+If proposal is submitted, the call prints out the proposal id. This one can be used for other calls. For further examples, assume that proposal id is `0x2441657af5d246c1e40e8199590c02e3904e93aeda61d2c35a6b0f4068dedb91`
+
+- Cast a vote to the proposal as the voter `0` (corresponding to the private key `VOTER_PK_0` in `.env`) with the vote `0` (`0` - against, `1` - for, `2` - abstain) to the contract with name `PollingAccept1` in `deploys/coston.json`.
+```bash
+yarn governor-cli -a castVote -i 0 -p 0x2441657af5d246c1e40e8199590c02e3904e93aeda61d2c35a6b0f4068dedb91 -v 0 -c PollingAccept1
+```
+
+- Generate some account private keys and append them to `.env` file (generates `VOTER_PK_0` to `VOTER_PK_100`)
+
+```bash
+yarn governor-cli -a generateAccounts -s 0 -e 100 -f .env
+```
+
+- Check the account status (balances in FLR and WFLR) for all voter accounts in `.env`
+```bash
+yarn governor-cli -a accountStatus
+```
+
+- Fund all the voter accounts in `.env` from some account for which the private key is provided. The amount in example is `110` FLR (it can be provided in decimal form, like `1.1` FLR)
+```bash
+yarn governor-cli -a fund -t 110 -k 0x00000...<private-key>
+````
+
+- Wrap 100 FLR on all voter accounts from `.env`
+```bash
+yarn governor-cli -a wrapAll -t 100
+````
+
+- Cast random votes for all voter accounts in `.env` to the contract with name `PollingAccept1` in `deploys/coston.json`, for proposal id `0x2441657af5d246c1e40e8199590c02e3904e93aeda61d2c35a6b0f4068dedb91`.
+```bash
+yarn governor-cli -a castAllVotesRandomly -p 0x2441657af5d246c1e40e8199590c02e3904e93aeda61d2c35a6b0f4068dedb91 -c PollingAccept1
+```
+
+- Cast random votes for all voter accounts in `.env` to the contract with name `PollingAccept1` in `deploys/coston.json` for voters from indices 0 to 10, for proposal id `0x2441657af5d246c1e40e8199590c02e3904e93aeda61d2c35a6b0f4068dedb91`.
+```bash
+yarn governor-cli -a castAllVotesRandomly -p 0x2441657af5d246c1e40e8199590c02e3904e93aeda61d2c35a6b0f4068dedb91 -c PollingAccept1 -s 0 -e 10
+```
