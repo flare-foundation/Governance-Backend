@@ -7,7 +7,7 @@ export class ConfigurationService {
    network = process.env.NETWORK;
 
    networkRPC = process.env.RPC;
-   maxBlocksForEventReads = process.env.MAX_BLOCKS_FOR_EVENT_READS;
+   maxBlocksForEventReads = process.env.MAX_BLOCKS_FOR_EVENT_READS ? parseInt(process.env.MAX_BLOCKS_FOR_EVENT_READS) : undefined;
 
    databaseConnectOptions: DatabaseConnectOptions = {
       type: process.env.DB_TYPE,

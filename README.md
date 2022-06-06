@@ -29,7 +29,7 @@ yarn dev
 - Use [`governor-cli`](./docs/governor-cli.md) tool to create proposals and submit votes.
 - Use swagger API at `http://localhost:9500/api-doc/` for testing.
 
-If controller are changed, regenerate API specifications by running
+If controllers are changed, regenerate API specifications by running
 ```bash
 yarn routes
 ```
