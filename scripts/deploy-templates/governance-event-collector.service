@@ -1,9 +1,9 @@
 [Unit]
-Description=Governance Backend
+Description=Governance Event Collector
 After=network.target
 
 [Service]
-ExecStart=/home/ubuntu/.nvm/versions/node/v14.15.4/bin/node /home/ubuntu/governance/Governance-Backend/dist/src/server.js
+ExecStart=/home/ubuntu/.nvm/versions/node/v14.15.4/bin/node /home/ubuntu/governance/Governance-Backend/dist/src/eventCollector.js
 Restart=always
 # User=backend
 # Use 'nogroup' group for Ubuntu/Debian

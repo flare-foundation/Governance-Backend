@@ -1,17 +1,13 @@
 # Server deployment
 
-## Architecture
+## Specific instructions
 
-TODO
+```bash
 
-### Deployment
+```
+## Initial preparation of server
 
-Deployment is carried out by the script `scripts/deploy-dev`. Detailed steps are in comments of the file.
-Server must be properly prepared for script to work.
-
-#### Initial preparation of server
-
-- Start with Linux virtual machine.
+- Start with Linux Ubuntu virtual machine.
 - Create a user 'backend'. Deployment is done in home directory of this user. Set up ssh key login for this user and use 
 - Install docker, docker compose. Docker is used for containers of CouchDB.
     - https://docs.docker.com/engine/install/ubuntu/
@@ -26,9 +22,9 @@ Server must be properly prepared for script to work.
     - `journalctl --user -u governance-backend -r`
 
 ### Copied from https://unix.stackexchange.com/questions/496982/restarting-systemd-service-only-as-a-specific-user
-A third option would be to make the service a user service, which does not need sudo or polkit configurations. This puts everything under the control of the user and only works if your actual service that is started with `/home/techops/publicapi start` can run without root privileges.
+A third option would be to make the service a user service, which does not need sudo or polkit configurations. This puts everything under the control of the user and only works if your actual service that is started with `/home/backend/publicapi start` can run without root privileges.
 
-First you have to enable lingering for the user techops. This is needed to startup the user service on boot. As root execute:
+First you have to enable lingering for the user `backend`. This is needed to startup the user service on boot. As root execute:
 ```
 loginctl enable-linger backend
 ```
@@ -53,7 +49,7 @@ systemctl --user start governance-backend.service
 
 In general you should place your systemd units in `/etc/systemd/system/` not directly in `/etc/systemd/system/multi-user.target.wants`. When you execute `systemctl enable publicapi.service` a symbolic link will be created in `etc/systemd/system/multi-user.target.wants` or whatever target is specified for that unit.
 
-As already mentioned, if the service/process itself can be run without root privileges you should consider adding `User=techops` to your unit file to run the process with a non-privileged user account.
+As already mentioned, if the service/process itself can be run without root privileges you should consider adding `User=backend` to your unit file to run the process with a non-privileged user account.
 
 
 ### TLS certificate HOWTO
