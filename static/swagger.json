@@ -671,7 +671,12 @@
 	},
 	"servers": [
 		{
-			"url": "/"
+			"url": "/",
+			"description": "Default"
+		},
+		{
+			"url": "/gov-app/",
+			"description": "Prod test"
 		}
 	]
 }

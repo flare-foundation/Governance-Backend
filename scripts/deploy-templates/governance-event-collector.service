@@ -3,7 +3,7 @@ Description=Governance Event Collector
 After=network.target
 
 [Service]
-ExecStart=/home/ubuntu/.nvm/versions/node/v14.15.4/bin/node /home/ubuntu/governance/Governance-Backend/dist/src/eventCollector.js
+ExecStart=/home/ubuntu/.nvm/versions/node/v14.15.4/bin/node /home/ubuntu/governance/Governance-Backend/dist/src/eventCollector.js -n coston
 Restart=always
 # User=backend
 # Use 'nogroup' group for Ubuntu/Debian

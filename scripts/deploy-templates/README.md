@@ -3,7 +3,16 @@
 ## Specific instructions
 
 ```bash
+cp scripts/deploy-templates/governance-backend.service ~/.config/systemd/user/
+cp scripts/deploy-templates/governance-event-collector.service ~/.config/systemd/user/
+systemctl --user daemon-reload
+systemctl --user enable governance-event-collector.service
+systemctl --user enable governance-backend.service
+systemctl --user start governance-event-collector.service
+systemctl --user start governance-backend.service
 
+journalctl --user -u governance-event-collector -f -n 1000
+journalctl --user -u governance-backend -f -n 1000
 ```
 ## Initial preparation of server
 
