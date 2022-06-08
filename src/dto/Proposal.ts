@@ -23,4 +23,6 @@ export interface Proposal {
    for: string;
    against: string;
    abstain: string;
+   voterAddress?: string;
+   voterVotePower?: string;
 }

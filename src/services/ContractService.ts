@@ -240,6 +240,10 @@ export class ContractService {
    public processWNatEvents(batch: ContractEventBatch): DBEntities {
       return new DBEntities();
    }
+
+   public async votePowerForProposalId(voterAddress: string, proposalId: string): Promise<string>{
+     return '0xff';
+   }
 }
 
 

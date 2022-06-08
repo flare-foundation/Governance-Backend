@@ -42,10 +42,11 @@ export class GovernanceController extends Controller {
 
    @Get("proposals/{proposalId}")
    public async getProposalById(
-      @Path() proposalId: string
+      @Path() proposalId: string,
+      @Query() voterAddress?: string
    ): Promise<ApiResponse<Proposal>> {
       return handleApiResponse(
-         this.governanceEngine.getProposalById(proposalId)
+         this.governanceEngine.getProposalById(proposalId, voterAddress)
       )
    }
 

@@ -103,6 +103,12 @@
 					},
 					"abstain": {
 						"type": "string"
+					},
+					"voterAddress": {
+						"type": "string"
+					},
+					"voterVotePower": {
+						"type": "string"
 					}
 				},
 				"required": [
@@ -566,6 +572,14 @@
 						"in": "path",
 						"name": "proposalId",
 						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "voterAddress",
+						"required": false,
 						"schema": {
 							"type": "string"
 						}

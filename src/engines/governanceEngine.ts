@@ -44,11 +44,14 @@ export class GovernanceEngine {
    contractService: ContractService;
 
 
-   public async getProposalById(proposalId: string): Promise<Proposal> {
+   public async getProposalById(proposalId: string, voterAddress?: string): Promise<Proposal> {
       const repo = this.dbService.manager.getRepository(DBProposal)
       let result = await repo.find({ where: { proposalId } });
       if (result && result.length) {
-         return result[0].toDTO();
+        if(voterAddress){
+          return result[0].toDTO(voterAddress, await this.contractService.votePowerForProposalId(voterAddress, proposalId));
+        } 
+        return result[0].toDTO();
       }
       return null;
    }

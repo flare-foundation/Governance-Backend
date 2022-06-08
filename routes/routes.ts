@@ -45,6 +45,8 @@ const models: TsoaRoute.Models = {
             "for": {"dataType":"string","required":true},
             "against": {"dataType":"string","required":true},
             "abstain": {"dataType":"string","required":true},
+            "voterAddress": {"dataType":"string"},
+            "voterVotePower": {"dataType":"string"},
         },
         "additionalProperties": false,
     },
@@ -225,6 +227,7 @@ export function RegisterRoutes(app: express.Router) {
             async function GovernanceController_getProposalById(request: any, response: any, next: any) {
             const args = {
                     proposalId: {"in":"path","name":"proposalId","required":true,"dataType":"string"},
+                    voterAddress: {"in":"query","name":"voterAddress","dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

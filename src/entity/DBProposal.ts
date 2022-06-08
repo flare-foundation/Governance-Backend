@@ -89,7 +89,7 @@ export class DBProposal extends BaseEntity {
       entity.abstain = toHex(proposalInfoData._abstain);
    }
 
-   public toDTO(): Proposal {
+   public toDTO(voterAddress?: string, voterVotePower?: string ): Proposal {
       return {
          contract: this.contract,
          pollingType: this.pollingType as PollingContractType,
@@ -113,7 +113,9 @@ export class DBProposal extends BaseEntity {
          executed: this.executed,
          for: this.for,
          against: this.against,
-         abstain: this.abstain
+         abstain: this.abstain,
+         voterAddress: voterAddress,
+         voterVotePower: voterVotePower
       }
    }
 }
