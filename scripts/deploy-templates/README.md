@@ -82,3 +82,26 @@ ls -l
 sudo nginx -t 
 sudo service nginx reload
 ```
+
+
+## Dropping the tables in the database
+
+This is relevant only for testing deployments on server. Do not use this in production.
+
+- Stop all services.
+```bash
+./scripts/stop-services.sh
+```
+- Log to the database
+```bash
+mysql -u govbackuser -p -D govbackdb
+```
+enter the password.
+- Drop relevant tables
+```SQL
+SHOW TABLES;
+DROP TABLE IF EXISTS contract;
+DROP TABLE IF EXISTS proposal;
+DROP TABLE IF EXISTS state;
+DROP TABLE IF EXISTS vote;
+```
