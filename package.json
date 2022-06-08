@@ -1,5 +1,5 @@
 {
-   "name": "Goveranance-backend",
+   "name": "Governance-backend",
    "version": "1.0.0",
    "description": "TSOA based backend with dependency injection and TypeORM",
    "main": "index.js",

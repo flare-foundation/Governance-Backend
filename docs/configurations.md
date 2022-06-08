@@ -20,7 +20,8 @@ The main config files are:
    - `NETWORK` - name of the network. It should match the file name for address configuration `deploys/<NETWORK>.json`
    - `RPC` - RPC api name for the network
    - `MAX_BLOCKS_FOR_EVENT_READS` - how many blocks can be read with single web3 API call (like `getAllEvents`)
-
+   - `INDEXING_START_BLOCK` - starting block for reading events if the database is clean.
+   
 In addition, there are optional configuration setting, that **should not be used in production**. They are used as a configuration for `governor-cli` tool.
 
 - `PROPOSER_PK_<index>` - where `<index>` is a number. There can be several sequential such variables with different numbers but in sequence from 0 on. They contain `0x`-prefixed private keys of whitelisted proposers of the `PollingReject` contracts.

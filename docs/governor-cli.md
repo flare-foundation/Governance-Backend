@@ -26,7 +26,7 @@ yarn governor-cli -a settings -c PollingAccept1
 
 - Create a proposal as proposer `0` (corresponding to the private key `PROPOSER_PK_0` in `.env`)
 ```bash
-yarn governor-cli -a propose -i 0 -d "Some description"
+yarn governor-cli -a propose -i 0 -d "Some description" -c PollingAccept1
 ````
 If proposal is submitted, the call prints out the proposal id. This one can be used for other calls. For further examples, assume that proposal id is `0x2441657af5d246c1e40e8199590c02e3904e93aeda61d2c35a6b0f4068dedb91`
 
