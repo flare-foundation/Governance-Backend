@@ -20,7 +20,7 @@ MySQL server version should be 8.0.0+.
 ```
 sudo mysql
 CREATE USER 'govbackuser'@'localhost' IDENTIFIED BY 't$.passW.O:RD5';
-create database govbackdb
+create database govbackdb;
 GRANT ALL PRIVILEGES ON govbackdb.* TO 'govbackuser'@'localhost';
 FLUSH PRIVILEGES;
 ```

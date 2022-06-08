@@ -424,7 +424,7 @@
 		"securitySchemes": {}
 	},
 	"info": {
-		"title": "ts-backend",
+		"title": "Governance-backend",
 		"version": "1.0.0",
 		"description": "TSOA based backend with dependency injection and TypeORM",
 		"contact": {}
@@ -685,7 +685,12 @@
 	},
 	"servers": [
 		{
-			"url": "/"
+			"url": "/",
+			"description": "Default"
+		},
+		{
+			"url": "/gov-app/",
+			"description": "Prod test"
 		}
 	]
 }

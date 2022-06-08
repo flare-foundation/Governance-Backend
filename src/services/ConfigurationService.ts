@@ -8,7 +8,8 @@ export class ConfigurationService {
 
    networkRPC = process.env.RPC;
    maxBlocksForEventReads = process.env.MAX_BLOCKS_FOR_EVENT_READS ? parseInt(process.env.MAX_BLOCKS_FOR_EVENT_READS) : undefined;
-
+   indexingStartBlock = process.env.INDEXING_START_BLOCK ? parseInt(process.env.INDEXING_START_BLOCK) : undefined;
+   
    databaseConnectOptions: DatabaseConnectOptions = {
       type: process.env.DB_TYPE,
       host: process.env.DB_HOST,

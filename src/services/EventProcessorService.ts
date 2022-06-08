@@ -33,8 +33,10 @@ export class EventProcessorService {
 
    async getLastProcessedBlock(blockHeight: number): Promise<number> {
       const res = await this.dbService.manager.findOne(DBState, { where: { name: "lastProcessedBlock" } });
-      let lastProcessedBlock = -1;
       if (!res) {
+         if(this.configurationService.indexingStartBlock != null) {
+            return this.configurationService.indexingStartBlock - 1;
+         }
          return blockHeight - 1;
       }
       return res.valueNumber;
