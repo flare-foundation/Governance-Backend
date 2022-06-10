@@ -241,8 +241,9 @@ export class ContractService {
       return new DBEntities();
    }
 
-   public async votePowerForProposalId(voterAddress: string, proposalId: string): Promise<string>{
-     return '0xff';
+   public async votePowerForProposalId(voterAddress: string, votePowerBlock: number): Promise<string>{
+     const votePowerC = await this.governanceVotePower()
+     return await votePowerC.methods.votePowerOfAt(voterAddress, votePowerBlock).call();
    }
 }
 

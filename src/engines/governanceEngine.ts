@@ -49,7 +49,7 @@ export class GovernanceEngine {
       let result = await repo.find({ where: { proposalId } });
       if (result && result.length) {
         if(voterAddress){
-          return result[0].toDTO(voterAddress, await this.contractService.votePowerForProposalId(voterAddress, proposalId));
+          return result[0].toDTO(voterAddress, await this.contractService.votePowerForProposalId(voterAddress, result[0].votePowerBlock));
         } 
         return result[0].toDTO();
       }
