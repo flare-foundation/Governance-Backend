@@ -13,6 +13,18 @@
 					"reject"
 				]
 			},
+			"ProposalStateOptions": {
+				"enum": [
+					"Pending",
+					"Active",
+					"Defeated",
+					"Succeeded",
+					"Queued",
+					"Expired",
+					"Executed"
+				],
+				"type": "string"
+			},
 			"Proposal": {
 				"properties": {
 					"contract": {
@@ -104,6 +116,9 @@
 					"abstain": {
 						"type": "string"
 					},
+					"status": {
+						"$ref": "#/components/schemas/ProposalStateOptions"
+					},
 					"voterAddress": {
 						"type": "string"
 					},
@@ -134,7 +149,8 @@
 					"executed",
 					"for",
 					"against",
-					"abstain"
+					"abstain",
+					"status"
 				],
 				"type": "object",
 				"additionalProperties": false

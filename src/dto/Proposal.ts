@@ -1,3 +1,5 @@
+import { ProposalStateOptions } from "../utils/enums";
+
 export type PollingContractType = "accept" | "reject"
 export interface Proposal {
    contract: string;
@@ -23,6 +25,7 @@ export interface Proposal {
    for: string;
    against: string;
    abstain: string;
+   status: ProposalStateOptions;
    voterAddress?: string;
    voterVotePower?: string;
 }
