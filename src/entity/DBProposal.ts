@@ -1,6 +1,6 @@
 import { Column, Entity, Index } from "typeorm";
 import { Proposal, PollingContractType } from "../dto/Proposal";
-import { ProposalStateOptions } from "../utils/enums";
+import { ProposalStateOptions, ProposalVotingStatus } from "../utils/enums";
 import { BIPS, toBN, toHex } from "../utils/utils";
 import { BaseEntity } from "./BaseEntity";
 
@@ -188,6 +188,34 @@ export class DBProposal extends BaseEntity {
     return ProposalStateOptions.Defeated;
   }
 
+  proposalVotingStatus(): ProposalVotingStatus {
+    const now = Math.floor(Date.now()/1000);
+
+    if (this.startTime > now) {
+      return ProposalVotingStatus.Pending;
+    }
+
+    if (this.endTime > now) {
+      return ProposalVotingStatus.Active;
+    }
+
+    let succeeded = false;
+
+    // status from PoolingAccept.sol
+    if ((this.pollingType as PollingContractType) === "accept") {
+      succeeded = this.acceptProposalSucceeded();
+    }
+
+    //   status from PoolingReject.sol
+    if ((this.pollingType as PollingContractType) === "reject") {
+      succeeded = this.rejectProposalSucceeded();
+    }
+
+    if (succeeded) return ProposalVotingStatus.Succeeded;
+    else ProposalVotingStatus.Defeated;
+  }
+
+
   public toDTO(voterAddress?: string, voterVotePower?: string): Proposal {
     return {
       contract: this.contract,
@@ -213,7 +241,7 @@ export class DBProposal extends BaseEntity {
       for: this.for,
       against: this.against,
       abstain: this.abstain,
-      status: this.proposalStatus(),
+      status: this.proposalVotingStatus(),
       voterAddress: voterAddress,
       voterVotePower: voterVotePower,
     };

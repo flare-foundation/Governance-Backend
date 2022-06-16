@@ -23,3 +23,10 @@ export enum ProposalStateOptions {
   Expired = "Expired",
   Executed = "Executed",
 }
+
+export enum ProposalVotingStatus {
+  Pending = "Pending",
+  Active = "Active",
+  Defeated = "Defeated",
+  Succeeded = "Succeeded",
+}

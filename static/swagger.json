@@ -13,15 +13,12 @@
 					"reject"
 				]
 			},
-			"ProposalStateOptions": {
+			"ProposalVotingStatus": {
 				"enum": [
 					"Pending",
 					"Active",
 					"Defeated",
-					"Succeeded",
-					"Queued",
-					"Expired",
-					"Executed"
+					"Succeeded"
 				],
 				"type": "string"
 			},
@@ -117,7 +114,7 @@
 						"type": "string"
 					},
 					"status": {
-						"$ref": "#/components/schemas/ProposalStateOptions"
+						"$ref": "#/components/schemas/ProposalVotingStatus"
 					},
 					"voterAddress": {
 						"type": "string"

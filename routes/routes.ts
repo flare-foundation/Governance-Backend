@@ -19,9 +19,9 @@ const models: TsoaRoute.Models = {
         "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["accept"]},{"dataType":"enum","enums":["reject"]}],"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ProposalStateOptions": {
+    "ProposalVotingStatus": {
         "dataType": "refEnum",
-        "enums": ["Pending","Active","Defeated","Succeeded","Queued","Expired","Executed"],
+        "enums": ["Pending","Active","Defeated","Succeeded"],
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Proposal": {
@@ -50,7 +50,7 @@ const models: TsoaRoute.Models = {
             "for": {"dataType":"string","required":true},
             "against": {"dataType":"string","required":true},
             "abstain": {"dataType":"string","required":true},
-            "status": {"ref":"ProposalStateOptions","required":true},
+            "status": {"ref":"ProposalVotingStatus","required":true},
             "voterAddress": {"dataType":"string"},
             "voterVotePower": {"dataType":"string"},
         },
