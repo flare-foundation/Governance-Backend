@@ -58,7 +58,7 @@ export class ContractService {
          this.deployMap.set(contractDeploy.name, contract);
          contractDeploy.address = contractDeploy.address.toLowerCase();
          this.addressToContactInfo.set(contractDeploy.address.toLowerCase(), contractDeploy);
-         contractDeploy.abi = abi;
+         //  contractDeploy.abi = abi;
          let dbContract = DBContract.fromData(contractDeploy);
          this.dbService.manager.save(dbContract);
       }
@@ -250,18 +250,18 @@ export class ContractService {
 
 
 // Needed database records
-// 1) Record of all created proposals 
-//    a) Listen for event 'ProposalCreated' and save all parameters  
+// 1) Record of all created proposals
+//    a) Listen for event 'ProposalCreated' and save all parameters
 //    b) Depending on which contract emits the event, we store the proposal type (rejection, acceptance)
-// 2) Additional proposal properties 
-//    a) listen for event 'ProposalSettingsReject' (for rejection type) and store all parameters 
-//    b) listen for event 'ProposalSettingsAccept' (for acceptance type) and store all parameters 
-//    - THIS CONTRACT WILL BE DEPLOYED LATER 
+// 2) Additional proposal properties
+//    a) listen for event 'ProposalSettingsReject' (for rejection type) and store all parameters
+//    b) listen for event 'ProposalSettingsAccept' (for acceptance type) and store all parameters
+//    - THIS CONTRACT WILL BE DEPLOYED LATER
 //    c) data can be a linked to table (1) through proposalId
-// 3) Record of all votes regarding a specific proposal 
-//    a) listen to event 'VoteCast' and store all parameters 
-//    b) also store the timestamp of emitted event 
+// 3) Record of all votes regarding a specific proposal
+//    a) listen to event 'VoteCast' and store all parameters
+//    b) also store the timestamp of emitted event
 //    c) data can be linked to table (1) through proposalId
-// 4) Records of proposal numbers that are listed on a detailed proposal description page 
+// 4) Records of proposal numbers that are listed on a detailed proposal description page
 //    a) numbers are integers that are inputted when creating a proposal through the online form
-//    current location: https://github.com/flare-foundation/STP/tree/main/STPs 
+//    current location: https://github.com/flare-foundation/STP/tree/main/STPs

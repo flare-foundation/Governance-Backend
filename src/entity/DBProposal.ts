@@ -212,7 +212,7 @@ export class DBProposal extends BaseEntity {
     }
 
     if (succeeded) return ProposalVotingStatus.Succeeded;
-    else ProposalVotingStatus.Defeated;
+    else return ProposalVotingStatus.Defeated;
   }
 
 
