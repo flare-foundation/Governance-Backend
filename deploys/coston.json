@@ -23,5 +23,10 @@
       "name": "PollingAccept1",
       "contractName": "PollingAccept.sol",
       "address": "0xe222AF175E3b07306De963931D72824cEf8E466C"
+    },
+    {
+      "name": "PollingAccept2",
+      "contractName": "PollingAccept.sol",
+      "address": "0x7c2C195CD6D34B8F845992d380aADB2730bB9C6F"
     }
 ]
