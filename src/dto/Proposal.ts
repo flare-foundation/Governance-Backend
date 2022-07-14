@@ -1,6 +1,12 @@
 import { ProposalStateOptions, ProposalVotingStatus } from "../utils/enums";
 
 export type PollingContractType = "accept" | "reject"
+
+export interface VotePowerBlock {
+  blockNumber: number,
+  blockTs: number
+}
+
 export interface Proposal {
    contract: string;
    pollingType: PollingContractType,
@@ -13,7 +19,7 @@ export interface Proposal {
    startTime: number;
    endTime: number;
    description: string;
-   votePowerBlock: number;
+   votePowerBlock: VotePowerBlock;
    wrappingThreshold: number;
    absoluteThreshold: number;
    relativeThreshold: number;

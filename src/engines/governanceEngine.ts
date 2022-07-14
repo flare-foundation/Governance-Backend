@@ -2,12 +2,13 @@ import { Factory, Inject, Singleton } from "typescript-ioc";
 import { PaginatedList } from "../dto/generic/PaginatedList";
 import { PaginationRequest, SortType } from "../dto/generic/PaginationRequest";
 import { PollingContractType, Proposal } from "../dto/Proposal";
-import { DBProposal } from "../entity/DBProposal";
-import { ContractService } from "../services/ContractService";
-import { ContractDeploy } from "../utils/interfaces";
-import { DatabaseService } from "../services/DatabaseService";
 import { Vote } from "../dto/Vote";
+import { DBProposal } from "../entity/DBProposal";
 import { DBVote } from "../entity/DBVote";
+import { ContractService } from "../services/ContractService";
+import { DatabaseService } from "../services/DatabaseService";
+import { NetworkService } from "../services/NetworkService";
+import { ContractDeploy } from "../utils/interfaces";
 
 export interface ProposalPaginationRequest extends PaginationRequest {
    contract?: string;
@@ -43,6 +44,8 @@ export class GovernanceEngine {
    @Inject
    contractService: ContractService;
 
+   @Inject
+   networkService: NetworkService;
 
    public async getProposalById(proposalId: string, voterAddress?: string): Promise<Proposal> {
       const repo = this.dbService.manager.getRepository(DBProposal)
@@ -94,6 +97,7 @@ export class GovernanceEngine {
 
       let result = await query.getMany() as DBProposal[];
       return new PaginatedList<Proposal>(
+        // TODO bloc ts should be part of proposal in db
          result.map(dbProp => dbProp.toDTO()),
          count,
          limit,

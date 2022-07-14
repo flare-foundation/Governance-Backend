@@ -13,6 +13,24 @@
 					"reject"
 				]
 			},
+			"VotePowerBlock": {
+				"properties": {
+					"blockNumber": {
+						"type": "number",
+						"format": "double"
+					},
+					"blockTs": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"blockNumber",
+					"blockTs"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"ProposalVotingStatus": {
 				"enum": [
 					"Pending",
@@ -72,8 +90,7 @@
 						"type": "string"
 					},
 					"votePowerBlock": {
-						"type": "number",
-						"format": "double"
+						"$ref": "#/components/schemas/VotePowerBlock"
 					},
 					"wrappingThreshold": {
 						"type": "number",

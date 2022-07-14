@@ -19,6 +19,15 @@ const models: TsoaRoute.Models = {
         "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["accept"]},{"dataType":"enum","enums":["reject"]}],"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "VotePowerBlock": {
+        "dataType": "refObject",
+        "properties": {
+            "blockNumber": {"dataType":"double","required":true},
+            "blockTs": {"dataType":"double","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "ProposalVotingStatus": {
         "dataType": "refEnum",
         "enums": ["Pending","Active","Defeated","Succeeded"],
@@ -38,7 +47,7 @@ const models: TsoaRoute.Models = {
             "startTime": {"dataType":"double","required":true},
             "endTime": {"dataType":"double","required":true},
             "description": {"dataType":"string","required":true},
-            "votePowerBlock": {"dataType":"double","required":true},
+            "votePowerBlock": {"ref":"VotePowerBlock","required":true},
             "wrappingThreshold": {"dataType":"double","required":true},
             "absoluteThreshold": {"dataType":"double","required":true},
             "relativeThreshold": {"dataType":"double","required":true},
