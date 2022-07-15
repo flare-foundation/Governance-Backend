@@ -16,6 +16,7 @@ import { getWeb3, getWeb3ContractWithAbi, sleepms, waitFinalize3Factory } from "
 import { ConfigurationService } from "./ConfigurationService";
 import { DatabaseService } from "./DatabaseService";
 import { LoggerService } from "./LoggerService";
+import { NetworkService } from "./NetworkService";
 
 @Singleton
 @Factory(() => new ContractService())
@@ -29,6 +30,9 @@ export class ContractService {
 
    @Inject
    loggerService: LoggerService;
+
+   @Inject
+   networkService: NetworkService;
 
    get logger(): AttLogger {
       return this.dbService.logger;
@@ -200,25 +204,26 @@ export class ContractService {
       return await Promise.all(promises);
    }
 
-   public processEvents(batch: ContractEventBatch): DBEntities {
+   public async processEvents(batch: ContractEventBatch): Promise<DBEntities> {
       if (batch.contractName === "GovernanceVotePower") {
-         return this.processGovernanceVotePowerEvents(batch);
+         return await this.processGovernanceVotePowerEvents(batch);
       }
       if (batch.contractName === "wNat") {
-         return this.processWNatEvents(batch);
+         return await this.processWNatEvents(batch);
       }
       if (batch.contractName.startsWith("PollingAccept") || batch.contractName.startsWith("PollingReject")) {
-         return this.processGovernorEvents(batch);
+         return await this.processGovernorEvents(batch);
       }
       return new DBEntities();
    }
 
-   public processGovernorEvents(batch: ContractEventBatch): DBEntities {
+   public async processGovernorEvents(batch: ContractEventBatch): Promise<DBEntities> {
       let result = new DBEntities();
       let voteType: PollingContractType = batch.contractName.startsWith("PollingAccept") ? "accept" : "reject";
       for (let event of batch.events) {
+        const blockTs = await this.networkService.getBlockTimestamp(event.blockNumber);
          if (event.event === "ProposalCreated") {
-            result.proposals.push(DBProposal.fromEvent(event, voteType))
+            result.proposals.push(DBProposal.fromEvent(event, voteType, blockTs))
          }
          if (event.event === "VoteCast") {
             result.castedVotes.push(DBVote.fromEvent(event))

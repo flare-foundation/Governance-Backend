@@ -18,6 +18,7 @@ export class DBProposal extends BaseEntity {
   @Column({ nullable: false }) @Index() endTime: number;
   @Column({ nullable: false, type: 'text' }) description: string;
   @Column({ nullable: false }) @Index() votePowerBlock: number;
+  @Column({ nullable: false }) votePowerBlockTs: number;
   @Column({ nullable: false }) @Index() wrappingThreshold: number;
   @Column({ nullable: false }) @Index() absoluteThreshold: number;
   @Column({ nullable: false }) @Index() relativeThreshold: number;
@@ -30,7 +31,7 @@ export class DBProposal extends BaseEntity {
   @Column({ nullable: false }) @Index() against: string;
   @Column({ nullable: false }) @Index() abstain: string;
 
-  static fromEvent(event: any, votingType: PollingContractType): DBProposal {
+  static fromEvent(event: any, votingType: PollingContractType, blockTs: number): DBProposal {
     const entity = new DBProposal();
     let params = event.returnValues;
     entity.contract = toHex(event.address);
@@ -45,6 +46,7 @@ export class DBProposal extends BaseEntity {
     entity.endTime = parseInt(params.endTime);
     entity.description = params.description;
     entity.votePowerBlock = parseInt(params.votePowerBlock);
+    entity.votePowerBlockTs = blockTs;
     entity.wrappingThreshold = parseInt(params.wrappingThreshold);
     entity.absoluteThreshold = parseInt(params.absoluteThreshold);
     entity.relativeThreshold = parseInt(params.relativeThreshold);
@@ -229,7 +231,10 @@ export class DBProposal extends BaseEntity {
       startTime: this.startTime,
       endTime: this.endTime,
       description: this.description,
-      votePowerBlock: this.votePowerBlock,
+      votePowerBlock: {
+        blockNumber: this.votePowerBlock,
+        blockTs: this.votePowerBlockTs
+      },
       wrappingThreshold: this.wrappingThreshold,
       absoluteThreshold: this.absoluteThreshold,
       relativeThreshold: this.relativeThreshold,
