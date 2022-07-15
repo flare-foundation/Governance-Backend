@@ -16,7 +16,7 @@ export class DBProposal extends BaseEntity {
   @Column({ nullable: false }) calldatas: string; // serialized array of hex values
   @Column({ nullable: false }) @Index() startTime: number;
   @Column({ nullable: false }) @Index() endTime: number;
-  @Column({ nullable: false }) description: string;
+  @Column({ nullable: false, type: 'text' }) description: string;
   @Column({ nullable: false }) @Index() votePowerBlock: number;
   @Column({ nullable: false }) @Index() wrappingThreshold: number;
   @Column({ nullable: false }) @Index() absoluteThreshold: number;
