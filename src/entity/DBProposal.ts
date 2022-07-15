@@ -44,7 +44,7 @@ export class DBProposal extends BaseEntity {
     entity.calldatas = JSON.stringify(params.calldatas);
     entity.startTime = parseInt(params.startTime);
     entity.endTime = parseInt(params.endTime);
-    entity.description = params.description.slice(0,64);
+    entity.description = params.description;
     entity.votePowerBlock = parseInt(params.votePowerBlock);
     entity.votePowerBlockTs = blockTs;
     entity.wrappingThreshold = parseInt(params.wrappingThreshold);
