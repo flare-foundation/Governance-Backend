@@ -16,7 +16,7 @@ export class DBVote extends BaseEntity {
       const entity = new DBVote();
       let params = event.returnValues;
       entity.voter = toHex(params.voter);
-      entity.proposalId = toHex(toBN(params.proposalId), 32);
+      entity.proposalId = params.proposalId;
       entity.support = parseInt(params.support);
       entity.weight = toHex(toBN(params.weight), 32);
       entity.weightFloat = parseFloat(params.weight);
