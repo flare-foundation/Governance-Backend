@@ -34,8 +34,11 @@ let args = yargs
    .option("privateKey", { alias: "k", type: "string", description: "private key for for funding voter accounts" })
    .argv;
 
+   
+process.env.CONFIG_FILE =  `configs/networks/${args['network']}.json`;
+
 const configurationService = iocContainer(null).get(ConfigurationService)
-configurationService.network = args['network'];
+// configurationService.network = args['network'];
 
 const contractService = iocContainer(null).get(ContractService);
 

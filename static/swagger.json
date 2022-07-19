@@ -42,6 +42,10 @@
 			},
 			"Proposal": {
 				"properties": {
+					"chainId": {
+						"type": "number",
+						"format": "double"
+					},
 					"contract": {
 						"type": "string"
 					},
@@ -141,6 +145,7 @@
 					}
 				},
 				"required": [
+					"chainId",
 					"contract",
 					"pollingType",
 					"proposalId",
@@ -314,6 +319,10 @@
 					"address": {
 						"type": "string"
 					},
+					"chainId": {
+						"type": "number",
+						"format": "double"
+					},
 					"abi": {}
 				},
 				"required": [
@@ -362,6 +371,10 @@
 					"proposalId": {
 						"type": "string"
 					},
+					"chainId": {
+						"type": "number",
+						"format": "double"
+					},
 					"support": {
 						"type": "number",
 						"format": "double"
@@ -380,6 +393,7 @@
 				"required": [
 					"voter",
 					"proposalId",
+					"chainId",
 					"support",
 					"weight",
 					"weightFloat",
@@ -481,6 +495,15 @@
 				],
 				"security": [],
 				"parameters": [
+					{
+						"in": "query",
+						"name": "chainId",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
 					{
 						"in": "query",
 						"name": "limit",
@@ -665,6 +688,15 @@
 						"required": true,
 						"schema": {
 							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "chainId",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
 						}
 					},
 					{

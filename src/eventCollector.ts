@@ -12,15 +12,17 @@ dotenv.config();
 let yargs = require("yargs");
 
 let args = yargs
-   .option("network", { alias: "n", type: "string", description: "The name of the network", default: "coston" })
+   .option("config", { alias: "c", type: "string", description: "The path to json config file with network information", default: "configs/networks/coston.json" })
    .option("batchSize", { alias: "b", type: "number", description: "Batch size for blocks to process events" })
    .argv;
+
+process.env.CONFIG_FILE =  args['config'];
 
 const eventProcessorService = iocContainer(null).get(EventProcessorService)
 const configurationService = iocContainer(null).get(ConfigurationService)
 const contractService = iocContainer(null).get(ContractService)
 // override network
-configurationService.network = args['network'];
+// configurationService.network = args['config'];
 
 async function runEventCollector() {
    await contractService.waitForInitialization();

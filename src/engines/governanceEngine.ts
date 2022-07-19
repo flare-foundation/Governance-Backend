@@ -7,10 +7,12 @@ import { DBProposal } from "../entity/DBProposal";
 import { DBVote } from "../entity/DBVote";
 import { ContractService } from "../services/ContractService";
 import { DatabaseService } from "../services/DatabaseService";
+import { MultiChainService } from "../services/MultiChainService";
 import { NetworkService } from "../services/NetworkService";
 import { ContractDeploy } from "../utils/interfaces";
 
 export interface ProposalPaginationRequest extends PaginationRequest {
+  chainId?: number;
    contract?: string;
    pollingContractType?: PollingContractType,
    description?: string,
@@ -41,8 +43,11 @@ export class GovernanceEngine {
    @Inject
    dbService: DatabaseService;
 
-   @Inject
-   contractService: ContractService;
+  //  @Inject
+  //  contractService: ContractService;
+
+  @Inject
+  multiChainService: MultiChainService;
 
    @Inject
    networkService: NetworkService;
@@ -52,7 +57,8 @@ export class GovernanceEngine {
       let result = await repo.find({ where: { proposalId } });
       if (result && result.length) {
         if(voterAddress){
-          return result[0].toDTO(voterAddress, await this.contractService.votePowerForProposalId(voterAddress, result[0].votePowerBlock));
+          const chainId = result[0].chainId
+          return result[0].toDTO(voterAddress, await this.multiChainService.votePowerForProposalId(chainId, voterAddress, result[0].votePowerBlock));
         } 
         return result[0].toDTO();
       }
@@ -62,6 +68,9 @@ export class GovernanceEngine {
    public async getProposalList(options: ProposalPaginationRequest): Promise<PaginatedList<Proposal>> {
       let query = this.dbService.connection.manager.createQueryBuilder(DBProposal, "proposal");
 
+      if (options.chainId) {
+        query = query.andWhere("proposal.chainId = :chainId", { chainId: options.chainId });
+      }
       if (options.contract) {
          query = query.andWhere("proposal.contract = :contract", { contract: options.contract });
       }
@@ -107,8 +116,8 @@ export class GovernanceEngine {
 
    public async deployedContractData(): Promise<ContractDeploy[]> {
       await this.dbService.waitForDBConnection();
-      await this.contractService.waitForInitialization();
-      return this.contractService.deployData;
+      await this.multiChainService.waitForInitialization();
+      return this.multiChainService.deployData;
    }
 
    public async getVotesForProposal(options: VotePaginationRequest): Promise<PaginatedList<Vote>> {

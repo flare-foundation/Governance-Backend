@@ -6,6 +6,7 @@ import { BaseEntity } from "./BaseEntity";
 
 @Entity({ name: "proposal" })
 export class DBProposal extends BaseEntity {
+  @Column({ nullable: false }) @Index() chainId: number;
   @Column({ nullable: false }) @Index() contract: string;
   @Column({ nullable: false }) @Index() proposalId: string;
   @Column({ nullable: false }) @Index() pollingType: string; // PollingContractType
@@ -31,9 +32,10 @@ export class DBProposal extends BaseEntity {
   @Column({ nullable: false }) @Index() against: string;
   @Column({ nullable: false }) @Index() abstain: string;
 
-  static fromEvent(event: any, votingType: PollingContractType, blockTs: number): DBProposal {
+  static fromEvent(event: any, votingType: PollingContractType, blockTs: number, chainId: number): DBProposal {
     const entity = new DBProposal();
     let params = event.returnValues;
+    entity.chainId = chainId;
     entity.contract = toHex(event.address);
     entity.pollingType = votingType;
     entity.proposalId = toHex(params.proposalId, 32);
@@ -220,6 +222,7 @@ export class DBProposal extends BaseEntity {
 
   public toDTO(voterAddress?: string, voterVotePower?: string): Proposal {
     return {
+      chainId: this.chainId,
       contract: this.contract,
       pollingType: this.pollingType as PollingContractType,
       proposalId: this.proposalId,
@@ -252,46 +255,3 @@ export class DBProposal extends BaseEntity {
     };
   }
 }
-
-// event ProposalCreated(
-//    uint256 proposalId,
-//    address proposer,
-//    address[] targets,
-//    uint256[] values,
-//    string[] signatures,
-//    bytes[] calldatas,
-//    uint256 startTime,
-//    uint256 endTime,
-//    string description,
-//    uint256 votePowerBlock,
-//    uint256 wrappingThreshold,
-//    uint256 absoluteThreshold,
-//    uint256 relativeThreshold
-// );
-
-// event ProposalCanceled(uint256 proposalId);
-
-// event ProposalExecuted(uint256 proposalId);
-
-// event ProposalThresholdSet(uint256 oldProposalThreshold, uint256 newProposalThreshold);
-// event VotingDelaySet(uint256 oldVotingDelay, uint256 newVotingDelay);
-// event VotingPeriodSet(uint256 oldVotingPeriod, uint256 newVotingPeriod);
-// event ExecutionDelaySet(uint256 oldExecutionDelay, uint256 newExecutionDelay);
-// event ExecutionPeriodSet(uint256 oldExecutionPeriod, uint256 newExecutionPeriod);
-// event QuorumThresholdSet(uint256 oldQuorumThreshold, uint256 newQuorumThreshold);
-// event VotePowerLifeTimeDaysSet(uint256 oldVotePowerLifeTimeDays, uint256 newVotePowerLifeTimeDays);
-// event VpBlockPeriodSecondsSet(uint256 oldVpBlockPeriodSeconds, uint256 newVpBlockPeriodSeconds);
-
-// struct Proposal {
-//    address proposer;           // address of the proposer
-//    uint256 votePowerBlock;     // block number used for identifying vote power
-//    uint256 voteStartTime;      // start time of voting window (in seconds from epoch)
-//    uint256 voteEndTime;        // end time of voting window (in seconds from epoch)
-//    uint256 execStartTime;      // start time of execution window (in seconds from epoch)
-//    uint256 execEndTime;        // end time of execution window (in seconds from epoch)
-//    bool executableOnChain;     // flag indicating if proposal is executable on chain (via execution parameters)
-//    bool executed;              // flag indicating if proposal has been executed
-//    uint256 absoluteThreshold;  // Percentage in BIPS of the total vote power required for proposal "quorum"
-//    uint256 relativeThreshold;  // Percentage in BIPS of the proper relation between FOR and AGAINST votes
-//    uint256 totalVP;            // total vote power at votePowerBlock
-// }

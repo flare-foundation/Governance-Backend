@@ -1,14 +1,15 @@
 import { Factory, Singleton } from "typescript-ioc";
-import { DatabaseConnectOptions, WebServerOptions } from "../utils/interfaces";
+import { readJSON } from "../utils/config-utils";
+import { DatabaseConnectOptions, INetworkConfigJson, WebServerOptions } from "../utils/interfaces";
 @Singleton
 @Factory(() => new ConfigurationService())
 export class ConfigurationService {
+   network: string;
+   chainId: number;
 
-   network = process.env.NETWORK;
-
-   networkRPC = process.env.RPC;
-   maxBlocksForEventReads = process.env.MAX_BLOCKS_FOR_EVENT_READS ? parseInt(process.env.MAX_BLOCKS_FOR_EVENT_READS) : undefined;
-   indexingStartBlock = process.env.INDEXING_START_BLOCK ? parseInt(process.env.INDEXING_START_BLOCK) : undefined;
+   networkRPC: string;
+   maxBlocksForEventReads: number;
+   indexingStartBlock: number;
    
    databaseConnectOptions: DatabaseConnectOptions = {
       type: process.env.DB_TYPE,
@@ -20,14 +21,7 @@ export class ConfigurationService {
    }
 
    // These names should match
-   eventCollectedContracts = [
-      "GovernanceVotePower",
-      "GovernorReject",
-      "GovernorAccept",
-      "GovernorAccept1",
-      "GovernorAccept2",
-      "wNat"
-   ];
+   eventCollectedContracts: string[] = [];
    
    webServerOptions: WebServerOptions = {
       port: parseInt(process.env.WEB_SERVER_PORT),
@@ -38,6 +32,19 @@ export class ConfigurationService {
    voterPrivateKeys = [];
 
    constructor() {
+      if(process.env.CONFIG_FILE){
+        const configFile = readJSON<INetworkConfigJson>(process.env.CONFIG_FILE)
+
+        this.chainId = configFile.CHAIN_ID
+        this.network = configFile.NETWORK
+  
+        this.networkRPC = configFile.RPC
+  
+        this.maxBlocksForEventReads = configFile.MAX_BLOCKS_FOR_EVENT_READS ? configFile.MAX_BLOCKS_FOR_EVENT_READS : undefined
+        this.indexingStartBlock = configFile.INDEXING_START_BLOCK ? configFile.INDEXING_START_BLOCK : undefined
+  
+        this.eventCollectedContracts = configFile.EVENT_COLLECTED_CONTRACTS
+      }
       this.initProposerPrivateKeys();
       this.initVoterPrivateKeys();
    }

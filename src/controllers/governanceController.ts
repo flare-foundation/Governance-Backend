@@ -23,6 +23,7 @@ export class GovernanceController extends Controller {
    
    @Get("proposals/list")
    public async getProposalList(
+      @Query() chainId?: number,
       @Query() limit?: number,
       @Query() offset?: number,
       @Query() sort?: SortType,
@@ -36,7 +37,7 @@ export class GovernanceController extends Controller {
       @Query() maxEndTime?: number
    ): Promise<ApiResponse<PaginatedList<Proposal>>> {
       return handleApiResponse(
-         this.governanceEngine.getProposalList({limit, offset, sort, sortBy, pollingContractType, contract, description, minStartTime, maxStartTime, minEndTime, maxEndTime})
+         this.governanceEngine.getProposalList({chainId, limit, offset, sort, sortBy, pollingContractType, contract, description, minStartTime, maxStartTime, minEndTime, maxEndTime})
       )
    }
 

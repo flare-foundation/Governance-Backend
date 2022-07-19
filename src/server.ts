@@ -6,6 +6,7 @@ import { ConfigurationService } from "./services/ConfigurationService";
 import { ContractService } from "./services/ContractService";
 import { DatabaseService } from "./services/DatabaseService";
 import { LoggerService } from "./services/LoggerService";
+import { MultiChainService } from "./services/MultiChainService";
 
 const configurationService = iocContainer(null).get(ConfigurationService)
 const loggerService = iocContainer(null).get(LoggerService)
@@ -19,7 +20,7 @@ const server = app.listen(configurationService.webServerOptions.port, () => {
 });
 
 dbService.waitForDBConnection().then(() => {
-   const contractService = iocContainer(null).get(ContractService);
+   const multiChainService = iocContainer(null).get(MultiChainService);
 })
 
 

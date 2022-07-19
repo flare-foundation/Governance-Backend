@@ -1,10 +1,9 @@
-import { DBProposal } from "../entity/DBProposal";
-import { DBVote } from "../entity/DBVote";
 
 export interface ContractDeploy {
    name: string;
    contractName: string;
    address: string;
+   chainId?: number;
    abi?: any;
 };
 
@@ -29,4 +28,15 @@ export interface DatabaseConnectOptions {
 
 export interface WebServerOptions {
    port: number;
+}
+
+
+// Config file exports 
+export interface INetworkConfigJson {
+  NETWORK: string;
+  CHAIN_ID: number;
+  RPC: string;
+  MAX_BLOCKS_FOR_EVENT_READS?: number;
+  INDEXING_START_BLOCK?: number;
+  EVENT_COLLECTED_CONTRACTS: string[];
 }

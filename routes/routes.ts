@@ -36,6 +36,7 @@ const models: TsoaRoute.Models = {
     "Proposal": {
         "dataType": "refObject",
         "properties": {
+            "chainId": {"dataType":"double","required":true},
             "contract": {"dataType":"string","required":true},
             "pollingType": {"ref":"PollingContractType","required":true},
             "proposalId": {"dataType":"string","required":true},
@@ -131,6 +132,7 @@ const models: TsoaRoute.Models = {
             "name": {"dataType":"string","required":true},
             "contractName": {"dataType":"string","required":true},
             "address": {"dataType":"string","required":true},
+            "chainId": {"dataType":"double"},
             "abi": {"dataType":"any"},
         },
         "additionalProperties": false,
@@ -153,6 +155,7 @@ const models: TsoaRoute.Models = {
         "properties": {
             "voter": {"dataType":"string","required":true},
             "proposalId": {"dataType":"string","required":true},
+            "chainId": {"dataType":"double","required":true},
             "support": {"dataType":"double","required":true},
             "weight": {"dataType":"string","required":true},
             "weightFloat": {"dataType":"double","required":true},
@@ -203,6 +206,7 @@ export function RegisterRoutes(app: express.Router) {
 
             async function GovernanceController_getProposalList(request: any, response: any, next: any) {
             const args = {
+                    chainId: {"in":"query","name":"chainId","dataType":"double"},
                     limit: {"in":"query","name":"limit","dataType":"double"},
                     offset: {"in":"query","name":"offset","dataType":"double"},
                     sort: {"in":"query","name":"sort","ref":"SortType"},
@@ -298,6 +302,7 @@ export function RegisterRoutes(app: express.Router) {
             async function GovernanceController_getVotesForProposal(request: any, response: any, next: any) {
             const args = {
                     proposalId: {"in":"path","name":"proposalId","required":true,"dataType":"string"},
+                    chainId: {"in":"query","name":"chainId","dataType":"double"},
                     limit: {"in":"query","name":"limit","dataType":"double"},
                     offset: {"in":"query","name":"offset","dataType":"double"},
                     sort: {"in":"query","name":"sort","ref":"SortType"},

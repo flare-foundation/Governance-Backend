@@ -1,0 +1,12 @@
+[
+  {
+    "name": "GovernanceVotePower",
+    "contractName": "GovernanceVotePower.sol",
+    "address": "0x5dFddd30Ebf4fF41a107ED6214F9d32BaDB96D43"
+  },
+   {
+     "name": "wNat",
+     "contractName": "wNat.sol",
+     "address": "0x5c1b3D6dBd2D1C30B14CA20919A34Fe36eFECbCC"
+   }
+]

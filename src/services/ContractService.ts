@@ -63,7 +63,7 @@ export class ContractService {
          contractDeploy.address = contractDeploy.address.toLowerCase();
          this.addressToContactInfo.set(contractDeploy.address.toLowerCase(), contractDeploy);
          //  contractDeploy.abi = abi;
-         let dbContract = DBContract.fromData(contractDeploy);
+         let dbContract = DBContract.fromData(contractDeploy, this.configurationService.chainId);
          this.dbService.manager.save(dbContract);
       }
       this.waitFinalize3 = waitFinalize3Factory(this.web3);
@@ -223,13 +223,10 @@ export class ContractService {
       for (let event of batch.events) {
         const blockTs = await this.networkService.getBlockTimestamp(event.blockNumber);
          if (event.event === "ProposalCreated") {
-            result.proposals.push(DBProposal.fromEvent(event, voteType, blockTs))
+            result.proposals.push(DBProposal.fromEvent(event, voteType, blockTs,  this.configurationService.chainId))
          }
          if (event.event === "VoteCast") {
-            result.castedVotes.push(DBVote.fromEvent(event))
-         }
-         if (event.event === "ProposalExecuted") {
-            result.refreshProposalIds.push(event.returnValues.proposalId)
+            result.castedVotes.push(DBVote.fromEvent(event,  this.configurationService.chainId))
          }
          if (event.event === "ProposalExecuted") {
             result.refreshProposalIds.push(event.returnValues.proposalId)
