@@ -302,7 +302,6 @@ export function RegisterRoutes(app: express.Router) {
             async function GovernanceController_getVotesForProposal(request: any, response: any, next: any) {
             const args = {
                     proposalId: {"in":"path","name":"proposalId","required":true,"dataType":"string"},
-                    chainId: {"in":"query","name":"chainId","dataType":"double"},
                     limit: {"in":"query","name":"limit","dataType":"double"},
                     offset: {"in":"query","name":"offset","dataType":"double"},
                     sort: {"in":"query","name":"sort","ref":"SortType"},
