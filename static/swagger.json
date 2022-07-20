@@ -692,15 +692,6 @@
 					},
 					{
 						"in": "query",
-						"name": "chainId",
-						"required": false,
-						"schema": {
-							"format": "double",
-							"type": "number"
-						}
-					},
-					{
-						"in": "query",
 						"name": "limit",
 						"required": false,
 						"schema": {
