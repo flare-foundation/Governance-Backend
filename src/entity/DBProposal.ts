@@ -17,7 +17,7 @@ export class DBProposal extends BaseEntity {
   @Column({ nullable: false }) calldatas: string; // serialized array of hex values
   @Column({ nullable: false }) @Index() startTime: number;
   @Column({ nullable: false }) @Index() endTime: number;
-  @Column({ nullable: false }) description: string;
+  @Column({ nullable: false, type: 'text' }) description: string;
   @Column({ nullable: false }) @Index() votePowerBlock: number;
   @Column({ nullable: false }) votePowerBlockTs: number;
   @Column({ nullable: false }) @Index() wrappingThreshold: number;
@@ -38,7 +38,7 @@ export class DBProposal extends BaseEntity {
     entity.chainId = chainId;
     entity.contract = toHex(event.address);
     entity.pollingType = votingType;
-    entity.proposalId = toHex(params.proposalId, 32);
+    entity.proposalId = params.proposalId;
     entity.proposer = params.proposer;
     entity.targets = JSON.stringify(params.targets);
     entity.values = JSON.stringify(params.values.map((x) => toHex(x, 32)));
