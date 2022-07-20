@@ -20,7 +20,7 @@
       "typechain-web3-v1": "yarn typechain --target=web3-v1 --out-dir typechain-web3-v1 \"artifacts/!(build-info)/**/+([a-zA-Z0-9_]).json\" 1> nul",
       "artifacts": "npm-run-all sync typechain-web3-v1",
       "governor-cli": "yarn ts-node src/scripts/governor-cli.ts -n coston",
-      "event-collector": "yarn ts-node src/eventCollector.ts"
+      "event-collector": "yarn ts-node src/eventCollector.ts -c .secure.configs/networks/coston.json"
    },
    "dependencies": {
       "body-parser": "^1.19.0",
