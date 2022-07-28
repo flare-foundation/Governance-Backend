@@ -1,11 +1,10 @@
-
 export interface ContractDeploy {
    name: string;
    contractName: string;
    address: string;
    chainId?: number;
    abi?: any;
-};
+}
 
 export interface ContractEventBatch {
    contractName: string;
@@ -14,8 +13,8 @@ export interface ContractEventBatch {
    events: any[];
 }
 
-export const DEFAULT_GAS = "2500000";
-export const DEFAULT_GAS_PRICE = "50000000000"; // 50 Gwei
+export const DEFAULT_GAS = '2500000';
+export const DEFAULT_GAS_PRICE = '50000000000'; // 50 Gwei
 
 export interface DatabaseConnectOptions {
    type: string;
@@ -30,13 +29,12 @@ export interface WebServerOptions {
    port: number;
 }
 
-
-// Config file exports 
+// Config file exports
 export interface INetworkConfigJson {
-  NETWORK: string;
-  CHAIN_ID: number;
-  RPC: string;
-  MAX_BLOCKS_FOR_EVENT_READS?: number;
-  INDEXING_START_BLOCK?: number;
-  EVENT_COLLECTED_CONTRACTS: string[];
+   NETWORK: string;
+   CHAIN_ID: number;
+   RPC: string;
+   MAX_BLOCKS_FOR_EVENT_READS?: number;
+   INDEXING_START_BLOCK?: number;
+   EVENT_COLLECTED_CONTRACTS: string[];
 }

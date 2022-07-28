@@ -1,6 +1,6 @@
 export interface Contract {
-  name: string;
-  chainId: number;
-  contractName: string;
-  address: string;
+   name: string;
+   chainId: number;
+   contractName: string;
+   address: string;
 }

@@ -2,7 +2,6 @@ const _readline = require('readline');
 
 // low-level terminal interactions
 export class Terminal {
-
    stream: any;
    linewrap: boolean;
 
@@ -152,7 +151,7 @@ export class Terminal {
 
    // tty environment ?
    isTTY() {
-      return (this.stream.isTTY === true);
+      return this.stream.isTTY === true;
    }
 
    // get terminal width

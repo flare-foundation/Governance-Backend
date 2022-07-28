@@ -1,6 +1,6 @@
-import glob from "glob";
+import glob from 'glob';
 
-export async function relativeContractABIPathForContractName(name: string, artifactsRoot = "artifacts"): Promise<string> {
+export async function relativeContractABIPathForContractName(name: string, artifactsRoot = 'artifacts'): Promise<string> {
    return new Promise((resolve, reject) => {
       glob(`contracts/**/${name}.sol/${name}.json`, { cwd: artifactsRoot }, (er: any, files: string[] | null) => {
          if (er) {
@@ -21,13 +21,13 @@ export async function refreshArtifacts(contracts: string[], artifactsPath = '../
    const path = require('path');
 
    for (let contract of contracts) {
-      let abiPath = "";
+      let abiPath = '';
       try {
          abiPath = await relativeContractABIPathForContractName(contract, artifactsPath);
       } catch (e: any) {
-         console.log(`Cannot find contract ${contract}`)
+         console.log(`Cannot find contract ${contract}`);
          continue;
       }
-      fse.copySync(path.join(artifactsPath, abiPath), path.join("artifacts", abiPath));
+      fse.copySync(path.join(artifactsPath, abiPath), path.join('artifacts', abiPath));
    }
 }
