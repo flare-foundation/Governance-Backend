@@ -1,27 +1,26 @@
-import fs from "fs";
-import { Factory, Inject, Singleton } from "typescript-ioc";
-import Web3 from "web3";
-import { GovernanceVotePower } from "../../typechain-web3-v1/GovernanceVotePower";
-import { PollingAccept } from "../../typechain-web3-v1/PollingAccept";
-import { PollingReject } from "../../typechain-web3-v1/PollingReject";
-import { WNat } from "../../typechain-web3-v1/wNat";
-import { PollingContractType } from "../dto/Proposal";
-import { DBContract } from "../entity/DBContract";
-import { DBProposal } from "../entity/DBProposal";
-import { DBVote } from "../entity/DBVote";
-import { AttLogger, logException } from "../logger/logger";
-import { DBEntities } from "../utils/DBEntities";
-import { ContractDeploy, ContractEventBatch, DEFAULT_GAS, DEFAULT_GAS_PRICE } from "../utils/interfaces";
-import { getWeb3, getWeb3ContractWithAbi, sleepms, waitFinalize3Factory } from "../utils/utils";
-import { ConfigurationService } from "./ConfigurationService";
-import { DatabaseService } from "./DatabaseService";
-import { LoggerService } from "./LoggerService";
-import { NetworkService } from "./NetworkService";
+import fs from 'fs';
+import { Factory, Inject, Singleton } from 'typescript-ioc';
+import Web3 from 'web3';
+import { GovernanceVotePower } from '../../typechain-web3-v1/GovernanceVotePower';
+import { PollingAccept } from '../../typechain-web3-v1/PollingAccept';
+import { PollingReject } from '../../typechain-web3-v1/PollingReject';
+import { WNat } from '../../typechain-web3-v1/wNat';
+import { PollingContractType } from '../dto/Proposal';
+import { DBContract } from '../entity/DBContract';
+import { DBProposal } from '../entity/DBProposal';
+import { DBVote } from '../entity/DBVote';
+import { AttLogger, logException } from '../logger/logger';
+import { DBEntities } from '../utils/DBEntities';
+import { ContractDeploy, ContractEventBatch, DEFAULT_GAS, DEFAULT_GAS_PRICE } from '../utils/interfaces';
+import { getWeb3, getWeb3ContractWithAbi, sleepms, waitFinalize3Factory } from '../utils/utils';
+import { ConfigurationService } from './ConfigurationService';
+import { DatabaseService } from './DatabaseService';
+import { LoggerService } from './LoggerService';
+import { NetworkService } from './NetworkService';
 
 @Singleton
 @Factory(() => new ContractService())
 export class ContractService {
-
    @Inject
    configurationService: ConfigurationService;
 
@@ -57,7 +56,7 @@ export class ContractService {
       let deployFname = `deploys/${this.configurationService.network}.json`;
       this.deployData = JSON.parse(fs.readFileSync(deployFname).toString()) as ContractDeploy[];
       for (let contractDeploy of this.deployData) {
-         let [contractName] = contractDeploy.contractName.split(".");
+         let [contractName] = contractDeploy.contractName.split('.');
          let { contract, abi } = await getWeb3ContractWithAbi(this.web3, contractDeploy.address, contractName);
          this.deployMap.set(contractDeploy.name, contract);
          contractDeploy.address = contractDeploy.address.toLowerCase();
@@ -96,7 +95,7 @@ export class ContractService {
       label: string,
       toAddress: string,
       fnToEncode: any,
-      value = "0",
+      value = '0',
       gas: string = DEFAULT_GAS,
       gasPrice: string = DEFAULT_GAS_PRICE
    ): Promise<any> {
@@ -122,20 +121,17 @@ export class ContractService {
             } else {
                try {
                   const result = await fnToEncode.call({ from: account.address });
-                  throw Error("unlikely to happen: " + JSON.stringify(result));
-               }
-               catch (revertReason) {
+                  throw Error('unlikely to happen: ' + JSON.stringify(result));
+               } catch (revertReason) {
                   this.logger.error2(`${label}, nonce sent: ${nonce}, revert reason: ${revertReason}`);
                }
             }
             return null;
          }
-      }
-      catch (error) {
+      } catch (error) {
          logException(error, `signSendAndFinalize3`);
       }
    }
-
 
    public async waitForInitialization() {
       while (true) {
@@ -145,8 +141,7 @@ export class ContractService {
                await sleepms(1000);
                continue;
             }
-         }
-         catch (error) {
+         } catch (error) {
             logException(error, `waitForDBConnection`);
             await sleepms(1000);
             continue;
@@ -158,19 +153,19 @@ export class ContractService {
    /// Specific contracts - add them manually here
 
    public async governanceVotePower(): Promise<GovernanceVotePower> {
-      return (await this.getContract("GovernanceVotePower")) as GovernanceVotePower;
+      return (await this.getContract('GovernanceVotePower')) as GovernanceVotePower;
    }
 
    public async pollingReject(): Promise<PollingReject> {
-      return (await this.getContract("GovernorReject")) as PollingReject;
+      return (await this.getContract('GovernorReject')) as PollingReject;
    }
 
    public async pollingAccept(): Promise<PollingAccept> {
-      return (await this.getContract("GovernorAccept")) as PollingAccept;
+      return (await this.getContract('GovernorAccept')) as PollingAccept;
    }
 
    public async wNat(): Promise<WNat> {
-      return (await this.getContract("wNat")) as WNat;
+      return (await this.getContract('wNat')) as WNat;
    }
 
    public async getEventsFromBlockForContract(contractName: string, startBlock: number, endBlock: number): Promise<ContractEventBatch> {
@@ -180,10 +175,10 @@ export class ContractService {
             contractName,
             startBlock,
             endBlock,
-            events: []
+            events: [],
          } as ContractEventBatch;
       }
-      const events = await contract.getPastEvents("allEvents", { fromBlock: startBlock, toBlock: endBlock });
+      const events = await contract.getPastEvents('allEvents', { fromBlock: startBlock, toBlock: endBlock });
       if (events.length > 0) {
          this.logger.info(`${contractName}: ${events.length} new event(s)`);
       }
@@ -191,7 +186,7 @@ export class ContractService {
          contractName,
          startBlock,
          endBlock,
-         events
+         events,
       } as ContractEventBatch;
    }
 
@@ -199,19 +194,19 @@ export class ContractService {
    public async getEventsFromBlocks(contractNames: string[], startBlock: number, endBlock: number): Promise<ContractEventBatch[]> {
       let promises = [];
       for (let contractName of contractNames) {
-         promises.push(this.getEventsFromBlockForContract(contractName, startBlock, endBlock))
+         promises.push(this.getEventsFromBlockForContract(contractName, startBlock, endBlock));
       }
       return await Promise.all(promises);
    }
 
    public async processEvents(batch: ContractEventBatch): Promise<DBEntities> {
-      if (batch.contractName === "GovernanceVotePower") {
+      if (batch.contractName === 'GovernanceVotePower') {
          return await this.processGovernanceVotePowerEvents(batch);
       }
-      if (batch.contractName === "wNat") {
+      if (batch.contractName === 'wNat') {
          return await this.processWNatEvents(batch);
       }
-      if (batch.contractName.startsWith("PollingAccept") || batch.contractName.startsWith("PollingReject")) {
+      if (batch.contractName.startsWith('PollingAccept') || batch.contractName.startsWith('PollingReject')) {
          return await this.processGovernorEvents(batch);
       }
       return new DBEntities();
@@ -219,17 +214,18 @@ export class ContractService {
 
    public async processGovernorEvents(batch: ContractEventBatch): Promise<DBEntities> {
       let result = new DBEntities();
-      let voteType: PollingContractType = batch.contractName.startsWith("PollingAccept") ? "accept" : "reject";
+      let voteType: PollingContractType = batch.contractName.startsWith('PollingAccept') ? 'accept' : 'reject';
       for (let event of batch.events) {
-        const blockTs = await this.networkService.getBlockTimestamp(event.blockNumber);
-         if (event.event === "ProposalCreated") {
-            result.proposals.push(DBProposal.fromEvent(event, voteType, blockTs,  this.configurationService.chainId))
+         if (event.event === 'ProposalCreated') {
+            // proposal created needs block timestamp
+            const votePoweBlockTs = await this.networkService.getBlockTimestamp(event.votePowerBlock);
+            result.proposals.push(DBProposal.fromEvent(event, voteType, votePoweBlockTs, this.configurationService.chainId));
          }
-         if (event.event === "VoteCast") {
-            result.castedVotes.push(DBVote.fromEvent(event,  this.configurationService.chainId))
+         if (event.event === 'VoteCast') {
+            result.castedVotes.push(DBVote.fromEvent(event, this.configurationService.chainId));
          }
-         if (event.event === "ProposalExecuted") {
-            result.refreshProposalIds.push(event.returnValues.proposalId)
+         if (event.event === 'ProposalExecuted') {
+            result.refreshProposalIds.push(event.returnValues.proposalId);
          }
       }
       return result;
@@ -243,13 +239,11 @@ export class ContractService {
       return new DBEntities();
    }
 
-   public async votePowerForProposalId(voterAddress: string, votePowerBlock: number): Promise<string>{
-     const votePowerC = await this.governanceVotePower()
-     return await votePowerC.methods.votePowerOfAt(voterAddress, votePowerBlock).call();
+   public async votePowerForProposalId(voterAddress: string, votePowerBlock: number): Promise<string> {
+      const votePowerC = await this.governanceVotePower();
+      return await votePowerC.methods.votePowerOfAt(voterAddress, votePowerBlock).call();
    }
 }
-
-
 
 // Needed database records
 // 1) Record of all created proposals

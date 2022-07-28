@@ -1,18 +1,17 @@
-import { Factory, Inject, Singleton } from "typescript-ioc";
-import { DBProposal } from "../entity/DBProposal";
-import { DBState } from "../entity/DBState";
-import { AttLogger, logException } from "../logger/logger";
-import { DBEntities } from "../utils/DBEntities";
-import { delayPromise, getUnixEpochTimestamp, sleepms } from "../utils/utils";
-import { ConfigurationService } from "./ConfigurationService";
-import { ContractService } from "./ContractService";
-import { DatabaseService } from "./DatabaseService";
-import { LoggerService } from "./LoggerService";
+import { Factory, Inject, Singleton } from 'typescript-ioc';
+import { DBProposal } from '../entity/DBProposal';
+import { DBState } from '../entity/DBState';
+import { AttLogger, logException } from '../logger/logger';
+import { DBEntities } from '../utils/DBEntities';
+import { delayPromise, getUnixEpochTimestamp, sleepms } from '../utils/utils';
+import { ConfigurationService } from './ConfigurationService';
+import { ContractService } from './ContractService';
+import { DatabaseService } from './DatabaseService';
+import { LoggerService } from './LoggerService';
 
 @Singleton
 @Factory(() => new EventProcessorService())
 export class EventProcessorService {
-
    @Inject
    configurationService: ConfigurationService;
 
@@ -32,9 +31,9 @@ export class EventProcessorService {
    initialized = false;
 
    async getLastProcessedBlock(blockHeight: number): Promise<number> {
-      const res = await this.dbService.manager.findOne(DBState, { where: { name: "lastProcessedBlock" } });
+      const res = await this.dbService.manager.findOne(DBState, { where: { name: 'lastProcessedBlock' } });
       if (!res) {
-         if(this.configurationService.indexingStartBlock != null) {
+         if (this.configurationService.indexingStartBlock != null) {
             return this.configurationService.indexingStartBlock - 1;
          }
          return blockHeight - 1;
@@ -52,18 +51,14 @@ export class EventProcessorService {
       return state;
    }
 
-
    async saveEntities(eventEntities: any[], newLastProcessedBlock: number) {
       await this.dbService.connection.transaction(async (transaction) => {
-         const stateEntities = [
-            this.getStateEntry("lastProcessedBlock", newLastProcessedBlock),
-         ];
+         const stateEntities = [this.getStateEntry('lastProcessedBlock', newLastProcessedBlock)];
          if (eventEntities.length > 0) {
             await transaction.save(eventEntities);
          }
          await transaction.save(stateEntities);
       });
-
    }
 
    async updateProposals(dbEntities: DBEntities) {
@@ -80,7 +75,7 @@ export class EventProcessorService {
             proposalsIdsToFetchSet.add(proposalId);
          }
       }
-      for(let proposalId of dbEntities.refreshProposalIds) {
+      for (let proposalId of dbEntities.refreshProposalIds) {
          if (!proposalMap.has(proposalId)) {
             proposalsIdsToFetchSet.add(proposalId);
          }
@@ -90,8 +85,9 @@ export class EventProcessorService {
       let proposalIdsToFetch = [...proposalsIdsToFetchSet];
       let proposalsToRefresh: DBProposal[] = [];
       if (proposalIdsToFetch.length > 0) {
-         let query = this.dbService.connection.manager.createQueryBuilder(DBProposal, "proposal")
-            .andWhere("proposal.proposalId IN (:...proposalIds)", { proposalIds: proposalIdsToFetch });
+         let query = this.dbService.connection.manager
+            .createQueryBuilder(DBProposal, 'proposal')
+            .andWhere('proposal.proposalId IN (:...proposalIds)', { proposalIds: proposalIdsToFetch });
          proposalsToRefresh = await query.getMany();
          // add them into the map
          for (let proposal of proposalsToRefresh) {
@@ -106,10 +102,10 @@ export class EventProcessorService {
       let numProposals = allProposals.length;
 
       // Get relevant contracts to make current contract data reads
-      let contractsForAllProposals = await Promise.all(allProposals.map(proposal => this.contractService.getContractFromAddress(proposal.contract)));
-      // Read the proposal updates from chain. 
+      let contractsForAllProposals = await Promise.all(allProposals.map((proposal) => this.contractService.getContractFromAddress(proposal.contract)));
+      // Read the proposal updates from chain.
       let infoFnCallPromises = [];
-      let vpFnCallPromises = []
+      let vpFnCallPromises = [];
       let delayStep = 20;
       let delay = 0;
       for (let i = 0; i < numProposals; i++) {
@@ -127,13 +123,12 @@ export class EventProcessorService {
       for (let i = 0; i < numProposals; i++) {
          let proposal = allProposals[i];
          let infoUpdate = infoResults[i];
-         let vpUpdate = vpResults[i]
+         let vpUpdate = vpResults[i];
          DBProposal.updateEntityByProposalInfo(proposal, infoUpdate);
          DBProposal.updateEntityByProposalVPData(proposal, vpUpdate);
       }
       // Add old updated proposal to the entities to be saved
       dbEntities.proposals.push(...proposalsToRefresh);
-
    }
 
    async processEvents(batchSize = 100) {
@@ -148,12 +143,12 @@ export class EventProcessorService {
       while (true) {
          try {
             let currentBlockNumber = await this.contractService.web3.eth.getBlockNumber();
-            nextBlockToProcess = await this.getLastProcessedBlock(currentBlockNumber) + 1;
+            nextBlockToProcess = (await this.getLastProcessedBlock(currentBlockNumber)) + 1;
             if (firstRun) {
                this.logger.info(`^Rnetwork event processing started ^Y${nextBlockToProcess} (height ${blockHeight})`);
                firstRun = false;
             }
-            this.logger.info(`Current block: ${currentBlockNumber}, next ${nextBlockToProcess}`)
+            this.logger.info(`Current block: ${currentBlockNumber}, next ${nextBlockToProcess}`);
             // wait for new block
             if (nextBlockToProcess >= currentBlockNumber + 1) {
                await sleepms(1000);
@@ -179,16 +174,14 @@ export class EventProcessorService {
 
             for (let ceb of contractEventBatches) {
                let entityData = await this.contractService.processEvents(ceb);
-               dbEntities.proposals.push(...(entityData.proposals));
-               dbEntities.castedVotes.push(...(entityData.castedVotes));
+               dbEntities.proposals.push(...entityData.proposals);
+               dbEntities.castedVotes.push(...entityData.castedVotes);
             }
             await this.updateProposals(dbEntities);
-            await this.saveEntities([...(dbEntities.proposals), ...(dbEntities.castedVotes)], newLastProcessedBlock);
-         }
-         catch (error) {
+            await this.saveEntities([...dbEntities.proposals, ...dbEntities.castedVotes], newLastProcessedBlock);
+         } catch (error) {
             logException(error, `EventProcessorService::processEvents`);
          }
       }
    }
-
 }

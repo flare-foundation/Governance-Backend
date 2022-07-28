@@ -1,13 +1,12 @@
-import { Factory, Inject, Singleton } from "typescript-ioc";
-import { AttLogger, logException } from "../logger/logger";
-import { getWeb3Wallet, sleepms } from "../utils/utils";
-import { ConfigurationService } from "./ConfigurationService";
-import { ContractService } from "./ContractService";
+import { Factory, Inject, Singleton } from 'typescript-ioc';
+import { AttLogger, logException } from '../logger/logger';
+import { getWeb3Wallet, sleepms } from '../utils/utils';
+import { ConfigurationService } from './ConfigurationService';
+import { ContractService } from './ContractService';
 
 @Singleton
 @Factory(() => new TestAccountsService())
 export class TestAccountsService {
-
    @Inject
    configurationService: ConfigurationService;
 
@@ -19,17 +18,17 @@ export class TestAccountsService {
    proposerAccounts = [];
    voterAccounts = [];
 
-   constructor() {   
+   constructor() {
       this.init();
    }
 
    async init() {
       await this.contractService.waitForInitialization();
-      for(let pk of this.configurationService.proposerPrivateKeys) {
+      for (let pk of this.configurationService.proposerPrivateKeys) {
          let account = getWeb3Wallet(this.contractService.web3, pk);
          this.proposerAccounts.push(account);
       }
-      for(let pk of this.configurationService.voterPrivateKeys) {
+      for (let pk of this.configurationService.voterPrivateKeys) {
          let account = getWeb3Wallet(this.contractService.web3, pk);
          this.voterAccounts.push(account);
       }
@@ -39,19 +38,19 @@ export class TestAccountsService {
    get logger(): AttLogger {
       return this.contractService.logger;
    }
-   
+
    public getProposerAccount(i: number) {
-      if(i < 0 || i >= this.proposerAccounts.length) {
+      if (i < 0 || i >= this.proposerAccounts.length) {
          throw new Error(`The proposer account with the index ${i} does not exist`);
       }
-      return this.proposerAccounts[i]
+      return this.proposerAccounts[i];
    }
 
    public getVoterAccount(i: number) {
-      if(i < 0 || i >= this.voterAccounts.length) {
+      if (i < 0 || i >= this.voterAccounts.length) {
          throw new Error(`The proposer account with the index ${i} does not exist`);
       }
-      return this.voterAccounts[i]
+      return this.voterAccounts[i];
    }
 
    public async waitForInitialization() {
@@ -62,8 +61,7 @@ export class TestAccountsService {
                await sleepms(1000);
                continue;
             }
-         }
-         catch (error) {
+         } catch (error) {
             logException(error, `waitForDBConnection`);
             await sleepms(1000);
             continue;
@@ -71,5 +69,4 @@ export class TestAccountsService {
          break;
       }
    }
-
 }

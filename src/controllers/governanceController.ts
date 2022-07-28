@@ -1,27 +1,26 @@
-import { Controller, Get, Path, Query, Route, Tags } from "tsoa";
-import { Factory, Inject, Singleton } from "typescript-ioc";
-import { ApiResponse, handleApiResponse } from "../dto/generic/ApiResponse";
-import { PaginatedList } from "../dto/generic/PaginatedList";
-import { SortType } from "../dto/generic/PaginationRequest";
-import { PollingContractType, Proposal } from "../dto/Proposal";
-import { Vote } from "../dto/Vote";
-import { GovernanceEngine, ProposalSortType, VoteSortType } from "../engines/governanceEngine";
-import { ContractDeploy } from "../utils/interfaces";
+import { Controller, Get, Path, Query, Route, Tags } from 'tsoa';
+import { Factory, Inject, Singleton } from 'typescript-ioc';
+import { ApiResponse, handleApiResponse } from '../dto/generic/ApiResponse';
+import { PaginatedList } from '../dto/generic/PaginatedList';
+import { SortType } from '../dto/generic/PaginationRequest';
+import { PollingContractType, Proposal } from '../dto/Proposal';
+import { Vote } from '../dto/Vote';
+import { GovernanceEngine, ProposalSortType, VoteSortType } from '../engines/governanceEngine';
+import { ContractDeploy } from '../utils/interfaces';
 
 @Tags('Governance')
-@Route("api/governance")
+@Route('api/governance')
 @Singleton
 @Factory(() => new GovernanceController())
 export class GovernanceController extends Controller {
-
    @Inject
    private governanceEngine: GovernanceEngine;
 
    constructor() {
       super();
    }
-   
-   @Get("proposals/list")
+
+   @Get('proposals/list')
    public async getProposalList(
       @Query() chainId?: number,
       @Query() limit?: number,
@@ -37,40 +36,42 @@ export class GovernanceController extends Controller {
       @Query() maxEndTime?: number
    ): Promise<ApiResponse<PaginatedList<Proposal>>> {
       return handleApiResponse(
-         this.governanceEngine.getProposalList({chainId, limit, offset, sort, sortBy, pollingContractType, contract, description, minStartTime, maxStartTime, minEndTime, maxEndTime})
-      )
+         this.governanceEngine.getProposalList({
+            chainId,
+            limit,
+            offset,
+            sort,
+            sortBy,
+            pollingContractType,
+            contract,
+            description,
+            minStartTime,
+            maxStartTime,
+            minEndTime,
+            maxEndTime,
+         })
+      );
    }
 
-   @Get("proposals/{proposalId}")
-   public async getProposalById(
-      @Path() proposalId: string,
-      @Query() voterAddress?: string
-   ): Promise<ApiResponse<Proposal>> {
-      return handleApiResponse(
-         this.governanceEngine.getProposalById(proposalId, voterAddress)
-      )
+   @Get('proposals/{proposalId}')
+   public async getProposalById(@Path() proposalId: string, @Query() voterAddress?: string): Promise<ApiResponse<Proposal>> {
+      return handleApiResponse(this.governanceEngine.getProposalById(proposalId, voterAddress));
    }
 
-   @Get("deployed-contract-data")
-   public async deployedContractData(
-   ): Promise<ApiResponse<ContractDeploy[]>> {
-      return handleApiResponse(
-         this.governanceEngine.deployedContractData()
-      )
+   @Get('deployed-contract-data')
+   public async deployedContractData(): Promise<ApiResponse<ContractDeploy[]>> {
+      return handleApiResponse(this.governanceEngine.deployedContractData());
    }
 
-   @Get("votes-for-proposal/{proposalId}")
+   @Get('votes-for-proposal/{proposalId}')
    public async getVotesForProposal(
       @Path() proposalId: string,
       @Query() limit?: number,
       @Query() offset?: number,
       @Query() sort?: SortType,
       @Query() sortBy?: VoteSortType,
-      @Query() voter?: string,
+      @Query() voter?: string
    ): Promise<ApiResponse<PaginatedList<Vote>>> {
-      return handleApiResponse(
-         this.governanceEngine.getVotesForProposal({proposalId, limit, offset, sort, sortBy, voter})
-      )
+      return handleApiResponse(this.governanceEngine.getVotesForProposal({ proposalId, limit, offset, sort, sortBy, voter }));
    }
-
 }

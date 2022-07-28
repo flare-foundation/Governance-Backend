@@ -1,5 +1,5 @@
-import { DBProposal } from "../entity/DBProposal";
-import { DBVote } from "../entity/DBVote";
+import { DBProposal } from '../entity/DBProposal';
+import { DBVote } from '../entity/DBVote';
 
 export class DBEntities {
    public proposals: DBProposal[] = [];

@@ -1,7 +1,7 @@
-import { Column, Entity, Index, PrimaryColumn } from "typeorm";
-import { ContractDeploy } from "../utils/interfaces";
+import { Column, Entity, Index, PrimaryColumn } from 'typeorm';
+import { ContractDeploy } from '../utils/interfaces';
 
-@Entity({ name: "contract" })
+@Entity({ name: 'contract' })
 export class DBContract {
    @PrimaryColumn({}) name: string;
    @Column({ nullable: false }) @Index() chainId: number;
@@ -17,4 +17,3 @@ export class DBContract {
       return entity;
    }
 }
-

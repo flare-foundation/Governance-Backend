@@ -1,25 +1,25 @@
-import { Factory, Inject, Singleton } from "typescript-ioc";
-import { PaginatedList } from "../dto/generic/PaginatedList";
-import { PaginationRequest, SortType } from "../dto/generic/PaginationRequest";
-import { PollingContractType, Proposal } from "../dto/Proposal";
-import { Vote } from "../dto/Vote";
-import { DBProposal } from "../entity/DBProposal";
-import { DBVote } from "../entity/DBVote";
-import { ContractService } from "../services/ContractService";
-import { DatabaseService } from "../services/DatabaseService";
-import { MultiChainService } from "../services/MultiChainService";
-import { NetworkService } from "../services/NetworkService";
-import { ContractDeploy } from "../utils/interfaces";
+import { Factory, Inject, Singleton } from 'typescript-ioc';
+import { PaginatedList } from '../dto/generic/PaginatedList';
+import { PaginationRequest, SortType } from '../dto/generic/PaginationRequest';
+import { PollingContractType, Proposal } from '../dto/Proposal';
+import { Vote } from '../dto/Vote';
+import { DBProposal } from '../entity/DBProposal';
+import { DBVote } from '../entity/DBVote';
+import { ContractService } from '../services/ContractService';
+import { DatabaseService } from '../services/DatabaseService';
+import { MultiChainService } from '../services/MultiChainService';
+import { NetworkService } from '../services/NetworkService';
+import { ContractDeploy } from '../utils/interfaces';
 
 export interface ProposalPaginationRequest extends PaginationRequest {
-  chainId?: number;
+   chainId?: number;
    contract?: string;
-   pollingContractType?: PollingContractType,
-   description?: string,
-   minStartTime?: number,
-   maxStartTime?: number,
-   minEndTime?: number,
-   maxEndTime?: number
+   pollingContractType?: PollingContractType;
+   description?: string;
+   minStartTime?: number;
+   maxStartTime?: number;
+   minEndTime?: number;
+   maxEndTime?: number;
 }
 
 export interface VotePaginationRequest extends PaginationRequest {
@@ -28,74 +28,73 @@ export interface VotePaginationRequest extends PaginationRequest {
 }
 
 // These should be synced!
-export type ProposalSortType = "startTime" | "endTime" | "votePowerBlock" | "contract" | "proposalId" | "pollingType" | "description";
-const PROPOSAL_LEGIT_SORT_TYPES = ["startTime", "endTime", "votePowerBlock", "contract", "proposalId", "pollingType", "description"];
+export type ProposalSortType = 'startTime' | 'endTime' | 'votePowerBlock' | 'contract' | 'proposalId' | 'pollingType' | 'description';
+const PROPOSAL_LEGIT_SORT_TYPES = ['startTime', 'endTime', 'votePowerBlock', 'contract', 'proposalId', 'pollingType', 'description'];
 const PROPOSAL_MAX_LIMIT = 100;
 
-export type VoteSortType = "weight" | "id";
-const VOTE_LEGIT_SORT_TYPES = ["weight", "id"];
+export type VoteSortType = 'weight' | 'id';
+const VOTE_LEGIT_SORT_TYPES = ['weight', 'id'];
 const VOTE_MAX_LIMIT = 100;
 
 @Singleton
 @Factory(() => new GovernanceEngine())
 export class GovernanceEngine {
-
    @Inject
    dbService: DatabaseService;
 
-  //  @Inject
-  //  contractService: ContractService;
+   //  @Inject
+   //  contractService: ContractService;
 
-  @Inject
-  multiChainService: MultiChainService;
+   @Inject
+   multiChainService: MultiChainService;
 
    @Inject
    networkService: NetworkService;
 
    public async getProposalById(proposalId: string, voterAddress?: string): Promise<Proposal> {
-      const repo = this.dbService.manager.getRepository(DBProposal)
+      const repo = this.dbService.manager.getRepository(DBProposal);
       let result = await repo.find({ where: { proposalId } });
       if (result && result.length) {
-        if(voterAddress){
-          const chainId = result[0].chainId
-          return result[0].toDTO(voterAddress, await this.multiChainService.votePowerForProposalId(chainId, voterAddress, result[0].votePowerBlock));
-        } 
-        return result[0].toDTO();
+         if (voterAddress) {
+            const chainId = result[0].chainId;
+            return result[0].toDTO(voterAddress, await this.multiChainService.votePowerForProposalId(chainId, voterAddress, result[0].votePowerBlock));
+         }
+         return result[0].toDTO();
       }
       return null;
    }
 
    public async getProposalList(options: ProposalPaginationRequest): Promise<PaginatedList<Proposal>> {
-      let query = this.dbService.connection.manager.createQueryBuilder(DBProposal, "proposal");
+      let query = this.dbService.connection.manager.createQueryBuilder(DBProposal, 'proposal');
 
       if (options.chainId) {
-        query = query.andWhere("proposal.chainId = :chainId", { chainId: options.chainId });
+         query = query.andWhere('proposal.chainId = :chainId', { chainId: options.chainId });
       }
       if (options.contract) {
-         query = query.andWhere("proposal.contract = :contract", { contract: options.contract });
+         query = query.andWhere('proposal.contract = :contract', { contract: options.contract });
       }
       if (options.description) {
-         query = query.andWhere("proposal.description like :desc", { desc: `%${options.description}%` });
+         query = query.andWhere('proposal.description like :desc', { desc: `%${options.description}%` });
       }
       if (options.pollingContractType) {
-         query = query.andWhere("proposal.pollingType = :pollingContractType", { pollingContractType: options.pollingContractType });
+         query = query.andWhere('proposal.pollingType = :pollingContractType', { pollingContractType: options.pollingContractType });
       }
       if (options.minStartTime != null) {
-         query = query.andWhere("proposal.startTime >= :minStartTime", { minStartTime: options.minStartTime });
+         query = query.andWhere('proposal.startTime >= :minStartTime', { minStartTime: options.minStartTime });
       }
       if (options.maxStartTime != null) {
-         query = query.andWhere("proposal.startTime <= :maxStartTime", { maxStartTime: options.maxStartTime });
+         query = query.andWhere('proposal.startTime <= :maxStartTime', { maxStartTime: options.maxStartTime });
       }
       if (options.minEndTime != null) {
-         query = query.andWhere("proposal.endTime >= :minEndTime", { minEndTime: options.minEndTime });
+         query = query.andWhere('proposal.endTime >= :minEndTime', { minEndTime: options.minEndTime });
       }
       if (options.maxEndTime != null) {
-         query = query.andWhere("proposal.endTime <= :maxEndTime", { maxEndTime: options.maxEndTime });
+         query = query.andWhere('proposal.endTime <= :maxEndTime', { maxEndTime: options.maxEndTime });
       }
       if (options.sortBy && PROPOSAL_LEGIT_SORT_TYPES.indexOf(options.sortBy) >= 0) {
          // important verification due possible SQL injection!
          let order: SortType = options.sort === 'DESC' ? 'DESC' : 'ASC';
-         query = query.orderBy(`proposal.${options.sortBy}`, order)
+         query = query.orderBy(`proposal.${options.sortBy}`, order);
       }
 
       let count = await query.getCount();
@@ -104,14 +103,14 @@ export class GovernanceEngine {
 
       query = query.limit(limit).offset(offset);
 
-      let result = await query.getMany() as DBProposal[];
+      let result = (await query.getMany()) as DBProposal[];
       return new PaginatedList<Proposal>(
-        // TODO bloc ts should be part of proposal in db
-         result.map(dbProp => dbProp.toDTO()),
+         // TODO bloc ts should be part of proposal in db
+         result.map((dbProp) => dbProp.toDTO()),
          count,
          limit,
          offset
-      )
+      );
    }
 
    public async deployedContractData(): Promise<ContractDeploy[]> {
@@ -121,19 +120,19 @@ export class GovernanceEngine {
    }
 
    public async getVotesForProposal(options: VotePaginationRequest): Promise<PaginatedList<Vote>> {
-      let query = this.dbService.connection.manager.createQueryBuilder(DBVote, "vote");
+      let query = this.dbService.connection.manager.createQueryBuilder(DBVote, 'vote');
 
       if (options.proposalId) {
-         query = query.andWhere("vote.proposalId = :proposalId", { proposalId: options.proposalId });
+         query = query.andWhere('vote.proposalId = :proposalId', { proposalId: options.proposalId });
       }
       if (options.voter) {
-         query = query.andWhere("vote.voter = :voter", { voter: options.voter });
+         query = query.andWhere('vote.voter = :voter', { voter: options.voter });
       }
 
       if (options.sortBy && VOTE_LEGIT_SORT_TYPES.indexOf(options.sortBy) >= 0) {
          // important verification due possible SQL injection!
          let order: SortType = options.sort === 'DESC' ? 'DESC' : 'ASC';
-         query = query.orderBy(`vote.${options.sortBy}`, order)
+         query = query.orderBy(`vote.${options.sortBy}`, order);
       }
 
       let count = await query.getCount();
@@ -142,14 +141,12 @@ export class GovernanceEngine {
 
       query = query.limit(limit).offset(offset);
 
-      let result = await query.getMany() as DBVote[];
+      let result = (await query.getMany()) as DBVote[];
       return new PaginatedList<Vote>(
-         result.map(dbVote => dbVote.toDTO()),
+         result.map((dbVote) => dbVote.toDTO()),
          count,
          limit,
          offset
-      )
+      );
    }
-
-   
 }
