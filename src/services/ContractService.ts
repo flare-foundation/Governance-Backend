@@ -218,8 +218,8 @@ export class ContractService {
       for (let event of batch.events) {
          if (event.event === 'ProposalCreated') {
             // proposal created needs block timestamp
-            const votePoweBlockTs = await this.networkService.getBlockTimestamp(event.votePowerBlock);
-            result.proposals.push(DBProposal.fromEvent(event, voteType, votePoweBlockTs, this.configurationService.chainId));
+            const votePowerBlockTs = await this.networkService.getBlockTimestamp(parseInt(event.returnValues.votePowerBlock));
+            result.proposals.push(DBProposal.fromEvent(event, voteType, votePowerBlockTs, this.configurationService.chainId));
          }
          if (event.event === 'VoteCast') {
             result.castedVotes.push(DBVote.fromEvent(event, this.configurationService.chainId));
