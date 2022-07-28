@@ -216,9 +216,10 @@ export class ContractService {
       let result = new DBEntities();
       let voteType: PollingContractType = batch.contractName.startsWith('PollingAccept') ? 'accept' : 'reject';
       for (let event of batch.events) {
-         const blockTs = await this.networkService.getBlockTimestamp(event.blockNumber);
          if (event.event === 'ProposalCreated') {
-            result.proposals.push(DBProposal.fromEvent(event, voteType, blockTs, this.configurationService.chainId));
+            // proposal created needs block timestamp
+            const votePoweBlockTs = await this.networkService.getBlockTimestamp(event.votePowerBlock);
+            result.proposals.push(DBProposal.fromEvent(event, voteType, votePoweBlockTs, this.configurationService.chainId));
          }
          if (event.event === 'VoteCast') {
             result.castedVotes.push(DBVote.fromEvent(event, this.configurationService.chainId));

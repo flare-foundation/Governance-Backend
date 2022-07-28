@@ -32,7 +32,7 @@ export class DBProposal extends BaseEntity {
    @Column({ nullable: false }) @Index() against: string;
    @Column({ nullable: false }) @Index() abstain: string;
 
-   static fromEvent(event: any, votingType: PollingContractType, blockTs: number, chainId: number): DBProposal {
+   static fromEvent(event: any, votingType: PollingContractType, votePoweBlockTs: number, chainId: number): DBProposal {
       const entity = new DBProposal();
       let params = event.returnValues;
       entity.chainId = chainId;
@@ -48,7 +48,7 @@ export class DBProposal extends BaseEntity {
       entity.endTime = parseInt(params.endTime);
       entity.description = params.description;
       entity.votePowerBlock = parseInt(params.votePowerBlock);
-      entity.votePowerBlockTs = blockTs;
+      entity.votePowerBlockTs = votePoweBlockTs;
       entity.wrappingThreshold = parseInt(params.wrappingThreshold);
       entity.absoluteThreshold = parseInt(params.absoluteThreshold);
       entity.relativeThreshold = parseInt(params.relativeThreshold);
