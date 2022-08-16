@@ -1,32 +1,22 @@
 [
    {
-     "name": "GovernanceVotePower",
-     "contractName": "GovernanceVotePower.sol",
-     "address": "0x5dFddd30Ebf4fF41a107ED6214F9d32BaDB96D43"
+      "name": "GovernanceVotePower",
+      "contractName": "GovernanceVotePower.sol",
+      "address": "0xad8cf99b977c138f0fA5f5d8D0664ded4E5479DB"
    },
-    {
+   {
       "name": "wNat",
       "contractName": "wNat.sol",
-      "address": "0x5c1b3D6dBd2D1C30B14CA20919A34Fe36eFECbCC"
-    },
-    {
+      "address": "0x1659941d425224408c5679eeef606666c7991a8A"
+   },
+   {
       "name": "PollingReject",
       "contractName": "PollingReject.sol",
-      "address": "0x46fAd47cea64cAb996798c3CfaA421cf63b012Ef"
-    },
-    {
+      "address": "0xC8387ab5cCE270f31F3D615a4Ee108B08D42B39E"
+   },
+   {
       "name": "PollingAccept",
       "contractName": "PollingAccept.sol",
-      "address": "0x2300ad03458D5E6c65498fbeEA2e65193D7a6c8F"
-    },
-    {
-      "name": "PollingAccept1",
-      "contractName": "PollingAccept.sol",
-      "address": "0xe222AF175E3b07306De963931D72824cEf8E466C"
-    },
-    {
-      "name": "PollingAccept2",
-      "contractName": "PollingAccept.sol",
-      "address": "0x7c2C195CD6D34B8F845992d380aADB2730bB9C6F"
-    }
+      "address": "0x748472228391c8f75aa65fc745144F1fC95B63A9"
+   }
 ]
