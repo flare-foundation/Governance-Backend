@@ -1,7 +1,7 @@
 {
   "NETWORK": "flare",
   "CHAIN_ID": 14,
-  "RPC": "TODO",
+  "RPC": "https://flare-api.flare.network/ext/C/rpc",
   "MAX_BLOCKS_FOR_EVENT_READS": 30,
   "INDEXING_START_BLOCK": 0,
   "EVENT_COLLECTED_CONTRACTS": [

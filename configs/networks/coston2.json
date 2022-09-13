@@ -1,0 +1,11 @@
+{
+  "NETWORK": "coston2",
+  "CHAIN_ID": 114,
+  "RPC": "https://coston2-api.flare.network/ext/C/rpc",
+  "MAX_BLOCKS_FOR_EVENT_READS": 30,
+  "INDEXING_START_BLOCK": 5000,
+  "EVENT_COLLECTED_CONTRACTS": [
+    "GovernanceVotePower",
+    "wNat"
+  ]
+}

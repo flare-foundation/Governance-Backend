@@ -468,7 +468,7 @@
 		"securitySchemes": {}
 	},
 	"info": {
-		"title": "Governance-backend",
+		"title": "governance-backend",
 		"version": "1.0.0",
 		"description": "TSOA based backend with dependency injection and TypeORM",
 		"contact": {}
