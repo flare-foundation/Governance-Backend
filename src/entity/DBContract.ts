@@ -1,9 +1,14 @@
-import { Column, Entity, Index, PrimaryColumn } from 'typeorm';
+import { Column, Entity, Index, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 import { ContractDeploy } from '../utils/interfaces';
 
 @Entity({ name: 'contract' })
 export class DBContract {
-   @PrimaryColumn({}) name: string;
+  /**
+   * Auto incremented id
+   */
+   @PrimaryGeneratedColumn({ type: "int" })
+   id: number;
+   @Column({}) name: string;
    @Column({ nullable: false }) @Index() chainId: number;
    @Column({ nullable: false }) @Index() contractName: string;
    @Column({ nullable: false }) @Index() address: string;

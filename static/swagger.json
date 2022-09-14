@@ -328,7 +328,8 @@
 				"required": [
 					"name",
 					"contractName",
-					"address"
+					"address",
+					"chainId"
 				],
 				"type": "object",
 				"additionalProperties": false

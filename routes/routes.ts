@@ -132,7 +132,7 @@ const models: TsoaRoute.Models = {
             "name": {"dataType":"string","required":true},
             "contractName": {"dataType":"string","required":true},
             "address": {"dataType":"string","required":true},
-            "chainId": {"dataType":"double"},
+            "chainId": {"dataType":"double","required":true},
             "abi": {"dataType":"any"},
         },
         "additionalProperties": false,

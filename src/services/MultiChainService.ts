@@ -61,16 +61,16 @@ export class MultiChainService {
             deployed.chainId = config.CHAIN_ID;
             this.deployData.push(deployed);
          }
-         for (let contractDeploy of this.deployData) {
-            let [contractName] = contractDeploy.contractName.split('.');
-            let { contract, abi } = await getWeb3ContractWithAbi(this.web3[config.CHAIN_ID], contractDeploy.address, contractName);
-            this.deployMap[config.CHAIN_ID][contractDeploy.name] = contract;
-            contractDeploy.address = contractDeploy.address.toLowerCase();
-            this.addressToContactInfo[config.CHAIN_ID][contractDeploy.address.toLowerCase()] = contractDeploy;
-            //  contractDeploy.abi = abi;
-            let dbContract = DBContract.fromData(contractDeploy, config.CHAIN_ID);
-            this.dbService.manager.save(dbContract);
-         }
+      }
+      for (let contractDeploy of this.deployData) {
+         let [contractName] = contractDeploy.contractName.split('.');
+         let { contract, abi } = await getWeb3ContractWithAbi(this.web3[contractDeploy.chainId], contractDeploy.address, contractName);
+         this.deployMap[contractDeploy.chainId][contractDeploy.name] = contract;
+         contractDeploy.address = contractDeploy.address.toLowerCase();
+         this.addressToContactInfo[contractDeploy.chainId][contractDeploy.address.toLowerCase()] = contractDeploy;
+         //  contractDeploy.abi = abi;
+         let dbContract = DBContract.fromData(contractDeploy, contractDeploy.chainId);
+         this.dbService.manager.save(dbContract);
       }
       this.initialized = true;
    }

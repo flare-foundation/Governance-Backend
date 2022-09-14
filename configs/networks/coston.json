@@ -1,13 +1,19 @@
 {
-  "NETWORK": "coston",
-  "CHAIN_ID": 16,
-  "RPC": "https://coston-api.flare.network/ext/bc/C/rpc",
-  "MAX_BLOCKS_FOR_EVENT_READS": 30,
-  "INDEXING_START_BLOCK": 3600000,
-  "EVENT_COLLECTED_CONTRACTS": [
+   "NETWORK": "coston",
+   "CHAIN_ID": 16,
+   "RPC": "https://coston-api.flare.network/ext/bc/C/rpc",
+   "MAX_BLOCKS_FOR_EVENT_READS": 30,
+   "INDEXING_START_BLOCK": 3600000,
+   "TOKEN": {
+      "contractName": "wNat",
+      "symbol": "WCSGB",
+      "decimals": 18,
+      "image": ""
+   },
+   "EVENT_COLLECTED_CONTRACTS": [
     "GovernanceVotePower",
-    "PollingReject",
-    "PollingAccept",
+    "PollingReject", 
+    "PollingAccept", 
     "wNat"
   ]
 }

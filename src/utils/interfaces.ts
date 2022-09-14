@@ -2,7 +2,7 @@ export interface ContractDeploy {
    name: string;
    contractName: string;
    address: string;
-   chainId?: number;
+   chainId: number;
    abi?: any;
 }
 
