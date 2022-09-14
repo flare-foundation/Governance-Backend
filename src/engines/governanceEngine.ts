@@ -57,10 +57,10 @@ export class GovernanceEngine {
       if (result && result.length) {
          if (voterAddress) {
             const chainId = result[0].chainId;
-
-            // TODO cache this chain request
             try {
-               return result[0].toDTO(voterAddress, await this.multiChainService.votePowerForProposalId(chainId, voterAddress, result[0].votePowerBlock));
+               // TODO cache this chain request
+               const votePowerOf = await this.multiChainService.votePowerForProposalId(chainId, voterAddress, result[0].votePowerBlock)
+               return result[0].toDTO(voterAddress, votePowerOf);
             } catch (error) {
                console.log(error);
             }

@@ -6,10 +6,8 @@
   "INDEXING_START_BLOCK": 3600000,
   "EVENT_COLLECTED_CONTRACTS": [
     "GovernanceVotePower",
-    "GovernorReject",
-    "GovernorAccept",
-    "GovernorAccept1",
-    "GovernorAccept2",
+    "PollingReject",
+    "PollingAccept",
     "wNat"
   ]
 }
