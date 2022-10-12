@@ -7,6 +7,7 @@ import { PollingContractType } from '../dto/Proposal';
 import { DBProposal } from '../entity/DBProposal';
 import { ProposalStateOptions } from './enums';
 import { DEFAULT_GAS, DEFAULT_GAS_PRICE } from './interfaces';
+import crypto from 'crypto';
 
 export const BIPS = 10_000;
 
@@ -250,7 +251,7 @@ export function randomByWeights<T>(values: T[], weights: number[]): T {
    }
 
    let total = weights.reduce((a, b) => a + b);
-   let rand = Math.random() * total;
+   let rand = safeRandom() * total;
    let sum = 0;
    for (let i = 0; i < values.length; i++) {
       let weight = weights[i];
@@ -265,4 +266,8 @@ export function randomByWeights<T>(values: T[], weights: number[]): T {
 export async function delayPromise<T>(call: () => Promise<T>, delayMs = 100) {
    await sleepms(delayMs);
    return call();
+}
+
+export function safeRandom() {
+    return crypto.randomInt(0xffffffff)/0xffffffff;
 }

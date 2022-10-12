@@ -1,4 +1,4 @@
-import { Column, Entity, Index, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 import { ContractDeploy } from '../utils/interfaces';
 
 @Entity({ name: 'contract' })

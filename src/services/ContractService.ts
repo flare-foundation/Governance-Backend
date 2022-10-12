@@ -57,7 +57,7 @@ export class ContractService {
       this.deployData = JSON.parse(fs.readFileSync(deployFname).toString()) as ContractDeploy[];
       for (let contractDeploy of this.deployData) {
          let [contractName] = contractDeploy.contractName.split('.');
-         let { contract, abi } = await getWeb3ContractWithAbi(this.web3, contractDeploy.address, contractName);
+         let { contract } = await getWeb3ContractWithAbi(this.web3, contractDeploy.address, contractName);
          this.deployMap.set(contractDeploy.name, contract);
          contractDeploy.address = contractDeploy.address.toLowerCase();
          this.addressToContactInfo.set(contractDeploy.address.toLowerCase(), contractDeploy);
@@ -201,10 +201,10 @@ export class ContractService {
 
    public async processEvents(batch: ContractEventBatch): Promise<DBEntities> {
       if (batch.contractName === 'GovernanceVotePower') {
-         return await this.processGovernanceVotePowerEvents(batch);
+         return this.processGovernanceVotePowerEvents(batch);
       }
       if (batch.contractName === 'wNat') {
-         return await this.processWNatEvents(batch);
+         return this.processWNatEvents(batch);
       }
       if (batch.contractName.startsWith('PollingAccept') || batch.contractName.startsWith('PollingReject')) {
          return await this.processGovernorEvents(batch);

@@ -7,8 +7,7 @@ import { WNat } from '../../typechain-web3-v1/wNat';
 import { DBContract } from '../entity/DBContract';
 import { AttLogger, logException } from '../logger/logger';
 import { readJSON } from '../utils/config-utils';
-import { DBEntities } from '../utils/DBEntities';
-import { ContractDeploy, ContractEventBatch, INetworkConfigJson } from '../utils/interfaces';
+import { ContractDeploy, INetworkConfigJson } from '../utils/interfaces';
 import { getWeb3, getWeb3ContractWithAbi, sleepms } from '../utils/utils';
 import { DatabaseService } from './DatabaseService';
 import { LoggerService } from './LoggerService';
@@ -64,7 +63,7 @@ export class MultiChainService {
       }
       for (let contractDeploy of this.deployData) {
          let [contractName] = contractDeploy.contractName.split('.');
-         let { contract, abi } = await getWeb3ContractWithAbi(this.web3[contractDeploy.chainId], contractDeploy.address, contractName);
+         let { contract } = await getWeb3ContractWithAbi(this.web3[contractDeploy.chainId], contractDeploy.address, contractName);
          this.deployMap[contractDeploy.chainId][contractDeploy.name] = contract;
          contractDeploy.address = contractDeploy.address.toLowerCase();
          this.addressToContactInfo[contractDeploy.chainId][contractDeploy.address.toLowerCase()] = contractDeploy;

@@ -5,7 +5,6 @@ import { PollingContractType, Proposal } from '../dto/Proposal';
 import { Vote } from '../dto/Vote';
 import { DBProposal } from '../entity/DBProposal';
 import { DBVote } from '../entity/DBVote';
-import { ContractService } from '../services/ContractService';
 import { DatabaseService } from '../services/DatabaseService';
 import { MultiChainService } from '../services/MultiChainService';
 import { NetworkService } from '../services/NetworkService';

@@ -208,9 +208,9 @@ const myCustomLevels = {
    },
 };
 
-var globalLogger = new Map<string, AttLogger>();
+const globalLogger = new Map<string, AttLogger>();
 
-var globalLoggerLabel;
+let globalLoggerLabel: string;
 
 export interface AttLogger extends winston.Logger {
    title: (message: string) => null;
