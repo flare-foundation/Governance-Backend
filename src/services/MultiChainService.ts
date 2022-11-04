@@ -1,8 +1,7 @@
 import { Factory, Inject, Singleton } from 'typescript-ioc';
 import Web3 from 'web3';
 import { GovernanceVotePower } from '../../typechain-web3-v1/GovernanceVotePower';
-import { PollingAccept } from '../../typechain-web3-v1/PollingAccept';
-import { PollingReject } from '../../typechain-web3-v1/PollingReject';
+import { PollingFoundation } from '../../typechain-web3-v1/PollingFoundation';
 import { WNat } from '../../typechain-web3-v1/wNat';
 import { DBContract } from '../entity/DBContract';
 import { AttLogger, logException } from '../logger/logger';
@@ -87,11 +86,11 @@ export class MultiChainService {
       return this.addressToContactInfo[chainId]?.[address];
    }
 
-   public async getContractFromAddress(chainId: number, address: string): Promise<PollingAccept | PollingReject> {
+   public async getContractFromAddress(chainId: number, address: string): Promise<PollingFoundation> {
       await this.waitForInitialization();
       let deployInfo = this.addressToContactInfo[chainId]?.[address.toLowerCase()];
       if (deployInfo) {
-         return this.deployMap[chainId]?.[deployInfo.name] as PollingAccept | PollingReject;
+         return this.deployMap[chainId]?.[deployInfo.name] as PollingFoundation;
       }
    }
 
@@ -118,12 +117,8 @@ export class MultiChainService {
       return (await this.getContract(chainId, 'GovernanceVotePower')) as GovernanceVotePower;
    }
 
-   public async pollingReject(chainId: number): Promise<PollingReject> {
-      return (await this.getContract(chainId, 'GovernorReject')) as PollingReject;
-   }
-
-   public async pollingAccept(chainId: number): Promise<PollingAccept> {
-      return (await this.getContract(chainId, 'GovernorAccept')) as PollingAccept;
+   public async pollingFoundation(chainId: number): Promise<PollingFoundation> {
+      return (await this.getContract(chainId, 'PollingFoundation')) as PollingFoundation;
    }
 
    public async wNat(chainId: number): Promise<WNat> {

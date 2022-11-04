@@ -2,10 +2,6 @@ import BN from 'bn.js';
 import * as fs from 'fs';
 import glob from 'glob';
 import Web3 from 'web3';
-import { add } from 'winston';
-import { PollingContractType } from '../dto/Proposal';
-import { DBProposal } from '../entity/DBProposal';
-import { ProposalStateOptions } from './enums';
 import { DEFAULT_GAS, DEFAULT_GAS_PRICE } from './interfaces';
 import crypto from 'crypto';
 

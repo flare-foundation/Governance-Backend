@@ -70,12 +70,6 @@
 						},
 						"type": "array"
 					},
-					"signatures": {
-						"items": {
-							"type": "string"
-						},
-						"type": "array"
-					},
 					"calldatas": {
 						"items": {
 							"type": "string"
@@ -95,10 +89,6 @@
 					},
 					"votePowerBlock": {
 						"$ref": "#/components/schemas/VotePowerBlock"
-					},
-					"wrappingThreshold": {
-						"type": "number",
-						"format": "double"
 					},
 					"absoluteThreshold": {
 						"type": "number",
@@ -125,13 +115,13 @@
 					"executed": {
 						"type": "boolean"
 					},
+					"canceled": {
+						"type": "boolean"
+					},
 					"for": {
 						"type": "string"
 					},
 					"against": {
-						"type": "string"
-					},
-					"abstain": {
 						"type": "string"
 					},
 					"status": {
@@ -152,13 +142,11 @@
 					"proposer",
 					"targets",
 					"values",
-					"signatures",
 					"calldatas",
 					"startTime",
 					"endTime",
 					"description",
 					"votePowerBlock",
-					"wrappingThreshold",
 					"absoluteThreshold",
 					"relativeThreshold",
 					"execStartTime",
@@ -166,9 +154,9 @@
 					"totalVotePower",
 					"executableOnChain",
 					"executed",
+					"canceled",
 					"for",
 					"against",
-					"abstain",
 					"status"
 				],
 				"type": "object",

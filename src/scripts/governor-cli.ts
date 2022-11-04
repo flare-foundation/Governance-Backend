@@ -1,8 +1,7 @@
 import BN from 'bn.js';
 import dotenv from 'dotenv';
 import fs from 'fs';
-import { PollingAccept } from '../../typechain-web3-v1/PollingAccept';
-import { PollingReject } from '../../typechain-web3-v1/PollingReject';
+import { PollingFoundation } from '../../typechain-web3-v1/PollingFoundation';
 import { iocContainer } from '../ioc';
 import { ConfigurationService } from '../services/ConfigurationService';
 import { ContractService } from '../services/ContractService';
@@ -36,8 +35,8 @@ let args = yargs
    .option('contract', {
       alias: 'c',
       type: 'string',
-      default: 'PollingReject',
-      description: 'Contract name to vote on (e.g. PollingReject, PollingAccept1, ...',
+      default: 'PollingFoundation',
+      description: 'Contract name to vote on (e.g. PollingFoundation, ...',
    })
    .option('senderIndex', { alias: 'i', type: 'number', description: 'sequential id of the proposer or voter' })
    .option('proposalDescription', { alias: 'd', type: 'string', description: 'proposal description' })
@@ -62,8 +61,8 @@ const testAccountService = iocContainer(null).get(TestAccountsService);
 
 const logger = contractService.logger;
 
-async function getPollingContract(): Promise<PollingAccept | PollingReject> {
-   if (args['contract'].startsWith('PollingAccept') || args['contract'].startsWith('PollingReject')) {
+async function getPollingContract(): Promise<PollingFoundation> {
+   if (args['contract'] === 'PollingFoundation') {
       let result = await contractService.getContract(args['contract']);
       if (result) {
          return result;
@@ -78,15 +77,15 @@ async function settings() {
 
    logger.info(`Network: ${configurationService.network}`);
    logger.info(`Contract: ${args['contract']}`);
-   logger.info(`Wrapping threshold: ${(await pollingContract.methods.wrappingThreshold().call()).toString()}`);
-   logger.info(`Absolute threshold: ${(await pollingContract.methods.absoluteThreshold().call()).toString()}`);
-   logger.info(`Relative threshold: ${(await pollingContract.methods.relativeThreshold().call()).toString()}`);
-   logger.info(`Voting delay: ${(await pollingContract.methods.votingDelay().call()).toString()}`);
-   logger.info(`Voting period: ${(await pollingContract.methods.votingPeriod().call()).toString()}`);
-   logger.info(`Execution delay: ${(await pollingContract.methods.executionDelay().call()).toString()}`);
-   logger.info(`Execution period: ${(await pollingContract.methods.executionPeriod().call()).toString()}`);
-   logger.info(`Vote power life time days: ${(await pollingContract.methods.getVotePowerLifeTimeDays().call()).toString()}`);
-   logger.info(`Vote power block period seconds: ${(await pollingContract.methods.getVpBlockPeriodSeconds().call()).toString()}`);
+//    logger.info(`Wrapping threshold: ${(await pollingContract.methods.wrappingThreshold().call()).toString()}`);
+//    logger.info(`Absolute threshold: ${(await pollingContract.methods.absoluteThreshold().call()).toString()}`);
+//    logger.info(`Relative threshold: ${(await pollingContract.methods.relativeThreshold().call()).toString()}`);
+//    logger.info(`Voting delay: ${(await pollingContract.methods.votingDelay().call()).toString()}`);
+//    logger.info(`Voting period: ${(await pollingContract.methods.votingPeriod().call()).toString()}`);
+//    logger.info(`Execution delay: ${(await pollingContract.methods.executionDelay().call()).toString()}`);
+//    logger.info(`Execution period: ${(await pollingContract.methods.executionPeriod().call()).toString()}`);
+//    logger.info(`Vote power life time days: ${(await pollingContract.methods.getVotePowerLifeTimeDays().call()).toString()}`);
+//    logger.info(`Vote power block period seconds: ${(await pollingContract.methods.getVpBlockPeriodSeconds().call()).toString()}`);
 }
 
 async function propose(proposerIndex: number, description: string) {

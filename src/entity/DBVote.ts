@@ -1,4 +1,5 @@
 import { Column, Entity, Index } from 'typeorm';
+import { VoteCast } from '../../typechain-web3-v1/PollingFoundation';
 import { Vote } from '../dto/Vote';
 import { toBN, toHex } from '../utils/utils';
 import { BaseEntity } from './BaseEntity';
@@ -13,15 +14,15 @@ export class DBVote extends BaseEntity {
    @Column({ type: 'double', nullable: false }) @Index() weightFloat: number; // approximate vote power allowing for aggregations
    @Column({ nullable: false }) @Index() reason: string;
 
-   static fromEvent(event: any, chainId: number): DBVote {
+   static fromEvent(event: VoteCast, chainId: number): DBVote {
       const entity = new DBVote();
       let params = event.returnValues;
       entity.chainId = chainId;
       entity.voter = toHex(params.voter);
       entity.proposalId = params.proposalId;
       entity.support = parseInt(params.support);
-      entity.weight = toHex(toBN(params.weight), 32);
-      entity.weightFloat = parseFloat(params.weight);
+      entity.weight = toHex(toBN(params.votePower), 32);
+      entity.weightFloat = parseFloat(params.votePower);
       entity.reason = params.reason;
       return entity;
    }
@@ -39,10 +40,3 @@ export class DBVote extends BaseEntity {
    }
 }
 
-// event VoteCast(
-//    address indexed voter,
-//    uint256 proposalId,
-//    uint8 support,
-//    uint256 weight,
-//    string reason
-// );

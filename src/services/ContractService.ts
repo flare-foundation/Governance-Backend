@@ -2,15 +2,13 @@ import fs from 'fs';
 import { Factory, Inject, Singleton } from 'typescript-ioc';
 import Web3 from 'web3';
 import { GovernanceVotePower } from '../../typechain-web3-v1/GovernanceVotePower';
-import { PollingAccept } from '../../typechain-web3-v1/PollingAccept';
-import { PollingReject } from '../../typechain-web3-v1/PollingReject';
+import { PollingFoundation, ProposalCanceled, ProposalExecuted } from '../../typechain-web3-v1/PollingFoundation';
 import { WNat } from '../../typechain-web3-v1/wNat';
-import { PollingContractType } from '../dto/Proposal';
 import { DBContract } from '../entity/DBContract';
 import { DBProposal } from '../entity/DBProposal';
 import { DBVote } from '../entity/DBVote';
 import { AttLogger, logException } from '../logger/logger';
-import { DBEntities } from '../utils/DBEntities';
+import { DBEntities, VoteResult } from '../utils/DBEntities';
 import { ContractDeploy, ContractEventBatch, DEFAULT_GAS, DEFAULT_GAS_PRICE } from '../utils/interfaces';
 import { getWeb3, getWeb3ContractWithAbi, sleepms, waitFinalize3Factory } from '../utils/utils';
 import { ConfigurationService } from './ConfigurationService';
@@ -82,11 +80,11 @@ export class ContractService {
       return this.addressToContactInfo.get(address);
    }
 
-   public async getContractFromAddress(address: string): Promise<PollingAccept | PollingReject> {
+   public async getContractFromAddress(address: string): Promise<PollingFoundation> {
       await this.waitForInitialization();
       let deployInfo = this.addressToContactInfo.get(address.toLowerCase());
       if (deployInfo) {
-         return this.deployMap.get(deployInfo.name) as PollingAccept | PollingReject;
+         return this.deployMap.get(deployInfo.name) as PollingFoundation;
       }
    }
 
@@ -156,12 +154,8 @@ export class ContractService {
       return (await this.getContract('GovernanceVotePower')) as GovernanceVotePower;
    }
 
-   public async pollingReject(): Promise<PollingReject> {
-      return (await this.getContract('GovernorReject')) as PollingReject;
-   }
-
-   public async pollingAccept(): Promise<PollingAccept> {
-      return (await this.getContract('GovernorAccept')) as PollingAccept;
+   public async pollingFoundation(): Promise<PollingFoundation> {
+      return (await this.getContract('PollingFoundation')) as PollingFoundation;
    }
 
    public async wNat(): Promise<WNat> {
@@ -206,26 +200,30 @@ export class ContractService {
       if (batch.contractName === 'wNat') {
          return this.processWNatEvents(batch);
       }
-      if (batch.contractName.startsWith('PollingAccept') || batch.contractName.startsWith('PollingReject')) {
-         return await this.processGovernorEvents(batch);
+      if (batch.contractName === 'PollingFoundation') {
+         return await this.processPollingFoundationEvents(batch);
       }
       return new DBEntities();
    }
 
-   public async processGovernorEvents(batch: ContractEventBatch): Promise<DBEntities> {
-      let result = new DBEntities();
-      let voteType: PollingContractType = batch.contractName.startsWith('PollingAccept') ? 'accept' : 'reject';
-      for (let event of batch.events) {
+   public async processPollingFoundationEvents(batch: ContractEventBatch): Promise<DBEntities> {
+      const result = new DBEntities();
+      for (const event of batch.events) {
          if (event.event === 'ProposalCreated') {
-            // proposal created needs block timestamp
+            // created proposal needs block timestamp
             const votePowerBlockTs = await this.networkService.getBlockTimestamp(parseInt(event.returnValues.votePowerBlock));
-            result.proposals.push(DBProposal.fromEvent(event, voteType, votePowerBlockTs, this.configurationService.chainId));
+            result.proposals.push(DBProposal.fromEvent(event, votePowerBlockTs, this.configurationService.chainId));
          }
          if (event.event === 'VoteCast') {
             result.castedVotes.push(DBVote.fromEvent(event, this.configurationService.chainId));
+            result.voteResults.push(VoteResult.fromEvent(event));
+
          }
          if (event.event === 'ProposalExecuted') {
-            result.refreshProposalIds.push(event.returnValues.proposalId);
+            result.executedProposalIds.push((event as ProposalExecuted).returnValues.proposalId);
+         }
+         if (event.event === 'ProposalCanceled') {
+            result.canceledProposalIds.push((event as ProposalCanceled).returnValues.proposalId);
          }
       }
       return result;
@@ -245,19 +243,3 @@ export class ContractService {
    }
 }
 
-// Needed database records
-// 1) Record of all created proposals
-//    a) Listen for event 'ProposalCreated' and save all parameters
-//    b) Depending on which contract emits the event, we store the proposal type (rejection, acceptance)
-// 2) Additional proposal properties
-//    a) listen for event 'ProposalSettingsReject' (for rejection type) and store all parameters
-//    b) listen for event 'ProposalSettingsAccept' (for acceptance type) and store all parameters
-//    - THIS CONTRACT WILL BE DEPLOYED LATER
-//    c) data can be a linked to table (1) through proposalId
-// 3) Record of all votes regarding a specific proposal
-//    a) listen to event 'VoteCast' and store all parameters
-//    b) also store the timestamp of emitted event
-//    c) data can be linked to table (1) through proposalId
-// 4) Records of proposal numbers that are listed on a detailed proposal description page
-//    a) numbers are integers that are inputted when creating a proposal through the online form
-//    current location: https://github.com/flare-foundation/STP/tree/main/STPs

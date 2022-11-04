@@ -12,8 +12,7 @@
    },
    "EVENT_COLLECTED_CONTRACTS": [
     "GovernanceVotePower",
-    "PollingReject", 
-    "PollingAccept", 
+    "PollingFoundation",
     "wNat"
   ]
 }

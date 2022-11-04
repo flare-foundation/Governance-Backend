@@ -46,6 +46,8 @@ export interface GovernanceVotePower extends BaseContract {
   ): GovernanceVotePower;
   clone(): GovernanceVotePower;
   methods: {
+    cleanerContract(): NonPayableTransactionObject<string>;
+
     delegate(_to: string): NonPayableTransactionObject<void>;
 
     delegatedGovernanceVotePowerHistoryCleanup(

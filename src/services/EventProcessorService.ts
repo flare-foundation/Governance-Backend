@@ -1,4 +1,5 @@
 import { Factory, Inject, Singleton } from 'typescript-ioc';
+import { PollingFoundation } from '../../typechain-web3-v1/PollingFoundation';
 import { DBProposal } from '../entity/DBProposal';
 import { DBState } from '../entity/DBState';
 import { AttLogger, logException } from '../logger/logger';
@@ -8,6 +9,7 @@ import { ConfigurationService } from './ConfigurationService';
 import { ContractService } from './ContractService';
 import { DatabaseService } from './DatabaseService';
 import { LoggerService } from './LoggerService';
+import { ProposalInfoEventParams, ProposalVotesEventParams } from './types';
 
 @Singleton
 @Factory(() => new EventProcessorService())
@@ -61,13 +63,15 @@ export class EventProcessorService {
       });
    }
 
-   async updateProposals(dbEntities: DBEntities) {
-      let proposalMap = new Map<string, DBProposal>();
-      // new proposals
+   async updateProposals(dbEntities: DBEntities): Promise<DBProposal[]> {
+      const proposalMap = new Map<string, DBProposal>();
+
+      // New proposals
       for (let proposal of dbEntities.proposals) {
          proposalMap.set(proposal.proposalId, proposal);
       }
-      // other proposals on which votes were but are not new
+
+      // Other proposals on which votes were but are not new
       let proposalsIdsToFetchSet = new Set<string>();
       for (let castedVote of dbEntities.castedVotes) {
          let proposalId = castedVote.proposalId;
@@ -75,9 +79,21 @@ export class EventProcessorService {
             proposalsIdsToFetchSet.add(proposalId);
          }
       }
-      for (let proposalId of dbEntities.refreshProposalIds) {
+      for (let proposalId of dbEntities.executedProposalIds) {
          if (!proposalMap.has(proposalId)) {
             proposalsIdsToFetchSet.add(proposalId);
+         }
+      }
+      for (let proposalId of dbEntities.canceledProposalIds) {
+         if (!proposalMap.has(proposalId)) {
+            proposalsIdsToFetchSet.add(proposalId);
+         }
+      }
+
+      // This is not necessary because ids should be the same as in casted votes
+      for (let voteResult of dbEntities.voteResults) {
+         if (!proposalMap.has(voteResult.proposalId)) {
+            proposalsIdsToFetchSet.add(voteResult.proposalId);
          }
       }
 
@@ -97,38 +113,33 @@ export class EventProcessorService {
          }
       }
 
-      // new and old proposals will all get refreshed to the latest state
-      let allProposals = [...dbEntities.proposals, ...proposalsToRefresh];
-      let numProposals = allProposals.length;
-
-      // Get relevant contracts to make current contract data reads
-      let contractsForAllProposals = await Promise.all(allProposals.map((proposal) => this.contractService.getContractFromAddress(proposal.contract)));
-      // Read the proposal updates from chain.
-      let infoFnCallPromises = [];
-      let vpFnCallPromises = [];
-      let delayStep = 20;
-      let delay = 0;
-      for (let i = 0; i < numProposals; i++) {
-         let contract = contractsForAllProposals[i];
-         let proposalId = allProposals[i].proposalId;
-
-         infoFnCallPromises.push(delayPromise<any>(() => contract.methods.getProposalInfo(proposalId).call(), delay));
-         delay += delayStep;
-         vpFnCallPromises.push(delayPromise<any>(() => contract.methods.getProposalVP(proposalId).call(), delay));
-         delay += delayStep;
+      // Refresh vote result
+      for (const voteResult of dbEntities.voteResults) {
+         const proposal = proposalMap.get(voteResult.proposalId);
+         if (!proposal) {
+            // just in case, if proposal in not in db
+            continue;
+         }
+         proposal.updateVotes(voteResult.newFor, voteResult.newAgainst);
       }
 
-      let infoResults = await Promise.all(infoFnCallPromises);
-      let vpResults = await Promise.all(vpFnCallPromises);
-      for (let i = 0; i < numProposals; i++) {
-         let proposal = allProposals[i];
-         let infoUpdate = infoResults[i];
-         let vpUpdate = vpResults[i];
-         DBProposal.updateEntityByProposalInfo(proposal, infoUpdate);
-         DBProposal.updateEntityByProposalVPData(proposal, vpUpdate);
+      // Refresh executed field
+      for (const executedProposalId of dbEntities.executedProposalIds) {
+         const proposal = proposalMap.get(executedProposalId);
+         if (proposal) {
+            proposal.executed = true;
+         }
       }
-      // Add old updated proposal to the entities to be saved
-      dbEntities.proposals.push(...proposalsToRefresh);
+
+      // Refresh canceled field
+      for (const canceledProposalId of dbEntities.canceledProposalIds) {
+         const proposal = proposalMap.get(canceledProposalId);
+         if (proposal) {
+            proposal.canceled = true;
+         }
+      }
+
+      return [...dbEntities.proposals, ...proposalsToRefresh];
    }
 
    async processEvents(batchSize = 100) {
@@ -137,7 +148,7 @@ export class EventProcessorService {
       await this.contractService.waitForInitialization();
       this.logger.info(`waiting for network connection...`);
       const blockHeight = await this.contractService.web3.eth.getBlockNumber();
-      let nextBlockToProcess;
+      let nextBlockToProcess: number;
 
       let firstRun = true;
       while (true) {
@@ -176,9 +187,11 @@ export class EventProcessorService {
                let entityData = await this.contractService.processEvents(ceb);
                dbEntities.proposals.push(...entityData.proposals);
                dbEntities.castedVotes.push(...entityData.castedVotes);
+               dbEntities.executedProposalIds.push(...entityData.executedProposalIds);
+               dbEntities.canceledProposalIds.push(...entityData.canceledProposalIds);
             }
-            await this.updateProposals(dbEntities);
-            await this.saveEntities([...dbEntities.proposals, ...dbEntities.castedVotes], newLastProcessedBlock);
+            const proposalsToSave = await this.updateProposals(dbEntities);
+            await this.saveEntities([...proposalsToSave, ...dbEntities.castedVotes], newLastProcessedBlock);
          } catch (error) {
             logException(error, `EventProcessorService::processEvents`);
          }

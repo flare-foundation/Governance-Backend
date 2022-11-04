@@ -22,6 +22,7 @@ export enum ProposalStateOptions {
    Queued = 'Queued',
    Expired = 'Expired',
    Executed = 'Executed',
+   Canceled = 'Canceled',
 }
 
 export enum ProposalVotingStatus {
