@@ -19,7 +19,7 @@
       "routes": "tsoa routes && tsoa spec",
       "build": "npm-run-all clean tsc routes",
       "dev:start": "npm-run-all build start",
-      "start": "ts-node src/index.ts",
+      "start": "ts-node src/server.ts",
       "prewatch-and-run": "npm-run-all routes",
       "watch-and-run": "ts-node-dev --notify --respawn -- src/server.ts",
       "dev": "npm run watch-and-run",

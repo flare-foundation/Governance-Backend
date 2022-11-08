@@ -30,4 +30,5 @@ export enum ProposalVotingStatus {
    Active = 'Active',
    Defeated = 'Defeated',
    Succeeded = 'Succeeded',
+   Canceled = 'Canceled',
 }

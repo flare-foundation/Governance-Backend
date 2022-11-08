@@ -27,7 +27,6 @@ export interface Proposal {
    totalVotePower: string;
    executableOnChain: boolean;
    executed: boolean;
-   canceled: boolean;
    for: string;
    against: string;
    status: ProposalVotingStatus;

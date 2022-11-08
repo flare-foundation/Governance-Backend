@@ -167,6 +167,10 @@ export class DBProposal extends BaseEntity {
    }
 
    proposalVotingStatus(): ProposalVotingStatus {
+      if (this.canceled) {
+         return ProposalVotingStatus.Canceled;
+      }
+
       const now = Math.floor(Date.now() / 1000);
 
       if (this.startTime > now) {
@@ -217,7 +221,6 @@ export class DBProposal extends BaseEntity {
          totalVotePower: this.totalVotePower,
          executableOnChain: this.executableOnChain,
          executed: this.executed,
-         canceled: this.canceled,
          for: this.for,
          against: this.against,
          status: this.proposalVotingStatus(),
