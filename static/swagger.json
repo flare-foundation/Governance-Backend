@@ -36,7 +36,8 @@
 					"Pending",
 					"Active",
 					"Defeated",
-					"Succeeded"
+					"Succeeded",
+					"Canceled"
 				],
 				"type": "string"
 			},
@@ -115,9 +116,6 @@
 					"executed": {
 						"type": "boolean"
 					},
-					"canceled": {
-						"type": "boolean"
-					},
 					"for": {
 						"type": "string"
 					},
@@ -154,7 +152,6 @@
 					"totalVotePower",
 					"executableOnChain",
 					"executed",
-					"canceled",
 					"for",
 					"against",
 					"status"

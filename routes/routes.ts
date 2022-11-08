@@ -30,7 +30,7 @@ const models: TsoaRoute.Models = {
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "ProposalVotingStatus": {
         "dataType": "refEnum",
-        "enums": ["Pending","Active","Defeated","Succeeded"],
+        "enums": ["Pending","Active","Defeated","Succeeded","Canceled"],
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Proposal": {
@@ -55,7 +55,6 @@ const models: TsoaRoute.Models = {
             "totalVotePower": {"dataType":"string","required":true},
             "executableOnChain": {"dataType":"boolean","required":true},
             "executed": {"dataType":"boolean","required":true},
-            "canceled": {"dataType":"boolean","required":true},
             "for": {"dataType":"string","required":true},
             "against": {"dataType":"string","required":true},
             "status": {"ref":"ProposalVotingStatus","required":true},
