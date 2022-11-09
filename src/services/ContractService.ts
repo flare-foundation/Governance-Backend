@@ -201,7 +201,7 @@ export class ContractService {
          return this.processWNatEvents(batch);
       }
       if (batch.contractName === 'PollingFoundation') {
-         return await this.processPollingFoundationEvents(batch);
+         return this.processPollingFoundationEvents(batch);
       }
       return new DBEntities();
    }

@@ -1,15 +1,13 @@
 import { Factory, Inject, Singleton } from 'typescript-ioc';
-import { PollingFoundation } from '../../typechain-web3-v1/PollingFoundation';
 import { DBProposal } from '../entity/DBProposal';
 import { DBState } from '../entity/DBState';
 import { AttLogger, logException } from '../logger/logger';
 import { DBEntities } from '../utils/DBEntities';
-import { delayPromise, getUnixEpochTimestamp, sleepms } from '../utils/utils';
+import { getUnixEpochTimestamp, sleepms } from '../utils/utils';
 import { ConfigurationService } from './ConfigurationService';
 import { ContractService } from './ContractService';
 import { DatabaseService } from './DatabaseService';
 import { LoggerService } from './LoggerService';
-import { ProposalInfoEventParams, ProposalVotesEventParams } from './types';
 
 @Singleton
 @Factory(() => new EventProcessorService())

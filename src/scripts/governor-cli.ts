@@ -73,19 +73,19 @@ async function getPollingContract(): Promise<PollingFoundation> {
 
 async function settings() {
    await contractService.waitForInitialization();
-   let pollingContract = await getPollingContract();
+   //  let pollingContract = await getPollingContract();
 
    logger.info(`Network: ${configurationService.network}`);
    logger.info(`Contract: ${args['contract']}`);
-//    logger.info(`Wrapping threshold: ${(await pollingContract.methods.wrappingThreshold().call()).toString()}`);
-//    logger.info(`Absolute threshold: ${(await pollingContract.methods.absoluteThreshold().call()).toString()}`);
-//    logger.info(`Relative threshold: ${(await pollingContract.methods.relativeThreshold().call()).toString()}`);
-//    logger.info(`Voting delay: ${(await pollingContract.methods.votingDelay().call()).toString()}`);
-//    logger.info(`Voting period: ${(await pollingContract.methods.votingPeriod().call()).toString()}`);
-//    logger.info(`Execution delay: ${(await pollingContract.methods.executionDelay().call()).toString()}`);
-//    logger.info(`Execution period: ${(await pollingContract.methods.executionPeriod().call()).toString()}`);
-//    logger.info(`Vote power life time days: ${(await pollingContract.methods.getVotePowerLifeTimeDays().call()).toString()}`);
-//    logger.info(`Vote power block period seconds: ${(await pollingContract.methods.getVpBlockPeriodSeconds().call()).toString()}`);
+   //  logger.info(`Wrapping threshold: ${(await pollingContract.methods.wrappingThreshold().call()).toString()}`);
+   //  logger.info(`Absolute threshold: ${(await pollingContract.methods.absoluteThreshold().call()).toString()}`);
+   //  logger.info(`Relative threshold: ${(await pollingContract.methods.relativeThreshold().call()).toString()}`);
+   //  logger.info(`Voting delay: ${(await pollingContract.methods.votingDelay().call()).toString()}`);
+   //  logger.info(`Voting period: ${(await pollingContract.methods.votingPeriod().call()).toString()}`);
+   //  logger.info(`Execution delay: ${(await pollingContract.methods.executionDelay().call()).toString()}`);
+   //  logger.info(`Execution period: ${(await pollingContract.methods.executionPeriod().call()).toString()}`);
+   //  logger.info(`Vote power life time days: ${(await pollingContract.methods.getVotePowerLifeTimeDays().call()).toString()}`);
+   //  logger.info(`Vote power block period seconds: ${(await pollingContract.methods.getVpBlockPeriodSeconds().call()).toString()}`);
 }
 
 async function propose(proposerIndex: number, description: string) {
