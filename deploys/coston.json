@@ -2,16 +2,16 @@
    {
       "name": "GovernanceVotePower",
       "contractName": "GovernanceVotePower.sol",
-      "address": "0xad8cf99b977c138f0fA5f5d8D0664ded4E5479DB"
+      "address": "0xEb10E3a19Ae0e2564E2c86dBd89517fe7F24789d"
    },
    {
       "name": "wNat",
       "contractName": "wNat.sol",
-      "address": "0x1659941d425224408c5679eeef606666c7991a8A"
+      "address": "0x767b25A658E8FC8ab6eBbd52043495dB61b4ea91"
    },
    {
       "name": "PollingFoundation",
       "contractName": "PollingFoundation.sol",
-      "address": "0x5bd55abEFf31F88cfd477B42EC6Dbf148a65F657"
+      "address": "0x260669AF91a406CB0A57EB8Db8A97Fc7Eab4dc06"
    }
 ]
