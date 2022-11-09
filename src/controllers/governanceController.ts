@@ -33,7 +33,8 @@ export class GovernanceController extends Controller {
       @Query() minStartTime?: number,
       @Query() maxStartTime?: number,
       @Query() minEndTime?: number,
-      @Query() maxEndTime?: number
+      @Query() maxEndTime?: number,
+      @Query() canceled?: boolean,
    ): Promise<ApiResponse<PaginatedList<Proposal>>> {
       return handleApiResponse(
          this.governanceEngine.getProposalList({
@@ -49,6 +50,7 @@ export class GovernanceController extends Controller {
             maxStartTime,
             minEndTime,
             maxEndTime,
+            canceled,
          })
       );
    }

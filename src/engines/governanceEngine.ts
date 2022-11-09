@@ -19,6 +19,7 @@ export interface ProposalPaginationRequest extends PaginationRequest {
    maxStartTime?: number;
    minEndTime?: number;
    maxEndTime?: number;
+   canceled?: boolean;
 }
 
 export interface VotePaginationRequest extends PaginationRequest {
@@ -95,6 +96,9 @@ export class GovernanceEngine {
       }
       if (options.maxEndTime != null) {
          query = query.andWhere('proposal.endTime <= :maxEndTime', { maxEndTime: options.maxEndTime });
+      }
+      if (options.canceled != null) {
+         query = query.andWhere('proposal.canceled = :canceled', { canceled: options.canceled });
       }
       if (options.sortBy && PROPOSAL_LEGIT_SORT_TYPES.indexOf(options.sortBy) >= 0) {
          // important verification due possible SQL injection!

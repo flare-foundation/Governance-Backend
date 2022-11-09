@@ -215,6 +215,7 @@ export function RegisterRoutes(app: express.Router) {
                     maxStartTime: {"in":"query","name":"maxStartTime","dataType":"double"},
                     minEndTime: {"in":"query","name":"minEndTime","dataType":"double"},
                     maxEndTime: {"in":"query","name":"maxEndTime","dataType":"double"},
+                    canceled: {"in":"query","name":"canceled","dataType":"boolean"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
