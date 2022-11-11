@@ -13,5 +13,10 @@
       "name": "PollingFoundation",
       "contractName": "PollingFoundation.sol",
       "address": "0xa01780DC9Db6E70724F55dD0978739AC4fbA9eDd"
+   },
+   {
+      "name": "FtsoRewardManager",
+      "contractName": "FtsoRewardManager.sol",
+      "address": "0xa527FD5F3ccC7D384c56993eF5075025D661Af57"
    }
 ]

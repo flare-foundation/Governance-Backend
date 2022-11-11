@@ -71,5 +71,8 @@
       "ts-node-dev": "^1.1.8",
       "typechain": "5.1.2",
       "typescript": "^4.1.5"
+   },
+   "resolutions": {
+      "got": "^11.8.5"
    }
 }
