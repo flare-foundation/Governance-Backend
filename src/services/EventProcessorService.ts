@@ -185,6 +185,7 @@ export class EventProcessorService {
                let entityData = await this.contractService.processEvents(ceb);
                dbEntities.proposals.push(...entityData.proposals);
                dbEntities.castedVotes.push(...entityData.castedVotes);
+               dbEntities.voteResults.push(...entityData.voteResults);
                dbEntities.executedProposalIds.push(...entityData.executedProposalIds);
                dbEntities.canceledProposalIds.push(...entityData.canceledProposalIds);
             }
