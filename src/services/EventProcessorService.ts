@@ -166,7 +166,7 @@ export class EventProcessorService {
 
             let endBlock = Math.min(nextBlockToProcess + batchSize - 1, currentBlockNumber);
             let contractEventBatches = await this.contractService.getEventsFromBlocks(
-               this.contractService.availableContractNames,
+               this.configurationService.eventCollectedContracts,
                nextBlockToProcess,
                endBlock
             );
