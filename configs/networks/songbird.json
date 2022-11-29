@@ -12,6 +12,7 @@
  },
   "EVENT_COLLECTED_CONTRACTS": [
     "GovernanceVotePower",
+    "PollingFoundation",
     "wNat"
   ]
 }
