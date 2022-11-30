@@ -10,13 +10,13 @@
       "address": "0xC67DCE33D7A8efA5FfEB961899C73fe01bCe9273"
    },
    {
-      "name": "FtsoRewardManager",
-      "contractName": "FtsoRewardManager.sol",
-      "address": "0x6380E71ca58d69eb692d4f97dF2389B45Dc3dD2C"
+      "name": "PollingFoundation",
+      "contractName": "PollingFoundation.sol",
+      "address": "0x8382657eb70f996DCC255A62B77Dc24F65d0ad2f"
    },
    {
-      "name": "DelegationAccountManager",
-      "contractName": "DelegationAccountManager.sol",
-      "address": "0xad1AFCF2670577429A5130eEE83E36820eACb1bC"
+      "name": "FtsoRewardManager",
+      "contractName": "FtsoRewardManager.sol",
+      "address": "0xBbfff13a0EB1C032D5B66207c1aF971b6f393Cc8"
    }
 ]
