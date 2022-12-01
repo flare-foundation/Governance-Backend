@@ -18,5 +18,10 @@
       "name": "FtsoRewardManager",
       "contractName": "FtsoRewardManager.sol",
       "address": "0xBbfff13a0EB1C032D5B66207c1aF971b6f393Cc8"
+   },
+   {
+      "name": "DelegationAccountManager",
+      "contractName": "DelegationAccountManager.sol",
+      "address": "0x56Bd34FF8DC809259377652167E365416E617a5f"
    }
 ]
