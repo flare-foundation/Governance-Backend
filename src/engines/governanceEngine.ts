@@ -1,6 +1,6 @@
 import { Factory, Inject, Singleton } from 'typescript-ioc';
 import { PaginatedList } from '../dto/generic/PaginatedList';
-import { PaginationRequest, SortType } from '../dto/generic/PaginationRequest';
+import { PaginationRequest } from '../dto/generic/PaginationRequest';
 import { PollingContractType, Proposal } from '../dto/Proposal';
 import { Vote } from '../dto/Vote';
 import { DBProposal } from '../entity/DBProposal';
@@ -9,12 +9,12 @@ import { DatabaseService } from '../services/DatabaseService';
 import { MultiChainService } from '../services/MultiChainService';
 import { NetworkService } from '../services/NetworkService';
 import { ContractDeploy } from '../utils/interfaces';
+import { checkLegitSortByType, sanitizeSortTypeString } from '../utils/service-utils';
 
-export interface ProposalPaginationRequest extends PaginationRequest {
+export interface ProposalPaginationRequest extends PaginationRequest<ProposalSortType> {
    chainId?: number;
    contract?: string;
    pollingContractType?: PollingContractType;
-   description?: string;
    minStartTime?: number;
    maxStartTime?: number;
    minEndTime?: number;
@@ -22,19 +22,19 @@ export interface ProposalPaginationRequest extends PaginationRequest {
    canceled?: boolean;
 }
 
-export interface VotePaginationRequest extends PaginationRequest {
+export interface VotePaginationRequest extends PaginationRequest<VoteSortType> {
    proposalId?: string;
    voter?: string;
 }
 
 // These should be synced!
-export type ProposalSortType = 'startTime' | 'endTime' | 'votePowerBlock' | 'contract' | 'proposalId' | 'pollingType' | 'description';
-const PROPOSAL_LEGIT_SORT_TYPES = ['startTime', 'endTime', 'votePowerBlock', 'contract', 'proposalId', 'pollingType', 'description'];
+const PROPOSAL_LEGIT_SORT_TYPES = ['startTime', 'endTime', 'votePowerBlock', 'contract', 'proposalId', 'pollingType', 'description'] as const;
 const PROPOSAL_MAX_LIMIT = 100;
+export type ProposalSortType = typeof PROPOSAL_LEGIT_SORT_TYPES[number]
 
-export type VoteSortType = 'weight' | 'id';
-const VOTE_LEGIT_SORT_TYPES = ['weight', 'id'];
+const VOTE_LEGIT_SORT_TYPES = ['weight', 'id'] as const;
 const VOTE_MAX_LIMIT = 100;
+export type VoteSortType = typeof VOTE_LEGIT_SORT_TYPES[number];
 
 @Singleton
 @Factory(() => new GovernanceEngine())
@@ -79,9 +79,6 @@ export class GovernanceEngine {
       if (options.contract) {
          query = query.andWhere('proposal.contract = :contract', { contract: options.contract });
       }
-      if (options.description) {
-         query = query.andWhere('proposal.description like :desc', { desc: `%${options.description}%` });
-      }
       if (options.pollingContractType) {
          query = query.andWhere('proposal.pollingType = :pollingContractType', { pollingContractType: options.pollingContractType });
       }
@@ -100,10 +97,8 @@ export class GovernanceEngine {
       if (options.canceled != null) {
          query = query.andWhere('proposal.canceled = :canceled', { canceled: options.canceled });
       }
-      if (options.sortBy && PROPOSAL_LEGIT_SORT_TYPES.indexOf(options.sortBy) >= 0) {
-         // important verification due possible SQL injection!
-         let order: SortType = options.sort === 'DESC' ? 'DESC' : 'ASC';
-         query = query.orderBy(`proposal.${options.sortBy}`, order);
+      if (options.sortBy && checkLegitSortByType(PROPOSAL_LEGIT_SORT_TYPES, options.sortBy)) {
+         query = query.orderBy(`proposal.${options.sortBy}`, sanitizeSortTypeString(options.sort));
       }
 
       let count = await query.getCount();
@@ -138,10 +133,8 @@ export class GovernanceEngine {
          query = query.andWhere('vote.voter = :voter', { voter: options.voter });
       }
 
-      if (options.sortBy && VOTE_LEGIT_SORT_TYPES.indexOf(options.sortBy) >= 0) {
-         // important verification due possible SQL injection!
-         let order: SortType = options.sort === 'DESC' ? 'DESC' : 'ASC';
-         query = query.orderBy(`vote.${options.sortBy}`, order);
+      if (options.sortBy && checkLegitSortByType(VOTE_LEGIT_SORT_TYPES, options.sortBy)) {
+         query = query.orderBy(`vote.${options.sortBy}`, sanitizeSortTypeString(options.sort));
       }
 
       let count = await query.getCount();

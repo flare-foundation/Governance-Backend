@@ -4,9 +4,6 @@
 import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute, HttpStatusCodeLiteral, TsoaResponse } from '@tsoa/runtime';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { GovernanceController } from './../src/controllers/governanceController';
-import { expressAuthentication } from './../src/authentication';
-// @ts-ignore - no great way to install types from subpackage
-const promiseAny = require('promise.any');
 import { iocContainer } from './../src/ioc';
 import { IocContainer, IocContainerFactory } from '@tsoa/runtime';
 import * as express from 'express';
@@ -210,7 +207,6 @@ export function RegisterRoutes(app: express.Router) {
                     sortBy: {"in":"query","name":"sortBy","ref":"ProposalSortType"},
                     pollingContractType: {"in":"query","name":"pollingContractType","ref":"PollingContractType"},
                     contract: {"in":"query","name":"contract","dataType":"string"},
-                    description: {"in":"query","name":"description","dataType":"string"},
                     minStartTime: {"in":"query","name":"minStartTime","dataType":"double"},
                     maxStartTime: {"in":"query","name":"maxStartTime","dataType":"double"},
                     minEndTime: {"in":"query","name":"minEndTime","dataType":"double"},

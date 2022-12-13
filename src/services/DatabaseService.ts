@@ -30,7 +30,7 @@ export class DatabaseService {
 
    public constructor() {
       this.options = this.configurationService.databaseConnectOptions;
-      this.connect();
+      void this.connect();
    }
 
    private async connect() {
@@ -112,14 +112,14 @@ export class DatabaseService {
       createConnection(options)
          .then(async (conn) => {
             this.logger.info(`^Gconnected to database ^g^K${this.databaseName}^^`);
-            this._connection = await conn;
+            this._connection = conn;
             return;
          })
          .catch(async (e) => {
             logException(e, `connect`);
 
             await sleepms(3000);
-            this.connect();
+            void this.connect();
          });
    }
 

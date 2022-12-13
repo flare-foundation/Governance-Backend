@@ -38,7 +38,7 @@ export class MultiChainService {
       for (let conf of parsed) {
          this.chainConfigs.push(readJSON<INetworkConfigJson>(conf));
       }
-      this.init();
+      void this.init();
    }
    initialized = false;
 
@@ -68,7 +68,7 @@ export class MultiChainService {
          this.addressToContactInfo[contractDeploy.chainId][contractDeploy.address.toLowerCase()] = contractDeploy;
          //  contractDeploy.abi = abi;
          let dbContract = DBContract.fromData(contractDeploy, contractDeploy.chainId);
-         this.dbService.manager.save(dbContract);
+         await this.dbService.manager.save(dbContract);
       }
       this.initialized = true;
    }
@@ -127,7 +127,7 @@ export class MultiChainService {
 
    public async votePowerForProposalId(chainId: number, voterAddress: string, votePowerBlock: number): Promise<string> {
       const votePowerC = await this.governanceVotePower(chainId);
-      return await votePowerC.methods.votePowerOfAt(voterAddress, votePowerBlock).call();
+      return votePowerC.methods.votePowerOfAt(voterAddress, votePowerBlock).call();
    }
 }
 

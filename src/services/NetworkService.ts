@@ -14,7 +14,7 @@ export class NetworkService {
    loggerService: LoggerService;
 
    constructor() {
-      this.init();
+      void this.init();
    }
 
    initialized = false;

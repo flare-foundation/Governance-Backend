@@ -542,14 +542,6 @@
 					},
 					{
 						"in": "query",
-						"name": "description",
-						"required": false,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"in": "query",
 						"name": "minStartTime",
 						"required": false,
 						"schema": {

@@ -19,7 +19,7 @@ export class TestAccountsService {
    voterAccounts = [];
 
    constructor() {
-      this.init();
+      void this.init();
    }
 
    async init() {

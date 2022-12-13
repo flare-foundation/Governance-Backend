@@ -31,7 +31,6 @@
    },
    "routes": {
       "routesDir": "routes",
-      "iocModule": "src/ioc",
-      "authenticationModule": "src/authentication"
+      "iocModule": "src/ioc"
    }
 }

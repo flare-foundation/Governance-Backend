@@ -19,13 +19,12 @@ app.use(helmet());
 app.use(compression()); // Compress all routes
 
 app.use(cookieParser());
-app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.json({ limit: '10mb' }));
 // Use body parser to read sent json payloads
 app.use(
    bodyParser.urlencoded({
-      limit: '50mb',
-      extended: true,
-      parameterLimit: 50000,
+      limit: '10mb',
+      parameterLimit: 1000,
    })
 );
 

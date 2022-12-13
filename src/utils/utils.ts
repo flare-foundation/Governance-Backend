@@ -168,19 +168,6 @@ export function getUnixEpochTimestamp() {
    return Math.floor(Date.now() / 1000);
 }
 
-export function prettyPrintObject(normalized: any) {
-   let res: any = {};
-   for (let key in normalized) {
-      let obj = (normalized as any)[key];
-      if (typeof obj === 'object') {
-         res[key] = (normalized as any)[key]?.toString();
-      } else {
-         res[key] = (normalized as any)[key];
-      }
-   }
-   console.log(JSON.stringify(res, null, 2));
-}
-
 export function secToHHMMSS(time: number, secDecimals = 0) {
    const days = Math.floor(time / (3600 * 24));
    let hours = Math.floor(time / 3600);

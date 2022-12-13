@@ -2,6 +2,7 @@
 
 import { app } from './app';
 import { iocContainer } from './ioc';
+import { logException } from './logger/logger';
 import { ConfigurationService } from './services/ConfigurationService';
 import { DatabaseService } from './services/DatabaseService';
 import { LoggerService } from './services/LoggerService';
@@ -14,9 +15,11 @@ const dbService = iocContainer(null).get(DatabaseService);
 const server = app.listen(configurationService.webServerOptions.port, () => {
    // tslint:disable-next-line:no-console
    loggerService.logger.info(`Server started listening at http://localhost:${configurationService.webServerOptions.port}`);
-   dbService.waitForDBConnection();
+   void dbService.waitForDBConnection();
 });
 
 dbService.waitForDBConnection().then(() => {
    iocContainer(null).get(MultiChainService);
+}).catch(err => {
+   logException(err, 'Error getting DB connection');
 });

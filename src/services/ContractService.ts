@@ -3,6 +3,7 @@ import { Factory, Inject, Singleton } from 'typescript-ioc';
 import Web3 from 'web3';
 import { GovernanceVotePower } from '../../typechain-web3-v1/GovernanceVotePower';
 import { PollingFoundation, ProposalCanceled, ProposalExecuted } from '../../typechain-web3-v1/PollingFoundation';
+import { BaseContract } from '../../typechain-web3-v1/types';
 import { WNat } from '../../typechain-web3-v1/wNat';
 import { DBContract } from '../entity/DBContract';
 import { DBProposal } from '../entity/DBProposal';
@@ -36,8 +37,9 @@ export class ContractService {
    }
 
    constructor() {
-      this.init();
+      void this.init();
    }
+
    initialized = false;
 
    public web3: Web3;
@@ -61,7 +63,7 @@ export class ContractService {
          this.addressToContactInfo.set(contractDeploy.address.toLowerCase(), contractDeploy);
          //  contractDeploy.abi = abi;
          let dbContract = DBContract.fromData(contractDeploy, this.configurationService.chainId);
-         this.dbService.manager.save(dbContract);
+         await this.dbService.manager.save(dbContract);
       }
       this.waitFinalize3 = waitFinalize3Factory(this.web3);
       this.initialized = true;
@@ -71,7 +73,7 @@ export class ContractService {
       return [...this.deployMap.keys()];
    }
 
-   public async getContract(name: string): Promise<any> {
+   public async getContract<T extends BaseContract>(name: string): Promise<T> {
       await this.waitForInitialization();
       return this.deployMap.get(name);
    }
@@ -151,15 +153,15 @@ export class ContractService {
    /// Specific contracts - add them manually here
 
    public async governanceVotePower(): Promise<GovernanceVotePower> {
-      return (await this.getContract('GovernanceVotePower')) as GovernanceVotePower;
+      return this.getContract<GovernanceVotePower>('GovernanceVotePower');
    }
 
    public async pollingFoundation(): Promise<PollingFoundation> {
-      return (await this.getContract('PollingFoundation')) as PollingFoundation;
+      return this.getContract<PollingFoundation>('PollingFoundation');
    }
 
    public async wNat(): Promise<WNat> {
-      return (await this.getContract('wNat')) as WNat;
+      return this.getContract<WNat>('wNat');
    }
 
    public async getEventsFromBlockForContract(contractName: string, startBlock: number, endBlock: number): Promise<ContractEventBatch> {
@@ -190,7 +192,7 @@ export class ContractService {
       for (let contractName of contractNames) {
          promises.push(this.getEventsFromBlockForContract(contractName, startBlock, endBlock));
       }
-      return await Promise.all(promises);
+      return Promise.all(promises);
    }
 
    public async processEvents(batch: ContractEventBatch): Promise<DBEntities> {
@@ -239,7 +241,7 @@ export class ContractService {
 
    public async votePowerForProposalId(voterAddress: string, votePowerBlock: number): Promise<string> {
       const votePowerC = await this.governanceVotePower();
-      return await votePowerC.methods.votePowerOfAt(voterAddress, votePowerBlock).call();
+      return votePowerC.methods.votePowerOfAt(voterAddress, votePowerBlock).call();
    }
 }
 

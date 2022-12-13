@@ -65,7 +65,7 @@ async function getPollingContract(): Promise<PollingFoundation> {
    if (args['contract'] === 'PollingFoundation') {
       let result = await contractService.getContract(args['contract']);
       if (result) {
-         return result;
+         return result as PollingFoundation;
       }
    }
    throw new Error(`Non existent polling contract name: '${args['contract']}'`);
@@ -142,19 +142,19 @@ async function castAllVotesRandomly(proposalId: string, startIndex?: number, end
 async function delegate(voterIndex: number, address: string) {
    let sender = testAccountService.getVoterAccount(voterIndex);
    let governanceVotePower = await contractService.governanceVotePower();
-   return await contractService.signSendAndFinalize(sender, 'delegate', governanceVotePower.options.address, governanceVotePower.methods.delegate(address));
+   return contractService.signSendAndFinalize(sender, 'delegate', governanceVotePower.options.address, governanceVotePower.methods.delegate(address));
 }
 
 async function undelegate(voterIndex: number) {
    let sender = testAccountService.getVoterAccount(voterIndex);
    let governanceVotePower = await contractService.governanceVotePower();
-   return await contractService.signSendAndFinalize(sender, 'delegate', governanceVotePower.options.address, governanceVotePower.methods.undelegate());
+   return contractService.signSendAndFinalize(sender, 'delegate', governanceVotePower.options.address, governanceVotePower.methods.undelegate());
 }
 
 async function wrap(voterIndex: number, value: number | string | BN) {
    let sender = testAccountService.getVoterAccount(voterIndex);
    let wNat = await contractService.wNat();
-   return await contractService.signSendAndFinalize(sender, 'wrap', wNat.options.address, wNat.methods.deposit(), toHex(value));
+   return contractService.signSendAndFinalize(sender, 'wrap', wNat.options.address, wNat.methods.deposit(), toHex(value));
 }
 
 async function wrapAllVoterAccounts(value: number | string | BN) {
@@ -173,7 +173,7 @@ async function wrapAllVoterAccounts(value: number | string | BN) {
 async function unwrap(voterIndex: number, value: number | string | BN) {
    let sender = testAccountService.getVoterAccount(voterIndex);
    let wNat = await contractService.wNat();
-   return await contractService.signSendAndFinalize(sender, 'unwrap', wNat.options.address, wNat.methods.withdraw(value));
+   return contractService.signSendAndFinalize(sender, 'unwrap', wNat.options.address, wNat.methods.withdraw(value));
 }
 
 async function fundVoterAccounts(value: number | string | BN, privateKey: string) {
