@@ -449,6 +449,60 @@
 					"weight",
 					"id"
 				]
+			},
+			"HealthStatus": {
+				"properties": {
+					"lastProcessedBlock": {
+						"type": "number",
+						"format": "double"
+					},
+					"currentBlock": {
+						"type": "number",
+						"format": "double"
+					},
+					"currentBlockUpdateTimestamp": {
+						"type": "number",
+						"format": "double"
+					},
+					"healthy": {
+						"type": "boolean"
+					}
+				},
+				"required": [
+					"lastProcessedBlock",
+					"currentBlock",
+					"currentBlockUpdateTimestamp",
+					"healthy"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ApiResponse_HealthStatus_": {
+				"properties": {
+					"data": {
+						"$ref": "#/components/schemas/HealthStatus"
+					},
+					"errorDetails": {
+						"type": "string",
+						"description": "Optional details for unexpected error responses."
+					},
+					"errorMessage": {
+						"type": "string",
+						"description": "Simple message to explain client developers the reason for error."
+					},
+					"status": {
+						"$ref": "#/components/schemas/ApiDefaultResponseStatusEnum",
+						"description": "Response status. OK for successful reponses."
+					},
+					"validationErrorDetails": {
+						"$ref": "#/components/schemas/ApiValidationErrorDetails"
+					}
+				},
+				"required": [
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -719,6 +773,31 @@
 						}
 					}
 				]
+			}
+		},
+		"/api/health/status": {
+			"get": {
+				"operationId": "GetHealthCheck",
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_HealthStatus_"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "error"
+					}
+				},
+				"tags": [
+					"HealthCheck"
+				],
+				"security": [],
+				"parameters": []
 			}
 		}
 	},

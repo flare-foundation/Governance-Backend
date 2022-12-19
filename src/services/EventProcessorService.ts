@@ -51,9 +51,12 @@ export class EventProcessorService {
       return state;
    }
 
-   async saveEntities(eventEntities: any[], newLastProcessedBlock: number) {
+   async saveEntities(eventEntities: any[], newLastProcessedBlock: number, currentBlockNumber: number) {
       await this.dbService.connection.transaction(async (transaction) => {
-         const stateEntities = [this.getStateEntry('lastProcessedBlock', newLastProcessedBlock)];
+         const stateEntities = [
+            this.getStateEntry('lastProcessedBlock', newLastProcessedBlock),
+            this.getStateEntry('currentBlockNumber', currentBlockNumber)
+         ];
          if (eventEntities.length > 0) {
             await transaction.save(eventEntities);
          }
@@ -190,7 +193,7 @@ export class EventProcessorService {
                dbEntities.canceledProposalIds.push(...entityData.canceledProposalIds);
             }
             const proposalsToSave = await this.updateProposals(dbEntities);
-            await this.saveEntities([...proposalsToSave, ...dbEntities.castedVotes], newLastProcessedBlock);
+            await this.saveEntities([...proposalsToSave, ...dbEntities.castedVotes], newLastProcessedBlock, currentBlockNumber);
          } catch (error) {
             logException(error, `EventProcessorService::processEvents`);
          }
