@@ -51,7 +51,9 @@ export class MultiChainService {
    async init() {
       await this.dbService.waitForDBConnection();
       for (let config of this.chainConfigs) {
-         this.web3[config.CHAIN_ID] = getWeb3(config.RPC, this.logger);
+         let RPCurl = config.RPC;
+         RPCurl = process.env.RPC ? process.env.RPC : RPCurl;
+         this.web3[config.CHAIN_ID] = getWeb3(RPCurl, this.logger);
          let deployFname = `deploys/${config.NETWORK}.json`;
          this.deployMap[config.CHAIN_ID] = this.deployMap[config.CHAIN_ID] || {};
          this.addressToContactInfo[config.CHAIN_ID] = this.addressToContactInfo[config.CHAIN_ID] || {};
