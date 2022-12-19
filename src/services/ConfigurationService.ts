@@ -38,10 +38,12 @@ export class ConfigurationService {
          this.chainId = configFile.CHAIN_ID;
          this.network = configFile.NETWORK;
 
-         this.networkRPC = configFile.RPC;
+         this.networkRPC = process.env.RPC ? process.env.RPC : configFile.RPC;
 
          this.maxBlocksForEventReads = configFile.MAX_BLOCKS_FOR_EVENT_READS ? configFile.MAX_BLOCKS_FOR_EVENT_READS : undefined;
+         this.maxBlocksForEventReads = process.env.MAX_BLOCKS_FOR_EVENT_READS ? parseInt(process.env.MAX_BLOCKS_FOR_EVENT_READS) : this.maxBlocksForEventReads;
          this.indexingStartBlock = configFile.INDEXING_START_BLOCK ? configFile.INDEXING_START_BLOCK : undefined;
+         this.indexingStartBlock = process.env.INDEXING_START_BLOCK ? parseInt(process.env.INDEXING_START_BLOCK) : this.indexingStartBlock;
 
          this.eventCollectedContracts = configFile.EVENT_COLLECTED_CONTRACTS;
       }
