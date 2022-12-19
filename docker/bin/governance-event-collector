@@ -1,0 +1,3 @@
+#!/bin/sh
+
+node /backend/governance-backend/dist/src/eventCollector.js -c ${CONFIG_FILE}
