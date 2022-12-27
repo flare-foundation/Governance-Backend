@@ -12,16 +12,16 @@
    {
       "name": "PollingFoundation",
       "contractName": "PollingFoundation.sol",
-      "address": "0x8382657eb70f996DCC255A62B77Dc24F65d0ad2f"
+      "address": "0x48a59E8F8f29dA3dD1C2C2Fe54209f219535BFBA"
    },
    {
       "name": "FtsoRewardManager",
       "contractName": "FtsoRewardManager.sol",
-      "address": "0xBbfff13a0EB1C032D5B66207c1aF971b6f393Cc8"
+      "address": "0x404723C7982ad24Aabf8648C2c9fEdF9C4A4ab37"
    },
    {
-      "name": "DelegationAccountManager",
-      "contractName": "DelegationAccountManager.sol",
-      "address": "0x56Bd34FF8DC809259377652167E365416E617a5f"
+      "name": "ClaimSetupManager",
+      "contractName": "ClaimSetupManager.sol",
+      "address": "0xadbCD012bC18fc73139A4895657e4a2F30b54562"
    }
 ]

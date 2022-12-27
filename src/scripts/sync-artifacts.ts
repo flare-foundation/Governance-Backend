@@ -1,6 +1,6 @@
 import { refreshArtifacts } from '../utils/artifact-utils';
 
-const contractToSync = ['GovernanceVotePower', 'PollingFoundation', 'wNat'];
+const contractToSync = ['ClaimSetupManager', 'GovernanceVotePower', 'PollingFoundation', 'wNat'];
 
 refreshArtifacts(contractToSync)
    .then(() => process.exit(0))
