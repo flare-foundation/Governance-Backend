@@ -503,6 +503,52 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"ApiProvider": {
+				"properties": {
+					"address": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"address",
+					"name"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ApiResponse_ApiProvider-Array_": {
+				"properties": {
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/ApiProvider"
+						},
+						"type": "array"
+					},
+					"errorDetails": {
+						"type": "string",
+						"description": "Optional details for unexpected error responses."
+					},
+					"errorMessage": {
+						"type": "string",
+						"description": "Simple message to explain client developers the reason for error."
+					},
+					"status": {
+						"$ref": "#/components/schemas/ApiDefaultResponseStatusEnum",
+						"description": "Response status. OK for successful reponses."
+					},
+					"validationErrorDetails": {
+						"$ref": "#/components/schemas/ApiValidationErrorDetails"
+					}
+				},
+				"required": [
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -795,6 +841,28 @@
 				},
 				"tags": [
 					"HealthCheck"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/api/misc/ftso/list": {
+			"get": {
+				"operationId": "GetFtsoProviders",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_ApiProvider-Array_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Misc services"
 				],
 				"security": [],
 				"parameters": []

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import dotenv from 'dotenv';
+import { FtsoEngine } from './engines/ftsoEngine';
 import { iocContainer } from './ioc';
 import { ConfigurationService } from './services/ConfigurationService';
 import { ContractService } from './services/ContractService';
@@ -25,12 +26,14 @@ process.env.CONFIG_FILE = args['config'];
 const eventProcessorService = iocContainer(null).get(EventProcessorService);
 const configurationService = iocContainer(null).get(ConfigurationService);
 const contractService = iocContainer(null).get(ContractService);
+const ftsoEngine = iocContainer(null).get(FtsoEngine);
 // override network
 // configurationService.network = args['config'];
 
 async function runEventCollector() {
    await contractService.waitForInitialization();
    let batchSize = args['batchSize'] ? args['batchSize'] : configurationService.maxBlocksForEventReads;
+   await ftsoEngine.refreshFromUrl(configurationService.ftsoProvidersUrl);
    await eventProcessorService.processEvents(batchSize);
 }
 

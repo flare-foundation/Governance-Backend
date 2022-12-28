@@ -14,7 +14,7 @@
            "outFiles": [
             "${workspaceFolder}/**/*.js",
             "${workspaceFolder}/node_modules/typescript-ioc/**",
-            "${workspaceFolder}/node_modules/typescript-ioc/src/**"            
+            "${workspaceFolder}/node_modules/typescript-ioc/src/**"
            ],
            "runtimeArgs": [
                "ts-node",
@@ -32,7 +32,7 @@
         "outFiles": [
          "${workspaceFolder}/**/*.js",
          "${workspaceFolder}/node_modules/typescript-ioc/**",
-         "${workspaceFolder}/node_modules/typescript-ioc/src/**"            
+         "${workspaceFolder}/node_modules/typescript-ioc/src/**"
         ],
         "runtimeArgs": [
             "event-collector"

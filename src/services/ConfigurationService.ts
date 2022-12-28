@@ -31,6 +31,9 @@ export class ConfigurationService {
    proposerPrivateKeys = [];
    voterPrivateKeys = [];
 
+   // Towo labs ftso provider list (json)
+   ftsoProvidersUrl: string = '';
+
    constructor() {
       if (process.env.CONFIG_FILE) {
          const configFile = readJSON<INetworkConfigJson>(process.env.CONFIG_FILE);
@@ -46,6 +49,8 @@ export class ConfigurationService {
          this.indexingStartBlock = process.env.INDEXING_START_BLOCK ? parseInt(process.env.INDEXING_START_BLOCK) : this.indexingStartBlock;
 
          this.eventCollectedContracts = configFile.EVENT_COLLECTED_CONTRACTS;
+
+         this.ftsoProvidersUrl = process.env.FTSO_PROVIDERS_URL ? process.env.FTSO_PROVIDERS_URL : configFile.FTSO_PROVIDERS_URL;
       }
       this.initProposerPrivateKeys();
       this.initVoterPrivateKeys();
@@ -74,4 +79,5 @@ export class ConfigurationService {
          }
       }
    }
+
 }

@@ -37,4 +37,5 @@ export interface INetworkConfigJson {
    MAX_BLOCKS_FOR_EVENT_READS?: number;
    INDEXING_START_BLOCK?: number;
    EVENT_COLLECTED_CONTRACTS: string[];
+   FTSO_PROVIDERS_URL?: string;
 }

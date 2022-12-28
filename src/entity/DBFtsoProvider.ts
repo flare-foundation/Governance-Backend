@@ -1,9 +1,15 @@
 import { Column, Entity, Index } from 'typeorm';
-import { Provider } from '../dto/FtsoProvider';
+import { ApiProvider, Provider } from '../dto/FtsoProvider';
 import { BaseEntity } from './BaseEntity';
+
+export enum FtsoProviderStatus {
+   ACTIVE = 'active',
+   DELETED = 'deleted',
+}
 
 @Entity({ name: 'ftso_provider' })
 export class DBFtsoProvider extends BaseEntity {
+   @Column({ nullable: false, type: 'varchar', length: 10 }) status: FtsoProviderStatus;
    @Column({ nullable: false }) @Index() chainId: number;
    @Column({ nullable: false }) name: string;
    @Column({ nullable: false }) @Index() address: string;
@@ -16,6 +22,7 @@ export class DBFtsoProvider extends BaseEntity {
    static fromApi(provider: Provider, chainId: number): DBFtsoProvider {
       const entity = new DBFtsoProvider();
       entity.chainId = chainId;
+      entity.status = FtsoProviderStatus.ACTIVE;
       entity.name = provider.name;
       entity.description = provider.description;
       entity.url = provider.url;
@@ -36,4 +43,12 @@ export class DBFtsoProvider extends BaseEntity {
          listed: this.listed
       };
    }
+
+   public toApi(): ApiProvider {
+      return {
+         name: this.name,
+         address: this.address,
+      };
+   }
+
 }

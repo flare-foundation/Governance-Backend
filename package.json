@@ -30,9 +30,12 @@
       "artifacts": "npm-run-all sync typechain-web3-v1",
       "governor-cli": "yarn ts-node src/scripts/governor-cli.ts -n coston",
       "event-collector": "yarn ts-node src/eventCollector.ts -c .secure.configs/networks/coston.json",
+      "watch-and-run-event-collector": "ts-node-dev --notify --respawn -- src/eventCollector.ts",
+      "dev-event-collector": "npm run watch-and-run-event-collector",
       "lint": "eslint . --ext .ts"
    },
    "dependencies": {
+      "axios": "^1.2.1",
       "body-parser": "^1.19.0",
       "command-exists": "^1.2.9",
       "compression": "^1.7.4",
