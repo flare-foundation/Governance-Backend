@@ -27,3 +27,8 @@ nul
 
 
 .secure*
+
+# SonarQube scanner
+.scannerwork/
+dependency-check-report.json
+sonar-project.properties
