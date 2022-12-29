@@ -5,18 +5,23 @@
       "address": "0x47dD40deDCda8B4EFDEf5101999Af33B7cF787D7"
    },
    {
-      "name": "WNat",
-      "contractName": "WNat.sol",
+      "name": "wNat",
+      "contractName": "wNat.sol",
       "address": "0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d"
+   },
+   {
+      "name": "PollingFoundation",
+      "contractName": "PollingFoundation.sol",
+      "address": "0x258E20bdbb2d891521308d2af381B1BD962B67B5"
    },
    {
       "name": "FtsoRewardManager",
       "contractName": "FtsoRewardManager.sol",
-      "address": "0x6D55E24Dc2d3bD2Fc5Ae1fcCD1A73bc5f18A8A30"
+      "address": "0x9EDCa806834e89cC928EF4951cE0506Be8416309"
    },
    {
-      "name": "DelegationAccountManager",
-      "contractName": "DelegationAccountManager.sol",
-      "address": "0x0697cA6eA61eaf3E29D750241D31b43FCcFEE637"
+      "name": "ClaimSetupManager",
+      "contractName": "ClaimSetupManager.sol",
+      "address": "0xD56c0Ea37B848939B59e6F5Cda119b3fA473b5eB"
    }
 ]

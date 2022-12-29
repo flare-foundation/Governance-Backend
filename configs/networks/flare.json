@@ -1,17 +1,18 @@
 {
-  "NETWORK": "flare",
-  "CHAIN_ID": 14,
-  "RPC": "https://flare-api.flare.network/ext/C/rpc",
-  "MAX_BLOCKS_FOR_EVENT_READS": 30,
-  "INDEXING_START_BLOCK": 0,
-  "TOKEN": {
-    "contractName": "wNat",
-    "symbol": "WFLR",
-    "decimals": 18,
-    "image": ""
- },
-  "EVENT_COLLECTED_CONTRACTS": [
-    "GovernanceVotePower",
-    "wNat"
-  ]
+   "NETWORK": "flare",
+   "CHAIN_ID": 14,
+   "RPC": "https://flare-api.flare.network/ext/C/rpc",
+   "MAX_BLOCKS_FOR_EVENT_READS": 30,
+   "INDEXING_START_BLOCK": 0,
+   "TOKEN": {
+      "contractName": "wNat",
+      "symbol": "WFLR",
+      "decimals": 18,
+      "image": ""
+   },
+   "EVENT_COLLECTED_CONTRACTS": [
+      "GovernanceVotePower",
+      "PollingFoundation",
+      "wNat"
+   ]
 }
