@@ -38,4 +38,5 @@ export interface INetworkConfigJson {
    INDEXING_START_BLOCK?: number;
    EVENT_COLLECTED_CONTRACTS: string[];
    FTSO_PROVIDERS_URL?: string;
+   FTSO_PROVIDERS_CRON_STRING?: string;
 }

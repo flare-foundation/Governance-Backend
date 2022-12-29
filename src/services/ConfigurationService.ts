@@ -33,6 +33,7 @@ export class ConfigurationService {
 
    // Towo labs ftso provider list (json)
    ftsoProvidersUrl: string = '';
+   ftsoProvidersCronString: string = '';
 
    constructor() {
       if (process.env.CONFIG_FILE) {
@@ -51,6 +52,7 @@ export class ConfigurationService {
          this.eventCollectedContracts = configFile.EVENT_COLLECTED_CONTRACTS;
 
          this.ftsoProvidersUrl = process.env.FTSO_PROVIDERS_URL ? process.env.FTSO_PROVIDERS_URL : configFile.FTSO_PROVIDERS_URL;
+         this.ftsoProvidersCronString = process.env.FTSO_PROVIDERS_CRON_STRING ? process.env.FTSO_PROVIDERS_CRON_STRING : configFile.FTSO_PROVIDERS_CRON_STRING;
       }
       this.initProposerPrivateKeys();
       this.initVoterPrivateKeys();

@@ -32,8 +32,8 @@ const ftsoEngine = iocContainer(null).get(FtsoEngine);
 
 async function runEventCollector() {
    await contractService.waitForInitialization();
+   ftsoEngine.init();
    let batchSize = args['batchSize'] ? args['batchSize'] : configurationService.maxBlocksForEventReads;
-   await ftsoEngine.refreshFromUrl(configurationService.ftsoProvidersUrl);
    await eventProcessorService.processEvents(batchSize);
 }
 

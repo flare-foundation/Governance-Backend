@@ -14,5 +14,7 @@
     "GovernanceVotePower",
     "PollingFoundation",
     "wNat"
-  ]
+  ],
+  "FTSO_PROVIDERS_URL": "https://raw.githubusercontent.com/TowoLabs/ftso-signal-providers/master/bifrost-wallet.providerlist.json",
+  "FTSO_PROVIDERS_CRON_STRING": "0 0 1 * * 1"
 }
