@@ -9,7 +9,7 @@ import { BaseEntity } from './BaseEntity';
 export class DBProposal extends BaseEntity {
    @Column({ nullable: false }) @Index() chainId: number;
    @Column({ nullable: false }) @Index() contract: string;
-   @Column({ nullable: false }) @Index() proposalId: string;
+   @Column({ nullable: false, unique: true }) proposalId: string;
    @Column({ nullable: false }) @Index() pollingType: string; // PollingContractType
    @Column({ nullable: false }) @Index() proposer: string;
    @Column({ nullable: false }) targets: string; // serialized array of hex values
