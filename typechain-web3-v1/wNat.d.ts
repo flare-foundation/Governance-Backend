@@ -39,31 +39,13 @@ export type Deposit = ContractEventLog<{
   0: string;
   1: string;
 }>;
-export type GovernanceCallTimelocked = ContractEventLog<{
-  selector: string;
-  allowedAfterTimestamp: string;
-  encodedCall: string;
-  0: string;
-  1: string;
-  2: string;
-}>;
-export type GovernanceInitialised = ContractEventLog<{
-  initialGovernance: string;
+export type GovernanceProposed = ContractEventLog<{
+  proposedGovernance: string;
   0: string;
 }>;
-export type GovernedProductionModeEntered = ContractEventLog<{
-  governanceSettings: string;
-  0: string;
-}>;
-export type TimelockedGovernanceCallCanceled = ContractEventLog<{
-  selector: string;
-  timestamp: string;
-  0: string;
-  1: string;
-}>;
-export type TimelockedGovernanceCallExecuted = ContractEventLog<{
-  selector: string;
-  timestamp: string;
+export type GovernanceUpdated = ContractEventLog<{
+  oldGovernance: string;
+  newGoveranance: string;
   0: string;
   1: string;
 }>;
@@ -120,25 +102,14 @@ export interface WNat extends BaseContract {
       _blockNumber: number | string | BN
     ): NonPayableTransactionObject<string>;
 
-    batchDelegate(
-      _delegatees: string[],
-      _bips: (number | string | BN)[]
-    ): NonPayableTransactionObject<void>;
-
     batchVotePowerOfAt(
       _owners: string[],
       _blockNumber: number | string | BN
     ): NonPayableTransactionObject<string[]>;
 
-    cancelGovernanceCall(
-      _selector: string | number[]
-    ): NonPayableTransactionObject<void>;
-
-    cleanerContract(): NonPayableTransactionObject<string>;
+    claimGovernance(): NonPayableTransactionObject<void>;
 
     cleanupBlockNumber(): NonPayableTransactionObject<string>;
-
-    cleanupBlockNumberManager(): NonPayableTransactionObject<string>;
 
     decimals(): NonPayableTransactionObject<string>;
 
@@ -188,13 +159,7 @@ export interface WNat extends BaseContract {
 
     depositTo(recipient: string): PayableTransactionObject<void>;
 
-    executeGovernanceCall(
-      _selector: string | number[]
-    ): NonPayableTransactionObject<void>;
-
     governance(): NonPayableTransactionObject<string>;
-
-    governanceSettings(): NonPayableTransactionObject<string>;
 
     governanceVotePower(): NonPayableTransactionObject<string>;
 
@@ -203,11 +168,15 @@ export interface WNat extends BaseContract {
       addedValue: number | string | BN
     ): NonPayableTransactionObject<boolean>;
 
-    initialise(_initialGovernance: string): NonPayableTransactionObject<void>;
+    initialise(_governance: string): NonPayableTransactionObject<void>;
 
     name(): NonPayableTransactionObject<string>;
 
-    productionMode(): NonPayableTransactionObject<boolean>;
+    needsReplacementVPContract(): NonPayableTransactionObject<boolean>;
+
+    proposeGovernance(_governance: string): NonPayableTransactionObject<void>;
+
+    proposedGovernance(): NonPayableTransactionObject<string>;
 
     readVotePowerContract(): NonPayableTransactionObject<string>;
 
@@ -236,16 +205,7 @@ export interface WNat extends BaseContract {
 
     setWriteVpContract(_vpContract: string): NonPayableTransactionObject<void>;
 
-    switchToProductionMode(): NonPayableTransactionObject<void>;
-
     symbol(): NonPayableTransactionObject<string>;
-
-    timelockedCalls(arg0: string | number[]): NonPayableTransactionObject<{
-      allowedAfterTimestamp: string;
-      encodedCall: string;
-      0: string;
-      1: string;
-    }>;
 
     totalSupply(): NonPayableTransactionObject<string>;
 
@@ -281,6 +241,8 @@ export interface WNat extends BaseContract {
       recipient: string,
       amount: number | string | BN
     ): NonPayableTransactionObject<boolean>;
+
+    transferGovernance(_governance: string): NonPayableTransactionObject<void>;
 
     undelegateAll(): NonPayableTransactionObject<void>;
 
@@ -318,13 +280,6 @@ export interface WNat extends BaseContract {
       _blockNumber: number | string | BN
     ): NonPayableTransactionObject<string>;
 
-    votePowerOfAtIgnoringRevocation(
-      _owner: string,
-      _blockNumber: number | string | BN
-    ): NonPayableTransactionObject<string>;
-
-    vpContractInitialized(): NonPayableTransactionObject<boolean>;
-
     withdraw(amount: number | string | BN): NonPayableTransactionObject<void>;
 
     withdrawFrom(
@@ -349,42 +304,16 @@ export interface WNat extends BaseContract {
     Deposit(cb?: Callback<Deposit>): EventEmitter;
     Deposit(options?: EventOptions, cb?: Callback<Deposit>): EventEmitter;
 
-    GovernanceCallTimelocked(
-      cb?: Callback<GovernanceCallTimelocked>
-    ): EventEmitter;
-    GovernanceCallTimelocked(
+    GovernanceProposed(cb?: Callback<GovernanceProposed>): EventEmitter;
+    GovernanceProposed(
       options?: EventOptions,
-      cb?: Callback<GovernanceCallTimelocked>
+      cb?: Callback<GovernanceProposed>
     ): EventEmitter;
 
-    GovernanceInitialised(cb?: Callback<GovernanceInitialised>): EventEmitter;
-    GovernanceInitialised(
+    GovernanceUpdated(cb?: Callback<GovernanceUpdated>): EventEmitter;
+    GovernanceUpdated(
       options?: EventOptions,
-      cb?: Callback<GovernanceInitialised>
-    ): EventEmitter;
-
-    GovernedProductionModeEntered(
-      cb?: Callback<GovernedProductionModeEntered>
-    ): EventEmitter;
-    GovernedProductionModeEntered(
-      options?: EventOptions,
-      cb?: Callback<GovernedProductionModeEntered>
-    ): EventEmitter;
-
-    TimelockedGovernanceCallCanceled(
-      cb?: Callback<TimelockedGovernanceCallCanceled>
-    ): EventEmitter;
-    TimelockedGovernanceCallCanceled(
-      options?: EventOptions,
-      cb?: Callback<TimelockedGovernanceCallCanceled>
-    ): EventEmitter;
-
-    TimelockedGovernanceCallExecuted(
-      cb?: Callback<TimelockedGovernanceCallExecuted>
-    ): EventEmitter;
-    TimelockedGovernanceCallExecuted(
-      options?: EventOptions,
-      cb?: Callback<TimelockedGovernanceCallExecuted>
+      cb?: Callback<GovernanceUpdated>
     ): EventEmitter;
 
     Transfer(cb?: Callback<Transfer>): EventEmitter;
@@ -420,54 +349,18 @@ export interface WNat extends BaseContract {
   once(event: "Deposit", cb: Callback<Deposit>): void;
   once(event: "Deposit", options: EventOptions, cb: Callback<Deposit>): void;
 
+  once(event: "GovernanceProposed", cb: Callback<GovernanceProposed>): void;
   once(
-    event: "GovernanceCallTimelocked",
-    cb: Callback<GovernanceCallTimelocked>
-  ): void;
-  once(
-    event: "GovernanceCallTimelocked",
+    event: "GovernanceProposed",
     options: EventOptions,
-    cb: Callback<GovernanceCallTimelocked>
+    cb: Callback<GovernanceProposed>
   ): void;
 
+  once(event: "GovernanceUpdated", cb: Callback<GovernanceUpdated>): void;
   once(
-    event: "GovernanceInitialised",
-    cb: Callback<GovernanceInitialised>
-  ): void;
-  once(
-    event: "GovernanceInitialised",
+    event: "GovernanceUpdated",
     options: EventOptions,
-    cb: Callback<GovernanceInitialised>
-  ): void;
-
-  once(
-    event: "GovernedProductionModeEntered",
-    cb: Callback<GovernedProductionModeEntered>
-  ): void;
-  once(
-    event: "GovernedProductionModeEntered",
-    options: EventOptions,
-    cb: Callback<GovernedProductionModeEntered>
-  ): void;
-
-  once(
-    event: "TimelockedGovernanceCallCanceled",
-    cb: Callback<TimelockedGovernanceCallCanceled>
-  ): void;
-  once(
-    event: "TimelockedGovernanceCallCanceled",
-    options: EventOptions,
-    cb: Callback<TimelockedGovernanceCallCanceled>
-  ): void;
-
-  once(
-    event: "TimelockedGovernanceCallExecuted",
-    cb: Callback<TimelockedGovernanceCallExecuted>
-  ): void;
-  once(
-    event: "TimelockedGovernanceCallExecuted",
-    options: EventOptions,
-    cb: Callback<TimelockedGovernanceCallExecuted>
+    cb: Callback<GovernanceUpdated>
   ): void;
 
   once(event: "Transfer", cb: Callback<Transfer>): void;

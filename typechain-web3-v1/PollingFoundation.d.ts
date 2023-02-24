@@ -169,6 +169,8 @@ export interface PollingFoundation extends BaseContract {
 
     ftsoManager(): NonPayableTransactionObject<string>;
 
+    ftsoRegistry(): NonPayableTransactionObject<string>;
+
     getAddressUpdater(): NonPayableTransactionObject<string>;
 
     getProposalId(
@@ -231,8 +233,6 @@ export interface PollingFoundation extends BaseContract {
     isProposer(_account: string): NonPayableTransactionObject<boolean>;
 
     name(): NonPayableTransactionObject<string>;
-
-    priceSubmitter(): NonPayableTransactionObject<string>;
 
     productionMode(): NonPayableTransactionObject<boolean>;
 

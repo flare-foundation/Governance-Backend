@@ -145,7 +145,7 @@ export interface ClaimSetupManager extends BaseContract {
       _executor: string,
       _claimFor: string,
       _recipient: string
-    ): NonPayableTransactionObject<boolean>;
+    ): NonPayableTransactionObject<void>;
 
     claimExecutors(_owner: string): NonPayableTransactionObject<string[]>;
 
