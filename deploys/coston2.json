@@ -23,5 +23,10 @@
       "name": "ClaimSetupManager",
       "contractName": "ClaimSetupManager.sol",
       "address": "0x5Ddb590530EF66775E6225671eaBD94959e9AE0e"
+   },
+   {
+      "name": "DistributionToDelegators",
+      "contractName": "DistributionToDelegators.sol",
+      "address": "0xbd33bDFf04C357F7FC019E72D0504C24CF4Aa010"
    }
 ]
