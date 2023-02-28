@@ -21,18 +21,6 @@ interface EventOptions {
   topics?: string[];
 }
 
-export type AllowedClaimRecipientsChanged = ContractEventLog<{
-  rewardOwner: string;
-  recipients: string[];
-  0: string;
-  1: string[];
-}>;
-export type ClaimExecutorsChanged = ContractEventLog<{
-  rewardOwner: string;
-  executors: string[];
-  0: string;
-  1: string[];
-}>;
 export type DailyAuthorizedInflationSet = ContractEventLog<{
   authorizedAmountWei: string;
   0: string;
@@ -44,6 +32,14 @@ export type FeePercentageChanged = ContractEventLog<{
   0: string;
   1: string;
   2: string;
+}>;
+export type FtsoRewardManagerActivated = ContractEventLog<{
+  ftsoRewardManager: string;
+  0: string;
+}>;
+export type FtsoRewardManagerDeactivated = ContractEventLog<{
+  ftsoRewardManager: string;
+  0: string;
 }>;
 export type GovernanceCallTimelocked = ContractEventLog<{
   selector: string;
@@ -136,39 +132,29 @@ export interface FtsoRewardManager extends BaseContract {
 
     active(): NonPayableTransactionObject<boolean>;
 
-    allowedClaimRecipients(
-      _rewardOwner: string
-    ): NonPayableTransactionObject<string[]>;
+    autoClaim(
+      _rewardOwners: string[],
+      _rewardEpoch: number | string | BN
+    ): NonPayableTransactionObject<void>;
 
     cancelGovernanceCall(
       _selector: string | number[]
     ): NonPayableTransactionObject<void>;
 
-    claimAndWrapReward(
-      _recipient: string,
-      _rewardEpochs: (number | string | BN)[]
-    ): NonPayableTransactionObject<string>;
-
-    claimAndWrapRewardByExecutor(
+    claim(
       _rewardOwner: string,
       _recipient: string,
-      _rewardEpochs: (number | string | BN)[]
+      _rewardEpoch: number | string | BN,
+      _wrap: boolean
     ): NonPayableTransactionObject<string>;
 
-    claimAndWrapRewardFromDataProviders(
-      _recipient: string,
-      _rewardEpochs: (number | string | BN)[],
-      _dataProviders: string[]
-    ): NonPayableTransactionObject<string>;
-
-    claimAndWrapRewardFromDataProvidersByExecutor(
+    claimFromDataProviders(
       _rewardOwner: string,
       _recipient: string,
       _rewardEpochs: (number | string | BN)[],
-      _dataProviders: string[]
+      _dataProviders: string[],
+      _wrap: boolean
     ): NonPayableTransactionObject<string>;
-
-    claimExecutors(_rewardOwner: string): NonPayableTransactionObject<string[]>;
 
     claimReward(
       _recipient: string,
@@ -180,6 +166,8 @@ export interface FtsoRewardManager extends BaseContract {
       _rewardEpochs: (number | string | BN)[],
       _dataProviders: string[]
     ): NonPayableTransactionObject<string>;
+
+    claimSetupManager(): NonPayableTransactionObject<string>;
 
     closeExpiredRewardEpoch(
       _rewardEpoch: number | string | BN
@@ -334,7 +322,6 @@ export interface FtsoRewardManager extends BaseContract {
       _totalBurnedWei: string;
       _totalInflationAuthorizedWei: string;
       _totalInflationReceivedWei: string;
-      _totalSelfDestructReceivedWei: string;
       _lastInflationAuthorizationReceivedTs: string;
       _dailyAuthorizedInflation: string;
       0: string;
@@ -346,7 +333,6 @@ export interface FtsoRewardManager extends BaseContract {
       6: string;
       7: string;
       8: string;
-      9: string;
     }>;
 
     getUnclaimedReward(
@@ -367,17 +353,15 @@ export interface FtsoRewardManager extends BaseContract {
 
     newFtsoRewardManager(): NonPayableTransactionObject<string>;
 
+    nextClaimableRewardEpoch(
+      _rewardOwner: string
+    ): NonPayableTransactionObject<string>;
+
     oldFtsoRewardManager(): NonPayableTransactionObject<string>;
 
     productionMode(): NonPayableTransactionObject<boolean>;
 
     receiveInflation(): PayableTransactionObject<void>;
-
-    setAllowedClaimRecipients(
-      _recipients: string[]
-    ): NonPayableTransactionObject<void>;
-
-    setClaimExecutors(_executors: string[]): NonPayableTransactionObject<void>;
 
     setDailyAuthorizedInflation(
       _toAuthorizeWei: number | string | BN
@@ -392,8 +376,6 @@ export interface FtsoRewardManager extends BaseContract {
     setNewFtsoRewardManager(
       _newFtsoRewardManager: string
     ): NonPayableTransactionObject<void>;
-
-    supply(): NonPayableTransactionObject<string>;
 
     switchToProductionMode(): NonPayableTransactionObject<void>;
 
@@ -412,20 +394,6 @@ export interface FtsoRewardManager extends BaseContract {
     wNat(): NonPayableTransactionObject<string>;
   };
   events: {
-    AllowedClaimRecipientsChanged(
-      cb?: Callback<AllowedClaimRecipientsChanged>
-    ): EventEmitter;
-    AllowedClaimRecipientsChanged(
-      options?: EventOptions,
-      cb?: Callback<AllowedClaimRecipientsChanged>
-    ): EventEmitter;
-
-    ClaimExecutorsChanged(cb?: Callback<ClaimExecutorsChanged>): EventEmitter;
-    ClaimExecutorsChanged(
-      options?: EventOptions,
-      cb?: Callback<ClaimExecutorsChanged>
-    ): EventEmitter;
-
     DailyAuthorizedInflationSet(
       cb?: Callback<DailyAuthorizedInflationSet>
     ): EventEmitter;
@@ -438,6 +406,22 @@ export interface FtsoRewardManager extends BaseContract {
     FeePercentageChanged(
       options?: EventOptions,
       cb?: Callback<FeePercentageChanged>
+    ): EventEmitter;
+
+    FtsoRewardManagerActivated(
+      cb?: Callback<FtsoRewardManagerActivated>
+    ): EventEmitter;
+    FtsoRewardManagerActivated(
+      options?: EventOptions,
+      cb?: Callback<FtsoRewardManagerActivated>
+    ): EventEmitter;
+
+    FtsoRewardManagerDeactivated(
+      cb?: Callback<FtsoRewardManagerDeactivated>
+    ): EventEmitter;
+    FtsoRewardManagerDeactivated(
+      options?: EventOptions,
+      cb?: Callback<FtsoRewardManagerDeactivated>
     ): EventEmitter;
 
     GovernanceCallTimelocked(
@@ -524,26 +508,6 @@ export interface FtsoRewardManager extends BaseContract {
   };
 
   once(
-    event: "AllowedClaimRecipientsChanged",
-    cb: Callback<AllowedClaimRecipientsChanged>
-  ): void;
-  once(
-    event: "AllowedClaimRecipientsChanged",
-    options: EventOptions,
-    cb: Callback<AllowedClaimRecipientsChanged>
-  ): void;
-
-  once(
-    event: "ClaimExecutorsChanged",
-    cb: Callback<ClaimExecutorsChanged>
-  ): void;
-  once(
-    event: "ClaimExecutorsChanged",
-    options: EventOptions,
-    cb: Callback<ClaimExecutorsChanged>
-  ): void;
-
-  once(
     event: "DailyAuthorizedInflationSet",
     cb: Callback<DailyAuthorizedInflationSet>
   ): void;
@@ -558,6 +522,26 @@ export interface FtsoRewardManager extends BaseContract {
     event: "FeePercentageChanged",
     options: EventOptions,
     cb: Callback<FeePercentageChanged>
+  ): void;
+
+  once(
+    event: "FtsoRewardManagerActivated",
+    cb: Callback<FtsoRewardManagerActivated>
+  ): void;
+  once(
+    event: "FtsoRewardManagerActivated",
+    options: EventOptions,
+    cb: Callback<FtsoRewardManagerActivated>
+  ): void;
+
+  once(
+    event: "FtsoRewardManagerDeactivated",
+    cb: Callback<FtsoRewardManagerDeactivated>
+  ): void;
+  once(
+    event: "FtsoRewardManagerDeactivated",
+    options: EventOptions,
+    cb: Callback<FtsoRewardManagerDeactivated>
   ): void;
 
   once(
