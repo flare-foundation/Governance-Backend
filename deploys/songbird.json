@@ -17,6 +17,11 @@
    {
       "name": "FtsoRewardManager",
       "contractName": "FtsoRewardManager.sol",
-      "address": "0xE82A1f25b2b661fe98e6f1aA982A69cdB33AF27b"
+      "address": "0x13F7866568dC476cC3522d17C23C35FEDc1431C5"
+   },
+   {
+      "name": "ClaimSetupManager",
+      "contractName": "ClaimSetupManager.sol",
+      "address": "0xDD138B38d87b0F95F6c3e13e78FFDF2588F1732d"
    }
 ]
